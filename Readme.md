@@ -1,7 +1,7 @@
 # Личный проект «Киноман» [![Build status][travis-image]][travis-url]
 
 * Студент: [Alex Kellerman](https://up.htmlacademy.ru/ecmascript/11/user/1164029).
-* Наставник: `Талифа Аушева`.
+* Наставник: [Талифа Аушева](https://https://htmlacademy.ru/profile/id1434685).
 
 ---
 
