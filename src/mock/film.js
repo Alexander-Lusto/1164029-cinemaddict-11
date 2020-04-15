@@ -182,8 +182,8 @@ const getRandomArrayElements = (array, min, max) => {
 const getMovieTime = () => {
   const hours = getRandomIntegerNumber(1, 3);
   const minutes = getRandomIntegerNumber(0, 60);
-  return `${hours}h ${minutes}m`
-}
+  return `${hours}h ${minutes}m`;
+};
 
 const generateFilmCard = () => {
   return {
