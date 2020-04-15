@@ -1,5 +1,4 @@
 const createCommentsMarkup = (comments) => {
-  //const {comments} = film;
   return comments.map((comment) => {
     return (
       `
@@ -23,7 +22,6 @@ const createCommentsMarkup = (comments) => {
 };
 
 const createGenresMarkup = (genres) => {
-  //const {genres} = film;
 
   return genres.map((genre) => {
     return (

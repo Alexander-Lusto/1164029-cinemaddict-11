@@ -27,7 +27,6 @@ const render = (container, template, place) => {
 };
 
 // rendering elements
-
 const main = document.querySelector(`.main`);
 const header = document.querySelector(`.header`);
 const footer = document.querySelector(`.footer`);
@@ -59,40 +58,49 @@ render(films, createTopRatedFilmsListTemplate(), `beforeend`);
 render(films, createMostCommentedFilmsListTemplate(), `beforeend`);
 render(footer, createFooterStatisticTemplate(FILM_CARDS_COUNT), `beforeend`);
 
-// film details
-const filmCards = main.querySelectorAll(`.film-card`);
+// повесить на каждую карточку открытие попапа
+const addShowngPopupOnClick = (cardArray) => {
+  cardArray.forEach((it, i) => {
 
-filmCards.forEach((it, i) => {
+    it.addEventListener(`click`, () => {
+      render(footer, createFilmDetailsTemplate(filmsArray[i]), `afterend`);
 
-  it.addEventListener(`click`, () => {
-    render(footer, createFilmDetailsTemplate(filmsArray[i]), `afterend`);
+      const filmDetailsCloseButton = document.querySelector(`.film-details__close-btn`);
+      const filmDetails = document.querySelector(`.film-details`);
 
-    const filmDetailsCloseButton = document.querySelector(`.film-details__close-btn`);
-    const filmDetails = document.querySelector(`.film-details`);
-
-    closePopup(filmDetailsCloseButton, filmDetails);
+      closePopup(filmDetailsCloseButton, filmDetails);
+    });
   });
-});
+};
 
-// show more button
+let filmCards = main.querySelectorAll(`.film-card`);
+addShowngPopupOnClick(filmCards);
+
+// кнопка show more
 const button = main.querySelector(`.films-list__show-more`);
-button.addEventListener(`click`, () => {
 
+button.addEventListener(`click`, () => {
+  // показать карточки
   let previouseCardCount = showingCardsCount;
   showingCardsCount = showingCardsCount + FILM_CARDS_SHOWING_BY_BUTTON;
 
   filmsArray.slice(previouseCardCount, showingCardsCount).forEach((film) => {
     render(filmsListContainer, createFilmCardTemplate(film), `beforeend`);
   });
+  filmCards = main.querySelectorAll(`.film-card`);
+  addShowngPopupOnClick(filmCards);
 
+  // удалить кнопку при отрисовке всех карточек
   if (showingCardsCount >= filmsArray.length) {
     button.remove();
   }
 
+  // обновить счётчики в фильтре
   const filter = main.querySelector(`.main-navigation`);
   filter.remove();
 
   currentFilmsArray = filmsArray.slice(0, showingCardsCount);
   filtersArray = generateFilters(currentFilmsArray);
   render(main, createFilterTemplate(filtersArray), `afterBegin`);
+
 });

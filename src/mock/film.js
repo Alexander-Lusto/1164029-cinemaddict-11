@@ -173,7 +173,7 @@ const shuffleArray = (array) => {
 
 const getRandomArrayElements = (array, min, max) => {
 
-  const randomMax = getRandomIntegerNumber(min, max + 1);
+  const randomMax = getRandomIntegerNumber(min, max);
   const newArray = array.slice();
   shuffleArray(newArray);
   return newArray.slice(0, randomMax);
