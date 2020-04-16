@@ -4,7 +4,6 @@ export const closePopup = (btn, popup) => {
   });
 
   document.addEventListener(`keydown`, (evt) => {
-    evt.preventDefault();
     if (evt.keyCode === 27) {
       popup.remove();
     }

@@ -1,5 +1,5 @@
-const filterNames = [`All movies`, `Watchlist`, `History`, `Favorites`];
-const filterTegs = [`all`, `watchlist`, `history`, `favorites`];
+const FILTER_NAMES = [`All movies`, `Watchlist`, `History`, `Favorites`];
+const FILTER_ADDRESS = [`all`, `watchlist`, `history`, `favorites`];
 
 const calculateCount = (filterName, filmsArray) => {
   let count;
@@ -15,18 +15,18 @@ const calculateCount = (filterName, filmsArray) => {
       count = filmsArray.filter((it) => it.isInHistory).length;
       break;
     case `Favorites`:
-      count = filmsArray.filter((it) => it.isInHistory).length;
+      count = filmsArray.filter((it) => it.isInFavorites).length;
       break;
   }
   return count;
 };
 
 export const generateFilters = (filmsArray) => {
-  return filterNames.map((it, i) => {
+  return FILTER_NAMES.map((it, i) => {
     return {
       name: it,
-      teg: filterTegs[i],
-      count: calculateCount(filterNames[i], filmsArray),
+      address: FILTER_ADDRESS[i],
+      count: calculateCount(FILTER_NAMES[i], filmsArray),
     };
   });
 };

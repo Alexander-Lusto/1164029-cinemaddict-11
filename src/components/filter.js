@@ -15,13 +15,13 @@ export const createFilterTemplate = (filtersArray) => {
 const createFilterMarkup = (filtersArray) => {
 
   return filtersArray.map((filter) => {
-    const {teg, name, count} = filter;
+    const {address, name, count} = filter;
     return (
       `
-      <a href="#${teg}"
-         class="main-navigation__item ${teg === `all` ? `main-navigation__item--active` : ``}">
+      <a href="#${address}"
+         class="main-navigation__item ${name === `All movies` ? `main-navigation__item--active` : ``}">
          ${name}
-         ${teg === `all` ? `` : `<span class="main-navigation__item-count">${count}</span>`}
+         ${name === `All movies` ? `` : `<span class="main-navigation__item-count">${count}</span>`}
       </a>
       `
     );

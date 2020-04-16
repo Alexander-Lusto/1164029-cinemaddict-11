@@ -1,4 +1,5 @@
 import {MONTH_NAMES} from '../const.js';
+
 const filmNames = [
   `Достучаться до небес`,
   `Бойцовский клуб`,
@@ -136,6 +137,7 @@ const filmComments = [
     date: `2020/04/14 11:45`,
   },
 ];
+
 const filmGenres = [
   `Ужасы`,
   `Боевик`,
@@ -147,6 +149,47 @@ const filmGenres = [
   `Аниме`,
   `Драмма`,
   `Мелодрамма`,
+];
+
+const filmDirectors = [
+  `Steven Spielberg`,
+  `Martin Scorsese`,
+  `Alfred Hitchcock`,
+  `Stanley Kubrick`,
+  `Quentin Tarantino`,
+  `Orson Welles`,
+  `Woody Allen`,
+  `Clint Eastwood`,
+  `Robert Wide`,
+  `Christopher Nolan`,
+  `David Lynch`,
+  `Peter Jackson`,
+];
+
+const filmWriters = [
+  `Anne Wigton`,
+  `Heinz Herald`,
+  `Richard Weil`,
+  `Billy Wilder`,
+  `Ethan Coen and Joel Coen`,
+  `Robert Towne`,
+  `Francis Ford Coppola`,
+];
+
+const filmActors = [
+  `Jack Nicholson`,
+  `Tom Hardy`,
+  `Joaquin Phoenix`,
+  `Hugh Jackman`,
+  `Bradley Cooper`,
+  `Josh Brolin`,
+  `Mahershala Ali`,
+  `Robert Downey Jr.`,
+  `Leonardo DiCaprio`,
+  `Christian Bale`,
+  `Johnny Depp`,
+  `Brad Pitt`,
+  `Andjelina Joly`
 ];
 
 const filmAges = [`0+`, `6+`, `12+`, `16+`, `18+`];
@@ -179,12 +222,6 @@ const getRandomArrayElements = (array, min, max) => {
   return newArray.slice(0, randomMax);
 };
 
-const getMovieTime = () => {
-  const hours = getRandomIntegerNumber(1, 3);
-  const minutes = getRandomIntegerNumber(0, 60);
-  return `${hours}h ${minutes}m`;
-};
-
 const generateFilmCard = () => {
   return {
     name: getRandomArrayItem(filmNames),
@@ -193,16 +230,19 @@ const generateFilmCard = () => {
     comments: getRandomArrayElements(filmComments, 0, 5), // 0 - 5 комментариев
     rating: getRandomIntegerNumber(4, 10),
     year: getRandomIntegerNumber(1970, 2020),
-    duration: getMovieTime(),
+    duration: {
+      hours: getRandomIntegerNumber(1, 3),
+      minutes: getRandomIntegerNumber(0, 60),
+    },
     genres: getRandomArrayElements(filmGenres, 1, 3),
     isInFavorites: Math.random() > 0.5,
     isInWatchlist: Math.random() > 0.5,
     isInHistory: Math.random() > 0.5,
     additional: {
       age: getRandomArrayItem(filmAges),
-      director: `Anthony Mann`,
-      writers: `Anne Wigton, Heinz Herald, Richard Weil`,
-      actors: `Erich von Stroheim, Mary Beth Hughes, Dan Duryea`,
+      director: getRandomArrayItem(filmDirectors),
+      writers: getRandomArrayElements(filmWriters, 2, 2).join(`, `),
+      actors: getRandomArrayElements(filmActors, 2, 6).join(`, `),
       releaseDate: `${getRandomIntegerNumber(1, 30)} ${getRandomArrayItem(MONTH_NAMES)}`,
       country: `USA`,
     }
