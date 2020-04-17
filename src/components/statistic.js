@@ -54,7 +54,7 @@ const getStatisticInfo = (films) => {
   let filmDurationMinutes = 0;
   let genreRate = [];
 
-  for (let i = 0; i <= FILM_GENRES.length; i++) {
+  for (let i = 0; i < FILM_GENRES.length; i++) {
     const key = FILM_GENRES[i];
     const object = {
       [key]: filmsInHistory.reduce((sum, film) => sum.concat(film.genres), []).filter((genre) => genre === key).length
