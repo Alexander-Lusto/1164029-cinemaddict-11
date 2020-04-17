@@ -1,3 +1,5 @@
+import {FILM_GENRES} from '../mock/film.js';
+
 export const createStatisticTemplate = (films) => {
   const statistic = getStatisticInfo(films);
   const {watched, duration, topGenre} = statistic;
@@ -50,63 +52,25 @@ const getStatisticInfo = (films) => {
   const filmsInHistory = films.filter((it) => it.isInHistory);
   let filmDurationHours = 0;
   let filmDurationMinutes = 0;
+  let genreRate = [];
 
-  let genreRate = [
-    {'Ужасы': 0},
-    {'Боевик': 0},
-    {'Приключение': 0},
-    {'Мюзикл': 0},
-    {'Комедия': 0},
-    {'Триллер': 0},
-    {'Детектив': 0},
-    {'Аниме': 0},
-    {'Драмма': 0},
-    {'Мелодрамма': 0},
-  ];
+  for (let i = 0; i <= FILM_GENRES.length; i++) {
+    const key = FILM_GENRES[i];
+    const object = {
+      [key]: filmsInHistory.reduce((sum, film) => sum.concat(film.genres), []).filter((genre) => genre === key).length
+    };
+    genreRate.push(object);
+  }
+
+  genreRate = genreRate.sort((a, b) => Object.values(b) - Object.values(a));
 
   filmsInHistory.forEach((it) => {
     filmDurationHours += it.duration.hours;
     filmDurationMinutes += it.duration.minutes;
-
-    it.genres.forEach((genre) => {
-      switch (genre) {
-        case `Ужасы`:
-          genreRate[0][`Ужасы`] += 1;
-          break;
-        case `Боевик`:
-          genreRate[1][`Боевик`] += 1;
-          break;
-        case `Приключение`:
-          genreRate[2][`Приключение`] += 1;
-          break;
-        case `Мюзикл`:
-          genreRate[3][`Мюзикл`] += 1;
-          break;
-        case `Комедия`:
-          genreRate[4][`Комедия`] += 1;
-          break;
-        case `Триллер`:
-          genreRate[5][`Триллер`] += 1;
-          break;
-        case `Детектив`:
-          genreRate[6][`Детектив`] += 1;
-          break;
-        case `Аниме`:
-          genreRate[7][`Аниме`] += 1;
-          break;
-        case `Драмма`:
-          genreRate[8][`Драмма`] += 1;
-          break;
-        case `Мелодрамма`:
-          genreRate[9][`Мелодрамма`] += 1;
-          break;
-      }
-    });
   });
+
   filmDurationHours += filmDurationMinutes / 60;
   filmDurationMinutes = filmDurationMinutes % 60;
-
-  genreRate = genreRate.sort((a, b) => Object.values(b) - Object.values(a));
 
   return {
     watched: filmsInHistory.length,

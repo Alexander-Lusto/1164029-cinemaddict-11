@@ -1,6 +1,6 @@
 import {MONTH_NAMES} from '../const.js';
 
-const filmNames = [
+const FILM_NAMES = [
   `Достучаться до небес`,
   `Бойцовский клуб`,
   `Грязь`,
@@ -26,7 +26,7 @@ const filmNames = [
   `Мой сосед Тоторо`,
 ];
 
-const filmDescriptions = [
+const FILM_DESCRIPTIONS = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
   `Fusce tristique felis at fermentum pharetra.`,
@@ -39,7 +39,7 @@ const filmDescriptions = [
   `Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`,
 ];
 
-const filmPosters = [
+const FILM_POSTERS = [
   `./images/posters/made-for-each-other.png`,
   `./images/posters/popeye-meets-sinbad.png`,
   `./images/posters/sagebrush-trail.jpg`,
@@ -49,7 +49,7 @@ const filmPosters = [
   `./images/posters/the-man-with-the-golden-arm.jpg`,
 ];
 
-const filmComments = [
+const FILM_COMMENTS = [
   {
     emoji: `smile`,
     text: `10 из 10, Господи!`,
@@ -138,7 +138,7 @@ const filmComments = [
   },
 ];
 
-const filmGenres = [
+const FILM_GENRES = [
   `Ужасы`,
   `Боевик`,
   `Приключение`,
@@ -151,7 +151,7 @@ const filmGenres = [
   `Мелодрамма`,
 ];
 
-const filmDirectors = [
+const FILM_DIRECTORS = [
   `Steven Spielberg`,
   `Martin Scorsese`,
   `Alfred Hitchcock`,
@@ -166,7 +166,7 @@ const filmDirectors = [
   `Peter Jackson`,
 ];
 
-const filmWriters = [
+const FILM_WRITERS = [
   `Anne Wigton`,
   `Heinz Herald`,
   `Richard Weil`,
@@ -176,7 +176,7 @@ const filmWriters = [
   `Francis Ford Coppola`,
 ];
 
-const filmActors = [
+const FILM_ACTORS = [
   `Jack Nicholson`,
   `Tom Hardy`,
   `Joaquin Phoenix`,
@@ -192,7 +192,18 @@ const filmActors = [
   `Andjelina Joly`
 ];
 
-const filmAges = [`0+`, `6+`, `12+`, `16+`, `18+`];
+const FILM_COUNTRIES = [
+  `США`,
+  `Канада`,
+  `Россия`,
+  `Испания`,
+  `Италия`,
+  `Польша`,
+  `Беларусь`,
+  `Украина`,
+];
+
+const FILM_AGES = [`0+`, `6+`, `12+`, `16+`, `18+`];
 
 const getRandomArrayItem = (array) => {
   const randomIndex = getRandomIntegerNumber(0, array.length - 1);
@@ -224,27 +235,27 @@ const getRandomArrayElements = (array, min, max) => {
 
 const generateFilmCard = () => {
   return {
-    name: getRandomArrayItem(filmNames),
-    poster: getRandomArrayItem(filmPosters),
-    description: getRandomArrayElements(filmDescriptions, 1, 5).join(` `), // 1-5 строк
-    comments: getRandomArrayElements(filmComments, 0, 5), // 0 - 5 комментариев
+    name: getRandomArrayItem(FILM_NAMES),
+    poster: getRandomArrayItem(FILM_POSTERS),
+    description: getRandomArrayElements(FILM_DESCRIPTIONS, 1, 5).join(` `), // 1-5 строк
+    comments: getRandomArrayElements(FILM_COMMENTS, 0, 5), // 0 - 5 комментариев
     rating: getRandomIntegerNumber(4, 10),
     year: getRandomIntegerNumber(1970, 2020),
     duration: {
       hours: getRandomIntegerNumber(1, 3),
       minutes: getRandomIntegerNumber(0, 60),
     },
-    genres: getRandomArrayElements(filmGenres, 1, 3),
+    genres: getRandomArrayElements(FILM_GENRES, 1, 3),
     isInFavorites: Math.random() > 0.5,
     isInWatchlist: Math.random() > 0.5,
     isInHistory: Math.random() > 0.5,
     additional: {
-      age: getRandomArrayItem(filmAges),
-      director: getRandomArrayItem(filmDirectors),
-      writers: getRandomArrayElements(filmWriters, 2, 2).join(`, `),
-      actors: getRandomArrayElements(filmActors, 2, 6).join(`, `),
+      age: getRandomArrayItem(FILM_AGES),
+      director: getRandomArrayItem(FILM_DIRECTORS),
+      writers: getRandomArrayElements(FILM_WRITERS, 2, 2).join(`, `),
+      actors: getRandomArrayElements(FILM_ACTORS, 2, 6).join(`, `),
       releaseDate: `${getRandomIntegerNumber(1, 30)} ${getRandomArrayItem(MONTH_NAMES)}`,
-      country: `USA`,
+      country: getRandomArrayItem(FILM_COUNTRIES),
     }
   };
 };
@@ -252,3 +263,5 @@ const generateFilmCard = () => {
 export const generateFilmCards = (count) => {
   return new Array(count).fill(``).map(generateFilmCard);
 };
+
+export {FILM_GENRES};
