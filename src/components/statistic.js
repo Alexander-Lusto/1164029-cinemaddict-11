@@ -1,4 +1,8 @@
-export const createStatisticTemplate = () => {
+import {FILM_GENRES} from '../mock/film.js';
+
+export const createStatisticTemplate = (films) => {
+  const statistic = getStatisticInfo(films);
+  const {watched, duration, topGenre} = statistic;
   return (
     `<section class="statistic">
         <p class="statistic__rank">
@@ -29,17 +33,51 @@ export const createStatisticTemplate = () => {
         <ul class="statistic__text-list">
           <li class="statistic__text-item">
             <h4 class="statistic__item-title">You watched</h4>
-            <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+            <p class="statistic__item-text">${watched}<span class="statistic__item-description">movies</span></p>
           </li>
           <li class="statistic__text-item">
             <h4 class="statistic__item-title">Total duration</h4>
-            <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+            <p class="statistic__item-text">${duration.hours}<span class="statistic__item-description">h</span>${duration.minutes}<span class="statistic__item-description">m</span></p>
           </li>
           <li class="statistic__text-item">
             <h4 class="statistic__item-title">Top genre</h4>
-            <p class="statistic__item-text">Sci-Fi</p>
+            <p class="statistic__item-text">${topGenre}</p>
           </li>
         </ul>
       </section>`
   );
+};
+
+const getStatisticInfo = (films) => {
+  const filmsInHistory = films.filter((it) => it.isInHistory);
+  let filmDurationHours = 0;
+  let filmDurationMinutes = 0;
+  let genreRate = [];
+
+  for (let i = 0; i < FILM_GENRES.length; i++) {
+    const key = FILM_GENRES[i];
+    const object = {
+      [key]: filmsInHistory.reduce((sum, film) => sum.concat(film.genres), []).filter((genre) => genre === key).length
+    };
+    genreRate.push(object);
+  }
+
+  genreRate = genreRate.sort((a, b) => Object.values(b) - Object.values(a));
+
+  filmsInHistory.forEach((it) => {
+    filmDurationHours += it.duration.hours;
+    filmDurationMinutes += it.duration.minutes;
+  });
+
+  filmDurationHours += filmDurationMinutes / 60;
+  filmDurationMinutes = filmDurationMinutes % 60;
+
+  return {
+    watched: filmsInHistory.length,
+    duration: {
+      hours: Math.round(filmDurationHours),
+      minutes: filmDurationMinutes
+    },
+    topGenre: Object.keys(genreRate[0]),
+  };
 };
