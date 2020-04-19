@@ -1,6 +1,7 @@
 import {FILM_GENRES} from '../mock/film.js';
+import {createElement} from '../utils.js';
 
-export const createStatisticTemplate = (films) => {
+const createStatisticTemplate = (films) => {
   const statistic = getStatisticInfo(films);
   const {watched, duration, topGenre} = statistic;
   return (
@@ -81,3 +82,26 @@ const getStatisticInfo = (films) => {
     topGenre: Object.keys(genreRate[0]),
   };
 };
+
+export default class Statistic {
+  constructor(films) {
+    this._films = films;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createStatisticTemplate(this._films);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
