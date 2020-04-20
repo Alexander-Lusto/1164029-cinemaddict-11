@@ -13,7 +13,7 @@ export const MONTH_NAMES = [
   `December`,
 ];
 
-export const USER_TITLES = {
+export const UserTitles = {
   NOVICE: `Novice`,
   FAN: `Fan`,
   MOVIE_BUFF: `Movie Buff`,
