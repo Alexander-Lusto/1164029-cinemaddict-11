@@ -1,4 +1,4 @@
-import {USER_TITLES} from './const.js';
+import {UserTitles} from './const.js';
 
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);
@@ -28,11 +28,11 @@ export const getUserTitle = (films) => {
   const filmsInHistory = films.filter((it) => it.isInHistory).length;
 
   if (filmsInHistory >= 1 && filmsInHistory <= 10) {
-    return USER_TITLES.NOVICE;
+    return UserTitles.NOVICE;
   } else if (filmsInHistory >= 11 && filmsInHistory <= 20) {
-    return USER_TITLES.FAN;
+    return UserTitles.FAN;
   } else if (filmsInHistory >= 21) {
-    return USER_TITLES.MOVIE_BUFF;
+    return UserTitles.MOVIE_BUFF;
   } else {
     return ``;
   }
