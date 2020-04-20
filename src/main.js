@@ -16,7 +16,7 @@ import {generateFilters} from './mock/filter.js';
 import {RenderPosition, render} from './utils.js';
 
 
-const FILM_CARDS_COUNT = 40;
+const FILM_CARDS_COUNT = 20;
 const FILM_CARDS_SHOWING_ON_START = 5;
 const FILM_CARDS_SHOWING_BY_BUTTON = 5;
 

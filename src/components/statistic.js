@@ -1,16 +1,18 @@
 import {FILM_GENRES} from '../mock/film.js';
-import {createElement} from '../utils.js';
+import {createElement, getUserTitle} from '../utils.js';
 
 const createStatisticTemplate = (films) => {
   const statistic = getStatisticInfo(films);
   const {watched, duration, topGenre} = statistic;
+  const title = getUserTitle(films);
   return (
     `<section class="statistic">
+      ${title ? `
         <p class="statistic__rank">
           Your rank
           <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-          <span class="statistic__rank-label">Sci-Fighter</span>
-        </p>
+          <span class="statistic__rank-label">${title}</span>
+        </p>` : ``}
 
         <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
           <p class="statistic__filters-description">Show stats:</p>
