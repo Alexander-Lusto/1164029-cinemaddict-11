@@ -57,15 +57,16 @@ const getStatisticInfo = (films) => {
   let filmDurationMinutes = 0;
   let genreRate = [];
 
-  for (let i = 0; i < FILM_GENRES.length; i++) {
-    const key = FILM_GENRES[i];
-    const object = {
-      [key]: filmsInHistory.reduce((sum, film) => sum.concat(film.genres), []).filter((genre) => genre === key).length
-    };
-    genreRate.push(object);
+  if (filmsInHistory.length > 0) {
+    for (let i = 0; i < FILM_GENRES.length; i++) {
+      const key = FILM_GENRES[i];
+      const object = {
+        [key]: filmsInHistory.reduce((sum, film) => sum.concat(film.genres), []).filter((genre) => genre === key).length
+      };
+      genreRate.push(object);
+    }
+    genreRate = genreRate.sort((a, b) => Object.values(b) - Object.values(a));
   }
-
-  genreRate = genreRate.sort((a, b) => Object.values(b) - Object.values(a));
 
   filmsInHistory.forEach((it) => {
     filmDurationHours += it.duration.hours;
@@ -81,7 +82,7 @@ const getStatisticInfo = (films) => {
       hours: Math.round(filmDurationHours),
       minutes: filmDurationMinutes
     },
-    topGenre: Object.keys(genreRate[0]),
+    topGenre: filmsInHistory.length > 0 ? Object.keys(genreRate[0]) : ``,
   };
 };
 
