@@ -1,5 +1,6 @@
 import {FILM_GENRES} from '../mock/film.js';
-import {createElement, getUserTitle} from '../utils.js';
+import {getUserTitle} from '../utils.js';
+import AbstractComponent from './abstract-component.js';
 
 const createStatisticTemplate = (films) => {
   const statistic = getStatisticInfo(films);
@@ -86,25 +87,13 @@ const getStatisticInfo = (films) => {
   };
 };
 
-export default class Statistic {
+export default class Statistic extends AbstractComponent {
   constructor(films) {
+    super();
     this._films = films;
-    this._element = null;
   }
 
   getTemplate() {
     return createStatisticTemplate(this._films);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -14,133 +14,26 @@ import SortComponent from './components/sort.js';
 import FooterStatisticComponent from './components/footer-statistic.js';
 import {generateFilmCards} from './mock/film.js';
 import {generateFilters} from './mock/filter.js';
-import {RenderPosition, render} from './utils.js';
+import {RenderPosition, render, remove, removeChild, appendChild} from './utils/render.js';
+import PageControllerComponent from './controllers/page-control.js';
 
+const FILM_CARDS_COUNT = 25;
 
-const FILM_CARDS_COUNT = 0;
-const FILM_CARDS_SHOWING_ON_START = 5;
-const FILM_CARDS_SHOWING_BY_BUTTON = 5;
-
-const EXTRA_FILM_CARDS_COUNT = 2;
-let showingCardsCount = FILM_CARDS_SHOWING_ON_START;
-
-// rendering elements
-const body = document.querySelector(`body`);
 const main = document.querySelector(`.main`);
 const header = document.querySelector(`.header`);
 const footer = document.querySelector(`.footer`);
 
 const filmsArray = generateFilmCards(FILM_CARDS_COUNT);
-let currentFilmsArray = filmsArray.slice(0, FILM_CARDS_SHOWING_ON_START);
 let filtersArray = generateFilters(filmsArray);
 
-const renderFilm = (container, film) => {
+render(header, new UserTitleComponent(filmsArray), RenderPosition.BEFOREEND);
+render(main, new FilterComponent(filtersArray), RenderPosition.BEFOREEND);
+render(main, new SortComponent(filtersArray), RenderPosition.BEFOREEND);
+render(main, new StatisticComponent(filmsArray), RenderPosition.BEFOREEND);
+render(main, new FilmsComponent(), RenderPosition.BEFOREEND);
 
-  const filmCard = new FilmCardComponent(film).getElement();
-  const filmCardPoster = filmCard.querySelector(`.film-card__poster`);
-  const filmCardTitle = filmCard.querySelector(`.film-card__title`);
-  const filmCardComments = filmCard.querySelector(`.film-card__comments`);
+const pageControllerComponent = new PageControllerComponent();
+pageControllerComponent.render(filmsArray);
 
-  const filmDetails = new FilmDetailsComponent(film).getElement();
-  const filmDetailsCloseButton = filmDetails.querySelector(`.film-details__close-btn`);
-
-  const ClosePopupOnEscPress = (evt) => {
-    if (evt.keyCode === 27) {
-      body.removeChild(filmDetails);
-    }
-    document.removeEventListener(`keydown`, ClosePopupOnEscPress);
-  };
-
-  const ShowPopupOnClick = () => {
-    body.appendChild(filmDetails);
-    document.addEventListener(`keydown`, ClosePopupOnEscPress);
-  };
-
-  const ClosePopupOnClick = () => {
-    body.removeChild(filmDetails);
-    document.removeEventListener(`keydown`, ClosePopupOnEscPress);
-  };
-
-  filmCardPoster.addEventListener(`click`, ShowPopupOnClick);
-  filmCardTitle.addEventListener(`click`, ShowPopupOnClick);
-  filmCardComments.addEventListener(`click`, ShowPopupOnClick);
-
-  filmDetailsCloseButton.addEventListener(`click`, ClosePopupOnClick);
-
-  render(container, filmCard, RenderPosition.BEFOREEND);
-};
-
-const renderFilms = () => {
-  const films = document.querySelector(`.films`);
-  render(films, new FilmsListComponent().getElement(), RenderPosition.BEFOREEND);
-
-  const filmsList = document.querySelector(`.films-list`);
-  render(filmsList, new FilmsListContainerComponent().getElement(), RenderPosition.BEFOREEND);
-
-  const filmsListContainer = document.querySelector(`.films-list__container`); // NoFilmsComponent
-
-  if (filmsArray.length === 0) {
-    render(filmsListContainer, new NoFilmsComponent().getElement(), RenderPosition.BEFOREEND);
-    return;
-  }
-
-  currentFilmsArray.forEach((film) => {
-    renderFilm(filmsListContainer, film);
-  });
-
-  // кнопка show more
-  render(filmsList, new ShowMoreButtonComponent().getElement(), RenderPosition.BEFOREEND);
-  const button = main.querySelector(`.films-list__show-more`);
-
-  button.addEventListener(`click`, () => {
-    // показать карточки
-    let previouseCardCount = showingCardsCount;
-    showingCardsCount = showingCardsCount + FILM_CARDS_SHOWING_BY_BUTTON;
-
-    filmsArray.slice(previouseCardCount, showingCardsCount).forEach((film) => {
-      renderFilm(filmsListContainer, film);
-    });
-    // удалить кнопку при отрисовке всех карточек
-    if (showingCardsCount >= filmsArray.length) {
-      button.remove();
-    }
-  });
-
-
-  // additional task
-
-  // top rated
-  const getTopRatedFilms = (array) => {
-    return array.slice().sort((a, b) => b.rating - a.rating);
-  };
-  const filmsSortedByRating = getTopRatedFilms(filmsArray);
-
-  render(films, new TopRatedFilmsListComponent().getElement(), RenderPosition.BEFOREEND);
-  const topRatedFilmsListContainer = document.querySelector(`.films-list--extra .films-list__container`);
-
-  for (let i = 0; i < EXTRA_FILM_CARDS_COUNT; i++) {
-    renderFilm(topRatedFilmsListContainer, filmsSortedByRating[i]);
-  }
-
-  // most commented
-  const getTopCommentedFilms = (array) => {
-    return array.slice().sort((a, b) => b.comments.length - a.comments.length);
-  };
-  const filmsSortedByComments = getTopCommentedFilms(filmsArray);
-
-  render(films, new MostCommentedFilmsListComponent().getElement(), RenderPosition.BEFOREEND);
-  const mostCommentedFilmsListContainer = document.querySelector(`.films-list--extra:last-child .films-list__container`);
-
-  for (let i = 0; i < EXTRA_FILM_CARDS_COUNT; i++) {
-    renderFilm(mostCommentedFilmsListContainer, filmsSortedByComments[i]);
-  }
-};
-
-render(header, new UserTitleComponent(filmsArray).getElement(), RenderPosition.BEFOREEND);
-render(main, new FilterComponent(filtersArray).getElement(), RenderPosition.BEFOREEND);
-render(main, new SortComponent(filtersArray).getElement(), RenderPosition.BEFOREEND);
-render(main, new StatisticComponent(filmsArray).getElement(), RenderPosition.BEFOREEND);
-render(main, new FilmsComponent().getElement(), RenderPosition.BEFOREEND);
-renderFilms();
-render(footer, new FooterStatisticComponent(FILM_CARDS_COUNT).getElement(), RenderPosition.BEFOREEND);
+render(footer, new FooterStatisticComponent(FILM_CARDS_COUNT), RenderPosition.BEFOREEND);
 
