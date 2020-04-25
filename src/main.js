@@ -1,8 +1,6 @@
 import UserTitleComponent from './components/user-title.js';
 import FilterComponent from './components/filter.js';
-import StatisticComponent from './components/statistic.js';
-import FilmsComponent from './components/films.js';
-import SortComponent from './components/sort.js';
+/* import StatisticComponent from './components/statistic.js'; */
 import FooterStatisticComponent from './components/footer-statistic.js';
 import {generateFilmCards} from './mock/film.js';
 import {generateFilters} from './mock/filter.js';
@@ -20,9 +18,7 @@ let filtersArray = generateFilters(filmsArray);
 
 render(header, new UserTitleComponent(filmsArray), RenderPosition.BEFOREEND);
 render(main, new FilterComponent(filtersArray), RenderPosition.BEFOREEND);
-render(main, new SortComponent(filtersArray), RenderPosition.BEFOREEND);
-render(main, new StatisticComponent(filmsArray), RenderPosition.BEFOREEND);
-render(main, new FilmsComponent(), RenderPosition.BEFOREEND);
+/* render(main, new StatisticComponent(filmsArray), RenderPosition.BEFOREBEGIN); */
 
 const pageControllerComponent = new PageControllerComponent();
 pageControllerComponent.render(filmsArray);
