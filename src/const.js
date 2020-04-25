@@ -18,3 +18,9 @@ export const UserTitles = {
   FAN: `Fan`,
   MOVIE_BUFF: `Movie Buff`,
 };
+
+export const SortType = {
+  DEFAULT: `Sort by default`,
+  DATE: `Sort by date`,
+  RATING: `Sort by rating`,
+};
