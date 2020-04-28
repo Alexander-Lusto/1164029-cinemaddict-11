@@ -24,3 +24,5 @@ export const SortType = {
   DATE: `Sort by date`,
   RATING: `Sort by rating`,
 };
+
+export const BODY = document.querySelector(`body`);
