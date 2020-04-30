@@ -65,7 +65,6 @@ export default class MovieController {
     const oldFilmCardComponent = this._filmCardComponent;
     const oldFilmDetailsComponent = this._filmDetailsComponent;
 
-
     this._filmCardComponent = new FilmCardComponent(film);
     this._filmDetailsComponent = new FilmDetailsComponent(film);
     this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent(film);

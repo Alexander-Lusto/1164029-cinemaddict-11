@@ -11,7 +11,7 @@ const createEmojiImageTemplate = (emoji) => {
   return `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">`;
 };
 
-const createFilmDetailsCommentSectionTemplate = (emoji = ``, emojiInp = ``) => {
+const createFilmDetailsCommentSectionTemplate = (comment, emoji, emojiInp) => {
 
   const emojiSmileChecked = (emojiInp === EmojiAddressArray.SMILE) ? `checked` : ``;
   const emojiAngryChecked = (emojiInp === EmojiAddressArray.ANGRY) ? `checked` : ``;
@@ -23,7 +23,8 @@ const createFilmDetailsCommentSectionTemplate = (emoji = ``, emojiInp = ``) => {
         <div for="add-emoji" class="film-details__add-emoji-label">${emoji ? emoji : ``}</div>
 
         <label class="film-details__comment-label">
-          <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+          <textarea class="film-details__comment-input"
+          placeholder="Select reaction below and write comment here" name="comment">${comment ? comment : ``}</textarea>
         </label>
 
         <div class="film-details__emoji-list">
@@ -65,7 +66,7 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
   reset() {
     this._emoji = null;
     this._emojiInp = null;
-    this._textarea = null;
+    this._comment = null;
 
     this.rerender();
   }
@@ -112,10 +113,15 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
       this._emojiInp = EmojiAddressArray.ANGRY;
       this.rerender();
     });
+
+    const textarea = this.getElement().querySelector(`.film-details__comment-input`);
+    textarea.addEventListener(`input`, () => {
+      this._comment = textarea.value;
+    });
   }
 
   getTemplate() {
-    return createFilmDetailsCommentSectionTemplate(this._emoji, this._emojiInp);
+    return createFilmDetailsCommentSectionTemplate(this._comment, this._emoji, this._emojiInp);
   }
 }
 
