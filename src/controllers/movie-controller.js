@@ -8,7 +8,7 @@ import FilmsListContainerComponent from '../components/films-list-container.js';
 import NoFilmsComponent from '../components/no-films.js';
 import MostCommentedFilmsListComponent from '../components/most-commented-films-list.js';
 import TopRatedFilmsListComponent from '../components/top-rated-films-list.js';
-import {RenderPosition, render, remove, removeChild, appendChild} from '../utils/render.js';
+import {RenderPosition, render, remove, removeChild, appendChild, replace} from '../utils/render.js';
 import FilmDetailsNewCommentComponent from '../components/film-details-new-comment.js';
 import {SortType, BODY} from "../const.js";
 
@@ -28,6 +28,7 @@ export default class MovieController {
     this._filmCardComponent = null;
     this._filmDetailsComponent = null;
     this._filmDetailsNewCommentComponent = null;
+    this._newCommentContainer = null;
 
     this._сlosePopupOnEscPress = this._сlosePopupOnEscPress.bind(this);
     this._showPopupOnClick = this._showPopupOnClick.bind(this);
@@ -61,9 +62,15 @@ export default class MovieController {
   }
 
   render(film) {
+    const oldFilmCardComponent = this._filmCardComponent;
+    const oldFilmDetailsComponent = this._filmDetailsComponent;
+
+
     this._filmCardComponent = new FilmCardComponent(film);
     this._filmDetailsComponent = new FilmDetailsComponent(film);
     this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent(film);
+
+    this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
 
     this._filmCardComponent.setClickHandler(this._showPopupOnClick);
     this._filmDetailsComponent.setClickHandler(this._closePopupOnClick);
@@ -116,7 +123,13 @@ export default class MovieController {
       this._onDataChange(this, oldFilm, newFilm);
     });
 
-    render(this._container, this._filmCardComponent, RenderPosition.BEFOREEND);
+    if (oldFilmCardComponent && oldFilmDetailsComponent) {
+      replace(this._filmCardComponent, oldFilmCardComponent);
+      replace(this._filmDetailsComponent, oldFilmDetailsComponent);
+      appendChild(this._newCommentContainer, this._filmDetailsNewCommentComponent);
+    } else {
+      render(this._container, this._filmCardComponent, RenderPosition.BEFOREEND);
+    }
   }
 
   _closePopup() {

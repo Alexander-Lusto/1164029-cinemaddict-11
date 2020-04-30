@@ -1,16 +1,5 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 
-const EmojiAddressArray = {
-  SMILE: `smile`,
-  ANGRY: `angry`,
-  SLEEPING: `sleeping`,
-  PUKE: `puke`,
-};
-
-const createEmojiImageTemplate = (emoji) => {
-  return `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">`;
-};
-
 const createCommentsMarkup = (comments) => {
   return comments.map((comment) => {
     return (
@@ -43,17 +32,12 @@ const createGenresMarkup = (genres) => {
   }).join(`\n`);
 };
 
-const createFilmDetailsTemplate = (film, emoji = ``, emojiInp = ``) => {
-  const {name, poster, description, comments, rating, year, duration, genres} = film;
+const createFilmDetailsTemplate = (film) => {
+  const {name, poster, description, comments, rating, year, duration, genres, isInWatchlist, isInHistory, isInFavorites} = film;
   const {age, director, writers, actors, releaseDate, country} = film.additional;
 
   const commentsMarkup = createCommentsMarkup(comments);
   const genresMarkup = createGenresMarkup(genres);
-
-  const emojiSmileChecked = (emojiInp === EmojiAddressArray.SMILE) ? `checked` : ``;
-  const emojiAngryChecked = (emojiInp === EmojiAddressArray.ANGRY) ? `checked` : ``;
-  const emojiPukeChecked = (emojiInp === EmojiAddressArray.PUKE) ? `checked` : ``;
-  const emojiSleepingChecked = (emojiInp === EmojiAddressArray.SLEEPING) ? `checked` : ``;
 
   return (
     `<section class="film-details">
@@ -121,13 +105,13 @@ const createFilmDetailsTemplate = (film, emoji = ``, emojiInp = ``) => {
           </div>
 
           <section class="film-details__controls">
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${isInWatchlist ? `checked` : ``}>
             <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isInHistory ? `checked` : ``}>
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isInFavorites ? `checked` : ``}>
             <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
           </section>
         </div>

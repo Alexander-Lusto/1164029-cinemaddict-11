@@ -57,6 +57,7 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
 
     this._emoji = null;
     this._emojiInp = null;
+    this._textarea = null;
 
     this._subscribeOnEvents();
   }
@@ -64,6 +65,7 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
   reset() {
     this._emoji = null;
     this._emojiInp = null;
+    this._textarea = null;
 
     this.rerender();
   }
