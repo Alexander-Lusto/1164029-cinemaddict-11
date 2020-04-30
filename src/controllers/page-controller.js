@@ -1,14 +1,12 @@
 import FilmsComponent from '../components/films.js';
 import SortComponent from '../components/sort.js';
-import FilmCardComponent from '../components/film-card.js';
 import ShowMoreButtonComponent from '../components/show-more-button.js';
-import FilmDetailsComponent from '../components/film-details.js';
 import FilmsListComponent from '../components/films-list.js';
 import FilmsListContainerComponent from '../components/films-list-container.js';
 import NoFilmsComponent from '../components/no-films.js';
 import MostCommentedFilmsListComponent from '../components/most-commented-films-list.js';
 import TopRatedFilmsListComponent from '../components/top-rated-films-list.js';
-import {RenderPosition, render, remove, removeChild, appendChild} from '../utils/render.js';
+import {RenderPosition, render, remove} from '../utils/render.js';
 import {SortType} from "../const.js";
 import MovieController from './movie-controller.js';
 
@@ -16,8 +14,6 @@ const FILM_CARDS_SHOWING_ON_START = 5;
 const FILM_CARDS_SHOWING_BY_BUTTON = 5;
 
 const EXTRA_FILM_CARDS_COUNT = 2;
-
-const body = document.querySelector(`body`);
 const main = document.querySelector(`.main`);
 
 const getSortedFilms = (films, type, from, to) => {
@@ -133,8 +129,6 @@ export default class PageController {
     newFilms = renderFilms(topRatedFilmsListContainer, filmsSortedByRating.slice(0, EXTRA_FILM_CARDS_COUNT), this._onDataChange, this._onViewChange);
     this._showedFilmsControllers = this._showedFilmsControllers.concat(newFilms);
 
-
-
     // most commented
     const getTopCommentedFilms = (array) => {
       return array.slice().sort((a, b) => b.comments.length - a.comments.length);
@@ -146,7 +140,6 @@ export default class PageController {
 
     newFilms = renderFilms(mostCommentedFilmsListContainer, filmsSortedByComments.slice(0, EXTRA_FILM_CARDS_COUNT), this._onDataChange, this._onViewChange);
     this._showedFilmsControllers = this._showedFilmsControllers.concat(newFilms);
-    console.log(this._showedFilmsControllers);
   }
 
   _onDataChange(movieController, oldData, newData) {

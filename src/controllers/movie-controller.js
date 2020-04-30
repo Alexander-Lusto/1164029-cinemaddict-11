@@ -1,16 +1,8 @@
-import FilmsComponent from '../components/films.js';
-import SortComponent from '../components/sort.js';
 import FilmCardComponent from '../components/film-card.js';
-import ShowMoreButtonComponent from '../components/show-more-button.js';
 import FilmDetailsComponent from '../components/film-details.js';
-import FilmsListComponent from '..//components/films-list.js';
-import FilmsListContainerComponent from '../components/films-list-container.js';
-import NoFilmsComponent from '../components/no-films.js';
-import MostCommentedFilmsListComponent from '../components/most-commented-films-list.js';
-import TopRatedFilmsListComponent from '../components/top-rated-films-list.js';
-import {RenderPosition, render, remove, removeChild, appendChild, replace} from '../utils/render.js';
+import {RenderPosition, render, removeChild, appendChild, replace} from '../utils/render.js';
 import FilmDetailsNewCommentComponent from '../components/film-details-new-comment.js';
-import {SortType, BODY} from "../const.js";
+import {BODY} from "../const.js";
 
 const Mode = {
   CLOSED: `closed`,
@@ -38,8 +30,6 @@ export default class MovieController {
   _сlosePopupOnEscPress(evt) {
     if (evt.keyCode === 27) {
       this._onViewChange();
-
-      console.log(this._mode);
     }
   }
 
@@ -51,14 +41,10 @@ export default class MovieController {
     appendChild(newCommentContainer, this._filmDetailsNewCommentComponent);
     appendChild(BODY, this._filmDetailsComponent);
     document.addEventListener(`keydown`, this._сlosePopupOnEscPress);
-
-    console.log(this._mode);
   }
 
   _closePopupOnClick() {
     this._onViewChange();
-
-    console.log(this._mode);
   }
 
   render(film) {
@@ -136,8 +122,6 @@ export default class MovieController {
     this._filmDetailsNewCommentComponent.reset();
     removeChild(this._filmDetailsComponent);
     document.removeEventListener(`keydown`, this._сlosePopupOnEscPress);
-
-    console.log(this._mode);
   }
 
   setDefaultView() {
