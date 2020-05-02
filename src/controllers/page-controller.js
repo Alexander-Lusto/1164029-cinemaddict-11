@@ -44,7 +44,6 @@ const renderFilms = (filmsListContainer, films, onDataChange, onViewChange) => {
   });
 };
 
-
 export default class PageController {
   constructor(container) {
     this._container = container;
