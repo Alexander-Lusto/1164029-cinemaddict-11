@@ -5,7 +5,7 @@ import FooterStatisticComponent from './components/footer-statistic.js';
 import {generateFilmCards} from './mock/film.js';
 import {generateFilters} from './mock/filter.js';
 import {RenderPosition, render} from './utils/render.js';
-import PageControllerComponent from './controllers/page-control.js';
+import PageControllerComponent from './controllers/page-controller.js';
 
 const FILM_CARDS_COUNT = 25;
 
