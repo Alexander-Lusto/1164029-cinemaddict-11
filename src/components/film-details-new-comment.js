@@ -1,11 +1,11 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 
-const EmojiAddressArray = {
-  SMILE: `smile`,
-  ANGRY: `angry`,
-  SLEEPING: `sleeping`,
-  PUKE: `puke`,
-};
+const EmojiAddressArray = [
+  {SMILE: `smile`},
+  {SLEEPING: `sleeping`},
+  {PUKE: `puke`},
+  {ANGRY: `angry`},
+];
 
 const createEmojiImageTemplate = (emoji) => {
   return `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">`;
@@ -90,29 +90,15 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
 
   _subscribeOnEvents() {
 
-    this.getElement().querySelector(`input#emoji-smile`).addEventListener(`change`, () => {
-      this._emoji = createEmojiImageTemplate(EmojiAddressArray.SMILE);
-      this._emojiInp = EmojiAddressArray.SMILE;
-      this.rerender();
-    });
+    const emojiArray = this.getElement().querySelectorAll(`input`);
 
-    this.getElement().querySelector(`input#emoji-sleeping`).addEventListener(`change`, () => {
-      this._emoji = createEmojiImageTemplate(EmojiAddressArray.SLEEPING);
-      this._emojiInp = EmojiAddressArray.SLEEPING;
-      this.rerender();
-    });
-
-    this.getElement().querySelector(`input#emoji-puke`).addEventListener(`change`, () => {
-      this._emoji = createEmojiImageTemplate(EmojiAddressArray.PUKE);
-      this._emojiInp = EmojiAddressArray.PUKE;
-      this.rerender();
-    });
-
-    this.getElement().querySelector(`input#emoji-angry`).addEventListener(`change`, () => {
-      this._emoji = createEmojiImageTemplate(EmojiAddressArray.ANGRY);
-      this._emojiInp = EmojiAddressArray.ANGRY;
-      this.rerender();
-    });
+    for (let i = 0; i < emojiArray.length; i++) {
+      emojiArray[i].addEventListener(`change`, () => {
+        this._emoji = createEmojiImageTemplate(Object.values(EmojiAddressArray[i]));
+        this._emojiInp = Object.values(EmojiAddressArray[i]);
+        this.rerender();
+      });
+    }
 
     const textarea = this.getElement().querySelector(`.film-details__comment-input`);
     textarea.addEventListener(`input`, () => {

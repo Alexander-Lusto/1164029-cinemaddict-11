@@ -150,7 +150,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     input.addEventListener(`change`, callback);
   }
 
-  setAlreadyWatchedButtonhandler(callback) {
+  setAlreadyWatchedButtonHandler(callback) {
     const input = this.getElement().querySelector(`input[name="watched"]`);
 
     input.addEventListener(`change`, callback);

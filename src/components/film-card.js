@@ -1,7 +1,7 @@
 import AbstractComponent from './abstract-component.js';
 
 const createFilmCardTemplate = (film) => {
-  const {name, poster, description, comments, rating, year, duration, genres} = film;
+  const {name, poster, description, comments, rating, year, duration, genres, isInWatchlist, isInHistory, isInFavorites} = film;
   return (
     `<article class="film-card">
         <h3 class="film-card__title">${name}</h3>
@@ -15,9 +15,26 @@ const createFilmCardTemplate = (film) => {
         <p class="film-card__description">${description}</p>
         <a class="film-card__comments">${comments ? comments.length : `0`} comments</a>
         <form class="film-card__controls">
-          <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist">Add to watchlist</button>
-          <button class="film-card__controls-item button film-card__controls-item--mark-as-watched">Mark as watched</button>
-          <button class="film-card__controls-item button film-card__controls-item--favorite">Mark as favorite</button>
+          <button
+            class="film-card__controls-item button film-card__controls-item--add-to-watchlist
+            ${isInWatchlist ? `film-card__controls-item--active` : ``}"
+          >
+            Add to watchlist
+          </button>
+
+          <button
+            class="film-card__controls-item button film-card__controls-item--mark-as-watched
+            ${isInHistory ? `film-card__controls-item--active` : ``}"
+          >
+            Mark as watched
+          </button>
+
+          <button
+            class="film-card__controls-item button film-card__controls-item--favorite
+            ${isInFavorites ? `film-card__controls-item--active` : ``}"
+          >
+            Mark as favorite
+          </button>
         </form>
       </article>`
   );

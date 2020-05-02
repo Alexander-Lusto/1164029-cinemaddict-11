@@ -119,7 +119,7 @@ export default class PageController {
 
     // top rated
     const getTopRatedFilms = (array) => {
-      return array.slice().sort((a, b) => b.rating - a.rating);
+      return array.sort((a, b) => b.rating - a.rating);
     };
     const filmsSortedByRating = getTopRatedFilms(filmsArray);
 
@@ -131,7 +131,7 @@ export default class PageController {
 
     // most commented
     const getTopCommentedFilms = (array) => {
-      return array.slice().sort((a, b) => b.comments.length - a.comments.length);
+      return array.sort((a, b) => b.comments.length - a.comments.length);
     };
     const filmsSortedByComments = getTopCommentedFilms(filmsArray);
 

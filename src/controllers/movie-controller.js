@@ -65,7 +65,6 @@ export default class MovieController {
 
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInWatchlist: !film.isInWatchlist});
-
       this._onDataChange(this, oldFilm, newFilm);
     });
 
@@ -94,7 +93,7 @@ export default class MovieController {
       this._onDataChange(this, oldFilm, newFilm);
     });
 
-    this._filmDetailsComponent.setAlreadyWatchedButtonhandler(() => {
+    this._filmDetailsComponent.setAlreadyWatchedButtonHandler(() => {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInHistory: !film.isInHistory});
 
