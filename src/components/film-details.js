@@ -1,4 +1,5 @@
 import AbstractSmartComponent from "./abstract-smart-component";
+import moment from 'moment';
 
 const createCommentsMarkup = (comments) => {
   return comments.map((comment) => {
@@ -13,7 +14,7 @@ const createCommentsMarkup = (comments) => {
                 <p class="film-details__comment-text">${comment.text}</p>
                 <p class="film-details__comment-info">
                   <span class="film-details__comment-author">${comment.author}</span>
-                  <span class="film-details__comment-day">${comment.date}</span>
+                  <span class="film-details__comment-day">${moment(comment.date).format(`YYYY/MM/DD hh:mm`)}</span>
                   <button class="film-details__comment-delete">Delete</button>
                 </p>
               </div>
@@ -33,8 +34,8 @@ const createGenresMarkup = (genres) => {
 };
 
 const createFilmDetailsTemplate = (film) => {
-  const {name, poster, description, comments, rating, year, duration, genres, isInWatchlist, isInHistory, isInFavorites} = film;
-  const {age, director, writers, actors, releaseDate, country} = film.additional;
+  const {name, poster, description, comments, rating, releaseDate, duration, genres, isInWatchlist, isInHistory, isInFavorites} = film;
+  const {age, director, writers, actors, country} = film.additional;
 
   const commentsMarkup = createCommentsMarkup(comments);
   const genresMarkup = createGenresMarkup(genres);
@@ -80,7 +81,7 @@ const createFilmDetailsTemplate = (film) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${releaseDate} ${year}</td>
+                  <td class="film-details__cell">${moment(releaseDate).format(`DD MMM YYYY`)}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>

@@ -1,4 +1,4 @@
-import {MONTH_NAMES} from '../const.js';
+import {getRandomDate, getRandomArrayElements, getRandomArrayItem, getRandomIntegerNumber} from '../utils.js';
 
 const FILM_NAMES = [
   `Достучаться до небес`,
@@ -54,37 +54,37 @@ const FILM_COMMENTS = [
     emoji: `smile`,
     text: `10 из 10, Господи!`,
     author: `Антон Логвинов`,
-    date: `2019/12/31 23:59`,
+    date: getRandomDate(),
   },
   {
     emoji: `angry`,
     text: `Зачем я потратил на это время???!`,
     author: `Ilya_BusinessMan2006`,
-    date: `2020/01/3 06:59`,
+    date: getRandomDate(),
   },
   {
     emoji: `puke`,
     text: `Актёры ужасные, режиссёрская работа отвратительная, саундтрек хуже некуда, сюжета нет. Однозначно рекомендую!`,
     author: `Movie Maker`,
-    date: `2020/02/03 22:10`,
+    date: getRandomDate(),
   },
   {
     emoji: `sleeping`,
     text: `Фильм хороший, но я заснул...`,
     author: `Sleep Walker`,
-    date: `2020/01/09 00:35`,
+    date: getRandomDate(2015, 2020),
   },
   {
     emoji: `smile`,
     text: `Под пивко сойдёт!`,
     author: `Юрий Хованский`,
-    date: `2020/03/25 00:48`,
+    date: getRandomDate(2015, 2020),
   },
   {
     emoji: `angry`,
     text: `У меня только два вопроса идиотам, сделавшим этот фильм: что они курили и чем они кололись?`,
     author: `Мэдисон`,
-    date: `2020/03/10 23:12`,
+    date: getRandomDate(2015, 2020),
   },
   {
     emoji: `puke`,
@@ -92,49 +92,49 @@ const FILM_COMMENTS = [
       он по жизни недоволен, как будто месячные постоянно». Нет, мне много чего нравится, на самом деле. Мне много чего нравится,
       например, азиатки. Так что не надо так про меня говорить, я хороший.`,
     author: `Мэдисон`,
-    date: `2020/03/10 23:12`,
+    date: getRandomDate(2015, 2020),
   },
   {
     emoji: `angry`,
     text: `Да разве это кино?? Смотрите лучше фильмы со мной`,
     author: `Джейсон Стэтхэм`,
-    date: `2020/03/15 15:49`,
+    date: getRandomDate(2015, 2020),
   },
   {
     emoji: `smile`,
     text: `It's so bueatiful... I'm crying.`,
     author: `julia`,
-    date: `2020/04/14 17:22`,
+    date: getRandomDate(2015, 2020),
   },
   {
     emoji: `smile`,
     text: `Годнота, всем рекомендую.`,
     author: `Хантухова Лейла`,
-    date: `2020/04/07 12:00`,
+    date: getRandomDate(2015, 2020),
   },
   {
     emoji: `angry`,
     text: `Привет, это Навальный!`,
     author: `Алексей Навальный`,
-    date: `2020/04/13 12:00`,
+    date: getRandomDate(2015, 2020),
   },
   {
     emoji: `sleeping`,
     text: `I tried so hard and got so far, But in the end......    I was falling asleep :( `,
     author: `JustAnotherOneInternetUser`,
-    date: `2020/04/07 09:45`,
+    date: getRandomDate(2015, 2020),
   },
   {
     emoji: `puke`,
     text: `Фильм атстой! омерикосы снимать ни умеют, сморите лудше руское кино! `,
     author: `Коммунист`,
-    date: `2020/03/29 22:13`,
+    date: getRandomDate(2015, 2020),
   },
   {
     emoji: `angry`,
     text: `Моей жене не понравилось, поэтому фильм плохой!`,
     author: `ne_podkobluchnik_97`,
-    date: `2020/04/14 11:45`,
+    date: getRandomDate(2015, 2020),
   },
 ];
 
@@ -205,34 +205,6 @@ const FILM_COUNTRIES = [
 
 const FILM_AGES = [`0+`, `6+`, `12+`, `16+`, `18+`];
 
-const getRandomArrayItem = (array) => {
-  const randomIndex = getRandomIntegerNumber(0, array.length - 1);
-
-  return array[randomIndex];
-};
-
-const getRandomIntegerNumber = (min, max) => {
-  return min + Math.round(Math.random() * (max - min));
-};
-
-const shuffleArray = (array) => {
-
-  for (let i = array.length - 1; i > 0; i--) {
-    let j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-
-  return array;
-};
-
-const getRandomArrayElements = (array, min, max) => {
-
-  const randomMax = getRandomIntegerNumber(min, max);
-  const newArray = array.slice();
-  shuffleArray(newArray);
-  return newArray.slice(0, randomMax);
-};
-
 const generateFilmCard = () => {
   return {
     name: getRandomArrayItem(FILM_NAMES),
@@ -240,11 +212,8 @@ const generateFilmCard = () => {
     description: getRandomArrayElements(FILM_DESCRIPTIONS, 1, 5).join(` `), // 1-5 строк
     comments: getRandomArrayElements(FILM_COMMENTS, 0, 5), // 0 - 5 комментариев
     rating: getRandomIntegerNumber(4, 10),
-    year: getRandomIntegerNumber(1990, 2020),
-    duration: {
-      hours: getRandomIntegerNumber(1, 3),
-      minutes: getRandomIntegerNumber(0, 60),
-    },
+    releaseDate: getRandomDate(1970, 2020), // getRandomIntegerNumber(1990, 2020),
+    duration: getRandomIntegerNumber(70, 180),
     genres: getRandomArrayElements(FILM_GENRES, 1, 3),
     isInFavorites: Math.random() > 0.5,
     isInWatchlist: Math.random() > 0.5,
@@ -254,7 +223,6 @@ const generateFilmCard = () => {
       director: getRandomArrayItem(FILM_DIRECTORS),
       writers: getRandomArrayElements(FILM_WRITERS, 2, 2).join(`, `),
       actors: getRandomArrayElements(FILM_ACTORS, 2, 6).join(`, `),
-      releaseDate: `${getRandomIntegerNumber(1, 30)} ${getRandomArrayItem(MONTH_NAMES)}`,
       country: getRandomArrayItem(FILM_COUNTRIES),
     }
   };
