@@ -1,6 +1,6 @@
 import FilmCardComponent from '../components/film-card.js';
 import FilmDetailsComponent from '../components/film-details.js';
-import {RenderPosition, render, removeChild, appendChild, replace} from '../utils/render.js';
+import {RenderPosition, render, removeChild, appendChild, replace, remove} from '../utils/render.js';
 import FilmDetailsNewCommentComponent from '../components/film-details-new-comment.js';
 import {BODY} from "../const.js";
 
@@ -27,6 +27,14 @@ export default class MovieController {
     this._closePopupOnClick = this._closePopupOnClick.bind(this);
   }
 
+  destroy() {
+    remove(this._filmCardComponent);
+    remove(this._filmDetailsComponent);
+    remove(this._filmDetailsNewCommentComponent);
+
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+  }
+
   _сlosePopupOnEscPress(evt) {
     if (evt.keyCode === 27) {
       this._onViewChange();
@@ -47,12 +55,12 @@ export default class MovieController {
     this._onViewChange();
   }
 
-  render(film) {
+  render(film, comments) {
     const oldFilmCardComponent = this._filmCardComponent;
     const oldFilmDetailsComponent = this._filmDetailsComponent;
 
-    this._filmCardComponent = new FilmCardComponent(film);
-    this._filmDetailsComponent = new FilmDetailsComponent(film);
+    this._filmCardComponent = new FilmCardComponent(film, comments);
+    this._filmDetailsComponent = new FilmDetailsComponent(film, comments);
     this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent(film);
 
     this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
@@ -64,6 +72,7 @@ export default class MovieController {
       evt.preventDefault();
 
       const oldFilm = film;
+
       const newFilm = Object.assign({}, film, {isInWatchlist: !film.isInWatchlist});
       this._onDataChange(this, oldFilm, newFilm);
     });

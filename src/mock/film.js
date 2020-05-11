@@ -207,6 +207,7 @@ const FILM_AGES = [`0+`, `6+`, `12+`, `16+`, `18+`];
 
 const generateFilmCard = () => {
   return {
+    id: getRandomIntegerNumber(1000000000, 9999999999),
     name: getRandomArrayItem(FILM_NAMES),
     poster: getRandomArrayItem(FILM_POSTERS),
     description: getRandomArrayElements(FILM_DESCRIPTIONS, 1, 5).join(` `), // 1-5 строк
@@ -230,6 +231,17 @@ const generateFilmCard = () => {
 
 export const generateFilmCards = (count) => {
   return new Array(count).fill(``).map(generateFilmCard);
+};
+
+export const getComements = (films) => {
+  const array = [];
+  films.forEach((film) => {
+    array.push({
+      id: film.id,
+      comments: film.comments,
+    });
+  });
+  return array;
 };
 
 export {FILM_GENRES};

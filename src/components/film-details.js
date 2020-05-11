@@ -33,9 +33,10 @@ const createGenresMarkup = (genres) => {
   }).join(`\n`);
 };
 
-const createFilmDetailsTemplate = (film) => {
-  const {name, poster, description, comments, rating, releaseDate, duration, genres, isInWatchlist, isInHistory, isInFavorites} = film;
+const createFilmDetailsTemplate = (film, filmComments) => {
+  const {name, poster, description, rating, releaseDate, duration, genres, isInWatchlist, isInHistory, isInFavorites} = film;
   const {age, director, writers, actors, country} = film.additional;
+  const {comments} = filmComments;
 
   const commentsMarkup = createCommentsMarkup(comments);
   const genresMarkup = createGenresMarkup(genres);
@@ -131,14 +132,15 @@ const createFilmDetailsTemplate = (film) => {
 };
 
 export default class FilmDetails extends AbstractSmartComponent {
-  constructor(film) {
+  constructor(film, comments) {
     super();
 
     this._film = film;
+    this._comments = comments;
   }
 
   getTemplate() {
-    return createFilmDetailsTemplate(this._film, this._emoji, this._emojiInp);
+    return createFilmDetailsTemplate(this._film, this._comments);
   }
 
   setClickHandler(callback) {

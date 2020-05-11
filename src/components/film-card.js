@@ -1,8 +1,9 @@
 import AbstractComponent from './abstract-component.js';
 import moment from 'moment';
 
-const createFilmCardTemplate = (film) => {
-  const {name, poster, description, comments, rating, releaseDate, duration, genres, isInWatchlist, isInHistory, isInFavorites} = film;
+const createFilmCardTemplate = (film, filmComments) => {
+  const {name, poster, description, rating, releaseDate, duration, genres, isInWatchlist, isInHistory, isInFavorites} = film;
+  const {comments} = filmComments;
 
   return (
     `<article class="film-card">
@@ -10,7 +11,7 @@ const createFilmCardTemplate = (film) => {
         <p class="film-card__rating">${rating}</p>
         <p class="film-card__info">
           <span class="film-card__year">${moment(releaseDate).format(`YYYY`)}</span>
-          <span class="film-card__duration">${Math.round(duration / 60)}h ${Math.round(duration % 60)}m</span>
+          <span class="film-card__duration">${moment.utc(moment.duration(duration, `minutes`).asMilliseconds()).format(`h[h] mm[m]`)}</span>
           <span class="film-card__genre">${genres[0]}</span>
         </p>
         <img src="${poster}" alt="${name}" class="film-card__poster">
@@ -43,13 +44,14 @@ const createFilmCardTemplate = (film) => {
 };
 
 export default class FilmCard extends AbstractComponent {
-  constructor(film) {
+  constructor(film, comments) {
     super();
     this._film = film;
+    this._comemnts = comments;
   }
 
   getTemplate() {
-    return createFilmCardTemplate(this._film);
+    return createFilmCardTemplate(this._film, this._comemnts);
   }
 
   setClickHandler(callback) {
