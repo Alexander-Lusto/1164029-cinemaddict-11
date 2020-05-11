@@ -17,7 +17,7 @@ export default class FilterController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
 
-    this._moviesModel.setDataChangeHandlers(this._onDataChange);
+    this._moviesModel.setDataChangeHandler(this._onDataChange);
   }
 
   render() {
@@ -27,26 +27,28 @@ export default class FilterController {
 
       return {
         name: filterType,
-        count: getFilmsByFilter(allFilms, filterType).length,
+        count: getFilmsByFilter(allFilms, filterType).length, // 4 раза взять количество фильмов
         address: filterType.replace(/\s+/g, ``).trim().toLowerCase(),
         checked: filterType === this._activeFilterType,
       };
     });
     const oldComponent = this._filterComponent;
-
+    console.log(`render filters`);
     this._filterComponent = new FilterComponent(filters);
     this._filterComponent.setFilterChangeHandler(this._onFilterChange); // ??? разобраться
 
     if (oldComponent) {
       replace(this._filterComponent, oldComponent);
+      console.log(`hello from filter replace`);
     } else {
       render(container, this._filterComponent, RenderPosition.BEFOREEND);
+      console.log(`hello from filter render`);
     }
   }
 
   _onDataChange() {
-    this._render();
-
+    this.render();
+    console.log(`hello from filter data change`);
   }
 
   _onFilterChange(filterType) {

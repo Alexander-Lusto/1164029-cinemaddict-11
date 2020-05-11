@@ -40,3 +40,4 @@ pageControllerComponent.render();
 
 render(footer, new FooterStatisticComponent(FILM_CARDS_COUNT), RenderPosition.BEFOREEND);
 
+

@@ -72,8 +72,8 @@ export default class MovieController {
       evt.preventDefault();
 
       const oldFilm = film;
-
       const newFilm = Object.assign({}, film, {isInWatchlist: !film.isInWatchlist});
+
       this._onDataChange(this, oldFilm, newFilm);
     });
 
@@ -98,14 +98,14 @@ export default class MovieController {
     this._filmDetailsComponent.setAddToWatchlistButtonHandler(() => {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInWatchlist: !film.isInWatchlist});
-
+      console.log(`click`);
       this._onDataChange(this, oldFilm, newFilm);
     });
 
     this._filmDetailsComponent.setAlreadyWatchedButtonHandler(() => {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInHistory: !film.isInHistory});
-
+      console.log(`click`);
       this._onDataChange(this, oldFilm, newFilm);
     });
 
@@ -117,10 +117,12 @@ export default class MovieController {
     });
 
     if (oldFilmCardComponent && oldFilmDetailsComponent) {
+      console.log(`change`);
       replace(this._filmCardComponent, oldFilmCardComponent);
       replace(this._filmDetailsComponent, oldFilmDetailsComponent);
       appendChild(this._newCommentContainer, this._filmDetailsNewCommentComponent);
     } else {
+      console.log(`render`);
       render(this._container, this._filmCardComponent, RenderPosition.BEFOREEND);
     }
   }
