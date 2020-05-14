@@ -213,7 +213,7 @@ const generateFilmCard = () => {
     description: getRandomArrayElements(FILM_DESCRIPTIONS, 1, 5).join(` `), // 1-5 строк
     comments: getRandomArrayElements(FILM_COMMENTS, 0, 5), // 0 - 5 комментариев
     rating: getRandomIntegerNumber(4, 10),
-    releaseDate: getRandomDate(1970, 2020), // getRandomIntegerNumber(1990, 2020),
+    releaseDate: getRandomDate(2015, 2020), // getRandomIntegerNumber(1990, 2020),
     duration: getRandomIntegerNumber(70, 180),
     genres: getRandomArrayElements(FILM_GENRES, 1, 3),
     isInFavorites: Math.random() > 0.5,

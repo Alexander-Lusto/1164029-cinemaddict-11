@@ -18,7 +18,7 @@ const footer = document.querySelector(`.footer`);
 
 const filmsArray = generateFilmCards(FILM_CARDS_COUNT);
 const commentsArray = getComements(filmsArray);
-console.log(commentsArray);
+// console.log(commentsArray);
 
 const moviesModel = new MoviesModel();
 const commentsModel = new CommentsModel();
@@ -26,13 +26,13 @@ const commentsModel = new CommentsModel();
 moviesModel.setMovies(filmsArray);
 commentsModel.setComments(commentsArray);
 
-//const filtersArray = generateFilters(filmsArray);
+// const filtersArray = generateFilters(filmsArray);
 
 render(header, new UserTitleComponent(filmsArray), RenderPosition.BEFOREEND);
 
 const filterController = new FilterController(main, moviesModel);
 filterController.render();
-//render(main, new FilterComponent(filtersArray), RenderPosition.BEFOREEND);
+// render(main, new FilterComponent(filtersArray), RenderPosition.BEFOREEND);
 /* render(main, new StatisticComponent(filmsArray), RenderPosition.BEFOREBEGIN); */
 
 const pageControllerComponent = new PageControllerComponent(moviesModel, commentsModel);

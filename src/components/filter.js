@@ -10,7 +10,7 @@ const createFilterMarkup = (filtersArray) => {
          data-filter-type="${name}"
          class="main-navigation__item ${checked ? `main-navigation__item--active` : ``}">
          ${name}
-         ${name === FilterType.ALL ? `` : `<span class="main-navigation__item-count">${count}</span>`}
+         ${name === FilterType.ALL ? `` : `<span  class="main-navigation__item-count" data-filter-type="${name}">${count}</span>`}
       </a>`
     );
   }).join(`\n`);
@@ -32,6 +32,7 @@ export default class Filter extends AbstractComponent {
   constructor(filters) {
     super();
     this._filters = filters;
+    this._currenFilterType = FilterType.ALL;
   }
 
   getTemplate() {
@@ -40,12 +41,14 @@ export default class Filter extends AbstractComponent {
 
   setFilterChangeHandler(handler) {
 
-    const menuItems = Array.from(this.getElement().querySelectorAll(`.main-navigation__item`));
-    menuItems.forEach((item) => {
-      item.addEventListener(`click`, (evt) => {
-        console.log(`1 - filter component - 'click'`);
-        handler(evt.target.dataset.filterType); // передается в lowercase в функицю getFilmsByFilter  и она возвращает все фильмы.
-      });
+    this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+
+      if (evt.target.tagName !== `A` && evt.target.tagName !== `SPAN`) {
+        return;
+      }
+
+      handler(evt.target.dataset.filterType);
     });
   }
 }

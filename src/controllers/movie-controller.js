@@ -32,7 +32,7 @@ export default class MovieController {
     remove(this._filmDetailsComponent);
     remove(this._filmDetailsNewCommentComponent);
 
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    document.removeEventListener(`keydown`, this._сlosePopupOnEscPress);
   }
 
   _сlosePopupOnEscPress(evt) {
