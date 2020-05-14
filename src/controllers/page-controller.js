@@ -18,7 +18,6 @@ const main = document.querySelector(`.main`);
 
 const getSortedFilms = (films, type, from, to) => {
   let sortedFilms = [];
-  console.log(films);
   const showingFilms = films.slice();
 
   switch (type) {
@@ -103,38 +102,41 @@ export default class PageController {
       return;
     }
 
-    this._renderFilms(currentFilmsArray);
+    this._renderFilms(currentFilmsArray, this._comments);
     this._renderShowMoreButton();
 
-    // additional task
+    // this._renderTopRatedFilms(films);
+    // this._renderMostCommentedFilms(films);
+  }
 
-    // top rated
+  _renderTopRatedFilms(container) {
     const getTopRatedFilms = (array) => {
       return array.sort((a, b) => b.rating - a.rating);
     };
     const filmsSortedByRating = getTopRatedFilms(this._films);
 
-    render(films, this._topRatedFilmsListComponent, RenderPosition.BEFOREEND);
+    render(container, this._topRatedFilmsListComponent, RenderPosition.BEFOREEND);
     const topRatedFilmsListContainer = document.querySelector(`.films-list--extra .films-list__container`);
 
-    let newFilms = renderFilms(topRatedFilmsListContainer, filmsSortedByRating.slice(0, EXTRA_FILM_CARDS_COUNT), this._commentsModel.getComments(), this._onDataChange, this._onViewChange);
+    const newFilms = renderFilms(topRatedFilmsListContainer, filmsSortedByRating.slice(0, EXTRA_FILM_CARDS_COUNT), this._commentsModel.getComments(), this._onDataChange, this._onViewChange);
     this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
+  }
 
-    // most commented
+  _renderMostCommentedFilms(container) {
     const getTopCommentedFilms = (array) => {
       return array.sort((a, b) => b.comments.length - a.comments.length);
     };
     const filmsSortedByComments = getTopCommentedFilms(this._films);
 
-    render(films, this._mostCommentedFilmsListComponent, RenderPosition.BEFOREEND);
+    render(container, this._mostCommentedFilmsListComponent, RenderPosition.BEFOREEND);
     const mostCommentedFilmsListContainer = document.querySelector(`.films-list--extra:last-child .films-list__container`);
 
-    newFilms = renderFilms(mostCommentedFilmsListContainer, filmsSortedByComments.slice(0, EXTRA_FILM_CARDS_COUNT), this._commentsModel.getComments(), this._onDataChange, this._onViewChange);
+    const newFilms = renderFilms(mostCommentedFilmsListContainer, filmsSortedByComments.slice(0, EXTRA_FILM_CARDS_COUNT), this._commentsModel.getComments(), this._onDataChange, this._onViewChange);
     this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
   }
 
-  _renderFilms(films) {
-    const newFilms = renderFilms(this._filmsListContainer, films, this._comments, this._onDataChange, this._onViewChange);
+  _renderFilms(films, comments) {
+    const newFilms = renderFilms(this._filmsListContainer, films, comments, this._onDataChange, this._onViewChange);
     this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
     this._showingCardsCount = this._showedFilmControllers.length;
   }
@@ -162,7 +164,7 @@ export default class PageController {
     this._showingCardsCount = this._showingCardsCount + FILM_CARDS_SHOWING_BY_BUTTON;
 
     const sortedFilms = getSortedFilms(films, this._sortComponent.getSortType(), previouseCardCount, this._showingCardsCount);
-    this._renderFilms(sortedFilms);
+    this._renderFilms(sortedFilms, this._comments);
 
     if (this._showingCardsCount >= films.length) {
       remove(this._showMoreButtonComponent);
@@ -170,30 +172,24 @@ export default class PageController {
   }
 
   _onSortTypeChange(sortType) {
-
     this._showingCardsCount = this._showedFilmControllers.length;
     const sortedFilms = getSortedFilms(this._moviesModel.getMovies(), sortType, 0, this._showingCardsCount);
-    console.log(sortedFilms);
 
     this._removeFilms();
-    this._renderFilms(sortedFilms);
-
-    /* let newFilms = renderFilms(this._filmsListContainer, sortedFilms,this._comments, this._onDataChange, this._onViewChange);
-    this._showedFilmControllers = this._showedFilmControllers.concat(newFilms); */ // лишнее
+    this._renderFilms(sortedFilms, this._comments);
     this._renderShowMoreButton();
   }
 
   _updateFilms(count) {
     this._removeFilms();
-    this._renderFilms(this._moviesModel.getMovies().slice(0, count));
+    this._renderFilms(this._moviesModel.getMovies().slice(0, count), this._comments);
     this._renderShowMoreButton(); // разобраться, зачем её перерендеривать - понял -  продолжает рендерить старый массив
   }
 
-  _onDataChange(movieController, oldData, newData) {
+  _onDataChange(movieController, oldData, newData, comments) {
     const isSuccess = this._moviesModel.updateMovies(oldData.id, newData);
-
     if (isSuccess) {
-      movieController.render(newData);
+      movieController.render(newData, comments);
     }
   }
 

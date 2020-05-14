@@ -10,8 +10,9 @@ const Mode = {
 };
 
 export default class MovieController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, comments) {
     this._container = container;
+    this._comments = comments;
 
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
@@ -59,8 +60,8 @@ export default class MovieController {
     const oldFilmCardComponent = this._filmCardComponent;
     const oldFilmDetailsComponent = this._filmDetailsComponent;
 
-    this._filmCardComponent = new FilmCardComponent(film, comments);
-    this._filmDetailsComponent = new FilmDetailsComponent(film, comments);
+    this._filmCardComponent = new FilmCardComponent(film, comments); // сюда нужно комментарии конкретно для этого фильма
+    this._filmDetailsComponent = new FilmDetailsComponent(film, comments); // сюда нужно комментарии конкретно для этого фильма
     this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent(film);
 
     this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
@@ -74,7 +75,7 @@ export default class MovieController {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInWatchlist: !film.isInWatchlist});
 
-      this._onDataChange(this, oldFilm, newFilm);
+      this._onDataChange(this, oldFilm, newFilm, comments);
     });
 
     this._filmCardComponent.setAlreadyWatchedButtonHandler((evt) => {
@@ -83,7 +84,7 @@ export default class MovieController {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInHistory: !film.isInHistory});
 
-      this._onDataChange(this, oldFilm, newFilm);
+      this._onDataChange(this, oldFilm, newFilm, comments);
     });
 
     this._filmCardComponent.setAddToFavoriteButtonHandler((evt) => {
@@ -92,28 +93,26 @@ export default class MovieController {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInFavorites: !film.isInFavorites});
 
-      this._onDataChange(this, oldFilm, newFilm);
+      this._onDataChange(this, oldFilm, newFilm, comments);
     });
 
     this._filmDetailsComponent.setAddToWatchlistButtonHandler(() => {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInWatchlist: !film.isInWatchlist});
-      console.log(`click`);
-      this._onDataChange(this, oldFilm, newFilm);
+      this._onDataChange(this, oldFilm, newFilm, comments);
     });
 
     this._filmDetailsComponent.setAlreadyWatchedButtonHandler(() => {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInHistory: !film.isInHistory});
-      console.log(`click`);
-      this._onDataChange(this, oldFilm, newFilm);
+      this._onDataChange(this, oldFilm, newFilm, comments);
     });
 
     this._filmDetailsComponent.setAddToFavoriteButtonHandler(() => {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInFavorites: !film.isInFavorites});
 
-      this._onDataChange(this, oldFilm, newFilm);
+      this._onDataChange(this, oldFilm, newFilm, comments);
     });
 
     if (oldFilmCardComponent && oldFilmDetailsComponent) {

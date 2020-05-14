@@ -22,7 +22,7 @@ export default class Movies {
   }
 
   setMovies(movies) {
-    this._movies = Array.from(movies); // при надобности переделать на Array from
+    this._movies = Array.from(movies);
     this._callHandlers(this._dataChangeHandlers);
   }
 
@@ -35,9 +35,7 @@ export default class Movies {
 
     this._movies = [].concat(this._movies.slice(0, index), film, this._movies.slice(index + 1));
 
-    this._callHandlers(this._dataChangeHandlers); // в момент выполнения функции здесь пусто (!) - решено
-    this._callHandlers(this._filterChangeHandlers);
-
+    this._callHandlers(this._dataChangeHandlers);
     return true;
   }
 
