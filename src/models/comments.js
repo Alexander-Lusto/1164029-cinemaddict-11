@@ -13,14 +13,14 @@ export default class Comments {
     this._callHandlers(this._dataChangeHandlers);
   }
 
-  updateComments(id, film) {
+  updateComments(id, comments) {
     const index = this._comments.findIndex((it) => it.id === id);
 
     if (index === -1) {
       return false;
     }
 
-    this._comments = [].concat(this._comments.slice(0, index), film, this._comments.slice(index + 1));
+    this._comments = [].concat(this._comments.slice(0, index), comments, this._comments.slice(index + 1));
 
     this._callHandlers(this._dataChangeHandlers);
 

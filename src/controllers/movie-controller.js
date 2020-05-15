@@ -2,8 +2,9 @@ import FilmCardComponent from '../components/film-card.js';
 import FilmDetailsComponent from '../components/film-details.js';
 import {RenderPosition, render, removeChild, appendChild, replace, remove} from '../utils/render.js';
 import FilmDetailsNewCommentComponent from '../components/film-details-new-comment.js';
-import {BODY} from "../const.js";
-
+import {BODY} from '../const.js';
+//import {_} from 'lodash';
+var _ = require('lodash');
 const Mode = {
   CLOSED: `closed`,
   OPEN: `open`,
@@ -57,6 +58,7 @@ export default class MovieController {
   }
 
   render(film, comments) {
+    console.log(comments);
     const oldFilmCardComponent = this._filmCardComponent;
     const oldFilmDetailsComponent = this._filmDetailsComponent;
 
@@ -68,6 +70,7 @@ export default class MovieController {
 
     this._filmCardComponent.setClickHandler(this._showPopupOnClick);
     this._filmDetailsComponent.setClickHandler(this._closePopupOnClick);
+
 
     this._filmCardComponent.setAddToWatchlistButtonHandler((evt) => {
       evt.preventDefault();
@@ -113,6 +116,21 @@ export default class MovieController {
       const newFilm = Object.assign({}, film, {isInFavorites: !film.isInFavorites});
 
       this._onDataChange(this, oldFilm, newFilm, comments);
+    });
+
+    this._filmDetailsNewCommentComponent.setAddCommentHandleer((comment) => {
+      if (this._mode === Mode.OPEN) {
+         console.log(comments);
+        // console.log(comment);
+        const oldComments = comments;
+        let newComments = _.cloneDeep(comments);
+        //
+        newComments.comments.push(comment);
+
+        console.log(oldComments);
+        console.log(newComments);
+      }
+
     });
 
     if (oldFilmCardComponent && oldFilmDetailsComponent) {

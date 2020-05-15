@@ -105,6 +105,7 @@ export default class PageController {
     this._renderFilms(currentFilmsArray, this._comments);
     this._renderShowMoreButton();
 
+    // доп. задание - доделать потом:
     // this._renderTopRatedFilms(films);
     // this._renderMostCommentedFilms(films);
   }
@@ -146,6 +147,12 @@ export default class PageController {
     this._showedFilmControllers = [];
   }
 
+  _updateFilms(count) {
+    this._removeFilms();
+    this._renderFilms(this._moviesModel.getMovies().slice(0, count), this._comments);
+    this._renderShowMoreButton(); // разобраться, зачем её перерендеривать - понял -  продолжает рендерить старый массив
+  }
+
   _renderShowMoreButton() {
     remove(this._showMoreButtonComponent);
 
@@ -180,14 +187,19 @@ export default class PageController {
     this._renderShowMoreButton();
   }
 
-  _updateFilms(count) {
-    this._removeFilms();
-    this._renderFilms(this._moviesModel.getMovies().slice(0, count), this._comments);
-    this._renderShowMoreButton(); // разобраться, зачем её перерендеривать - понял -  продолжает рендерить старый массив
-  }
-
   _onDataChange(movieController, oldData, newData, comments) {
     const isSuccess = this._moviesModel.updateMovies(oldData.id, newData);
+    if (isSuccess) {
+      movieController.render(newData, comments);
+    }
+  }
+
+  _onCommentsChange() {
+
+  }
+
+  _onCommentChange(movieController, oldData, newData, comments) {
+    const isSuccess = this._commemntsModel.updateComments(oldData.id, newData);
     if (isSuccess) {
       movieController.render(newData, comments);
     }

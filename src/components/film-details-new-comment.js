@@ -1,4 +1,5 @@
 import AbstractSmartComponent from "./abstract-smart-component";
+import moment from 'moment';
 
 const EmojiAddressArray = [
   {SMILE: `smile`},
@@ -8,7 +9,7 @@ const EmojiAddressArray = [
 ];
 
 const createEmojiImageTemplate = (emoji) => {
-  return `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">`;
+  return `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}" data-emoji-type="${emoji ? emoji : `none`}">`;
 };
 
 const createFilmDetailsCommentSectionTemplate = (comment, emoji, emojiInp) => {
@@ -108,6 +109,21 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
 
   getTemplate() {
     return createFilmDetailsCommentSectionTemplate(this._comment, this._emoji, this._emojiInp);
+  }
+
+  setAddCommentHandleer(callback) {
+    document.addEventListener(`keydown`, (evt) => {
+
+      if (evt.ctrlKey && evt.key === `Enter` && this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType) {
+        const comment = {
+          emoji: this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType,
+          text: this.getElement().querySelector(`.film-details__comment-input`).value,
+          author: `User`,
+          date: moment().format(`YYYY/MM/DD hh:mm`),
+        };
+        callback(comment);
+      }
+    });
   }
 }
 
