@@ -1,5 +1,8 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import moment from 'moment';
+import he from 'he';
+
+// const he = require(`he`);
 
 const createCommentsMarkup = (comments) => {
   return comments.map((comment) => {
@@ -11,7 +14,7 @@ const createCommentsMarkup = (comments) => {
                 <img src="./images/emoji/${comment.emoji}.png" width="55" height="55" alt="emoji-${comment.emoji}">
               </span>
               <div>
-                <p class="film-details__comment-text">${comment.text}</p>
+                <p class="film-details__comment-text">${he.encode(comment.text)}</p>
                 <p class="film-details__comment-info">
                   <span class="film-details__comment-author">${comment.author}</span>
                   <span class="film-details__comment-day">${moment(comment.date).format(`YYYY/MM/DD hh:mm`)}</span>
@@ -34,13 +37,9 @@ const createGenresMarkup = (genres) => {
 };
 
 const createFilmDetailsTemplate = (film, filmComments) => {
-  console.log(`filmComments`);
-  console.log(filmComments);
   const {name, poster, description, rating, releaseDate, duration, genres, isInWatchlist, isInHistory, isInFavorites} = film;
   const {age, director, writers, actors, country} = film.additional;
   const {comments} = filmComments;
-  console.log(`comments from component`);
-  console.log(comments);
 
   const commentsMarkup = createCommentsMarkup(comments);
   const genresMarkup = createGenresMarkup(genres);

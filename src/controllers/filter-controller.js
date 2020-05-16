@@ -1,18 +1,7 @@
 import FilterComponent from '../components/filter.js';
-import {RenderPosition, render, removeChild, appendChild, replace} from '../utils/render.js';
+import {RenderPosition, render, replace} from '../utils/render.js';
 import {getFilmsByFilter} from '../utils/filter.js';
 import {FilterType} from '../const.js';
-
-const FILTER_NAMES = [`All movies`, `Watchlist`, `History`, `Favorites`];
-const FILTER_ADDRESS = [`all`, `watchlist`, `history`, `favorites`];
-
-// Текущие проблемы с фильтром :
-// 1. Не перерисовывается карточка при изменении информации
-//    а. Не понимаю, что именно должно перерисовываться - карточка или поле с карточками - (решается в следующем задании)
-// 2. Не загорается активный фильтр (done)
-// 3. Перестала работать сортировка (done)
-// 4. Интегрировать модель данных с комментариями
-
 
 export default class FilterController {
   constructor(container, moviesModel) {
@@ -31,7 +20,7 @@ export default class FilterController {
   render() {
     const container = this._container;
     const allFilms = this._moviesModel.getMoviesAll();
-    const filters = Object.values(FilterType).map((filterType) => { // проходится по всем фильтрам и отрисовывает
+    const filters = Object.values(FilterType).map((filterType) => {
 
       return {
         name: filterType,
@@ -54,7 +43,7 @@ export default class FilterController {
   _onFilterChange(filterType) {
     this._moviesModel.setFilter(filterType);
     this._activeFilterType = filterType;
-    this.render(); // - my improvement
+    this.render();
   }
 
   _onDataChange() {

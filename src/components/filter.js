@@ -2,7 +2,6 @@ import AbstractComponent from "./abstract-component";
 import {FilterType} from '../const.js';
 
 const createFilterMarkup = (filtersArray) => {
-  console.log(filtersArray);
   return filtersArray.map((filter) => {
     const {address, name, count, checked} = filter;
     return (

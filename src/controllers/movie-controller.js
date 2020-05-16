@@ -3,8 +3,8 @@ import FilmDetailsComponent from '../components/film-details.js';
 import {RenderPosition, render, removeChild, appendChild, replace, remove} from '../utils/render.js';
 import FilmDetailsNewCommentComponent from '../components/film-details-new-comment.js';
 import {BODY} from '../const.js';
-//import {_} from 'lodash';
-const cloneDeep = require('lodash.clonedeep');
+
+const cloneDeep = require(`lodash.clonedeep`);
 const Mode = {
   CLOSED: `closed`,
   OPEN: `open`,
@@ -59,12 +59,11 @@ export default class MovieController {
   }
 
   render(film, comments) {
-    console.log(comments);
     const oldFilmCardComponent = this._filmCardComponent;
     const oldFilmDetailsComponent = this._filmDetailsComponent;
 
-    this._filmCardComponent = new FilmCardComponent(film, comments); // сюда нужно комментарии конкретно для этого фильма
-    this._filmDetailsComponent = new FilmDetailsComponent(film, comments); // сюда нужно комментарии конкретно для этого фильма
+    this._filmCardComponent = new FilmCardComponent(film, comments);
+    this._filmDetailsComponent = new FilmDetailsComponent(film, comments);
     this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent(film);
 
     this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
@@ -129,7 +128,6 @@ export default class MovieController {
     });
 
     this._filmDetailsComponent.setDeleteButtonHandler((index) => {
-      console.log(index);
       const oldComments = comments;
       const newComments = cloneDeep(comments);
       newComments.comments.splice(index, index + 1);
@@ -137,12 +135,11 @@ export default class MovieController {
     });
 
     if (oldFilmCardComponent && oldFilmDetailsComponent) {
-      console.log(`change`);
       replace(this._filmCardComponent, oldFilmCardComponent);
       replace(this._filmDetailsComponent, oldFilmDetailsComponent);
+
       appendChild(this._newCommentContainer, this._filmDetailsNewCommentComponent);
     } else {
-      console.log(`render`);
       render(this._container, this._filmCardComponent, RenderPosition.BEFOREEND);
     }
   }

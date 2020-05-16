@@ -151,7 +151,7 @@ export default class PageController {
   _updateFilms(count) {
     this._removeFilms();
     this._renderFilms(this._moviesModel.getMovies().slice(0, count), this._comments);
-    this._renderShowMoreButton(); // разобраться, зачем её перерендеривать - понял -  продолжает рендерить старый массив
+    this._renderShowMoreButton();
   }
 
   _renderShowMoreButton() {
@@ -207,7 +207,6 @@ export default class PageController {
   }
 
   _onFilterChange() {
-    console.log(`4 - page controller - update films`);
     this._sortComponent.setDefaultSortType();
     this._onSortTypeChange(SortType.DEFAULT);
     this._updateFilms(FILM_CARDS_SHOWING_ON_START);

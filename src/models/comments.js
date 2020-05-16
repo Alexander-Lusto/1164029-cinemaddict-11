@@ -1,6 +1,6 @@
 export default class Comments {
   constructor() {
-    this._comments = [];
+    this._comments = []; // база данных со всеми комментариями, когда изменяем что-то, изменяем эту базу
     this._dataChangeHandlers = [];
   }
 
@@ -9,7 +9,7 @@ export default class Comments {
   }
 
   setComments(comments) {
-    this._comments = comments; // при надобности переделать на Array from
+    this._comments = Array.from(comments);
     this._callHandlers(this._dataChangeHandlers);
   }
 

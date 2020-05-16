@@ -61,6 +61,10 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
     this._emojiInp = null;
     this._textarea = null;
 
+    this._isCtrlAndEnterPressed = null;
+    this._isEmojiChosen = null;
+    this._isTextWritten = null;
+
     this._subscribeOnEvents();
   }
 
@@ -114,7 +118,13 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
   setAddCommentHandler(callback) {
     document.addEventListener(`keydown`, (evt) => {
 
-      if (evt.ctrlKey && evt.key === `Enter` && this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType) {
+      const isCtrlAndEnterPressed = evt.ctrlKey && evt.key === `Enter`;
+
+      const isEmojiChosen = this.getElement().querySelector(`.film-details__add-emoji-label img`) ? this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType : false;
+
+      const isTextWritten = this.getElement().querySelector(`.film-details__comment-input`).value;
+
+      if (isCtrlAndEnterPressed && isEmojiChosen && isTextWritten) {
         const comment = {
           emoji: this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType,
           text: this.getElement().querySelector(`.film-details__comment-input`).value,
@@ -122,6 +132,7 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
           date: moment().format(`YYYY/MM/DD hh:mm`),
         };
         callback(comment);
+        this.reset();
       }
     });
   }
