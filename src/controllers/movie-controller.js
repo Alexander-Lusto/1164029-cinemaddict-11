@@ -4,17 +4,18 @@ import {RenderPosition, render, removeChild, appendChild, replace, remove} from 
 import FilmDetailsNewCommentComponent from '../components/film-details-new-comment.js';
 import {BODY} from '../const.js';
 //import {_} from 'lodash';
-var _ = require('lodash');
+const cloneDeep = require('lodash.clonedeep');
 const Mode = {
   CLOSED: `closed`,
   OPEN: `open`,
 };
 
 export default class MovieController {
-  constructor(container, onDataChange, onViewChange, comments) {
+  constructor(container, onDataChange, onViewChange, comments, onCommentsChange) {
     this._container = container;
     this._comments = comments;
 
+    this._onCommentsChange = onCommentsChange;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
     this._mode = Mode.CLOSED;
@@ -118,19 +119,21 @@ export default class MovieController {
       this._onDataChange(this, oldFilm, newFilm, comments);
     });
 
-    this._filmDetailsNewCommentComponent.setAddCommentHandleer((comment) => {
+    this._filmDetailsNewCommentComponent.setAddCommentHandler((comment) => {
       if (this._mode === Mode.OPEN) {
-         console.log(comments);
-        // console.log(comment);
         const oldComments = comments;
-        let newComments = _.cloneDeep(comments);
-        //
+        const newComments = cloneDeep(comments);
         newComments.comments.push(comment);
-
-        console.log(oldComments);
-        console.log(newComments);
+        this._onCommentsChange(this, oldComments, newComments, film);
       }
+    });
 
+    this._filmDetailsComponent.setDeleteButtonHandler((index) => {
+      console.log(index);
+      const oldComments = comments;
+      const newComments = cloneDeep(comments);
+      newComments.comments.splice(index, index + 1);
+      this._onCommentsChange(this, oldComments, newComments, film);
     });
 
     if (oldFilmCardComponent && oldFilmDetailsComponent) {

@@ -111,7 +111,7 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
     return createFilmDetailsCommentSectionTemplate(this._comment, this._emoji, this._emojiInp);
   }
 
-  setAddCommentHandleer(callback) {
+  setAddCommentHandler(callback) {
     document.addEventListener(`keydown`, (evt) => {
 
       if (evt.ctrlKey && evt.key === `Enter` && this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType) {
