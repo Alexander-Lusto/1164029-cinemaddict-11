@@ -1,12 +1,12 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import moment from 'moment';
 
-const EmojiAddressArray = [
-  {SMILE: `smile`},
-  {SLEEPING: `sleeping`},
-  {PUKE: `puke`},
-  {ANGRY: `angry`},
-];
+const EmojiAddressArray = {
+  SMILE: `smile`,
+  SLEEPING: `sleeping`,
+  PUKE: `puke`,
+  ANGRY: `angry`,
+};
 
 const createEmojiImageTemplate = (emoji) => {
   return `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}" data-emoji-type="${emoji ? emoji : `none`}">`;
@@ -15,9 +15,10 @@ const createEmojiImageTemplate = (emoji) => {
 const createFilmDetailsCommentSectionTemplate = (comment, emoji, emojiInp) => {
 
   const emojiSmileChecked = (emojiInp === EmojiAddressArray.SMILE) ? `checked` : ``;
-  const emojiAngryChecked = (emojiInp === EmojiAddressArray.ANGRY) ? `checked` : ``;
-  const emojiPukeChecked = (emojiInp === EmojiAddressArray.PUKE) ? `checked` : ``;
   const emojiSleepingChecked = (emojiInp === EmojiAddressArray.SLEEPING) ? `checked` : ``;
+  const emojiPukeChecked = (emojiInp === EmojiAddressArray.PUKE) ? `checked` : ``;
+  const emojiAngryChecked = (emojiInp === EmojiAddressArray.ANGRY) ? `checked` : ``;
+
 
   return (
     `<div class="film-details__new-comment">
@@ -61,10 +62,6 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
     this._emojiInp = null;
     this._textarea = null;
 
-    this._isCtrlAndEnterPressed = null;
-    this._isEmojiChosen = null;
-    this._isTextWritten = null;
-
     this._subscribeOnEvents();
   }
 
@@ -99,8 +96,8 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
 
     for (let i = 0; i < emojiArray.length; i++) {
       emojiArray[i].addEventListener(`change`, () => {
-        this._emoji = createEmojiImageTemplate(Object.values(EmojiAddressArray[i]));
-        this._emojiInp = Object.values(EmojiAddressArray[i]);
+        this._emoji = createEmojiImageTemplate(Object.values(EmojiAddressArray)[i]);
+        this._emojiInp = Object.values(EmojiAddressArray)[i];
         this.rerender();
       });
     }
@@ -117,23 +114,28 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
 
   setAddCommentHandler(callback) {
     document.addEventListener(`keydown`, (evt) => {
-
+      const textarea = this.getElement().querySelector(`.film-details__comment-input`);
+     /*  textarea.classList.remove(`animation`);
+ */
       const isCtrlAndEnterPressed = evt.ctrlKey && evt.key === `Enter`;
 
       const isEmojiChosen = this.getElement().querySelector(`.film-details__add-emoji-label img`) ? this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType : false;
 
-      const isTextWritten = this.getElement().querySelector(`.film-details__comment-input`).value;
+      const isTextWritten = textarea.value;
 
       if (isCtrlAndEnterPressed && isEmojiChosen && isTextWritten) {
         const comment = {
           emoji: this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType,
-          text: this.getElement().querySelector(`.film-details__comment-input`).value,
+          text: textarea.value,
           author: `User`,
           date: moment().format(`YYYY/MM/DD hh:mm`),
         };
         callback(comment);
         this.reset();
-      }
+      } /* else if (isCtrlAndEnterPressed && (!isEmojiChosen || !isTextWritten)) {
+        textarea.classList.add(`animation`);
+      } */
+
     });
   }
 }

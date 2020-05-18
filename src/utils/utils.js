@@ -1,4 +1,4 @@
-import {UserTitles} from './const.js';
+import {UserTitles} from '../const.js';
 
 export const getUserTitle = (films) => {
   const filmsInHistory = films.filter((it) => it.isInHistory).length;

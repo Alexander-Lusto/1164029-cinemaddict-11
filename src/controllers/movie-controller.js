@@ -64,13 +64,12 @@ export default class MovieController {
 
     this._filmCardComponent = new FilmCardComponent(film, comments);
     this._filmDetailsComponent = new FilmDetailsComponent(film, comments);
-    this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent(film);
+    this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent(); // не могу понять, как его создание здесь влияет на комментарии
 
     this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
 
     this._filmCardComponent.setClickHandler(this._showPopupOnClick);
     this._filmDetailsComponent.setClickHandler(this._closePopupOnClick);
-
 
     this._filmCardComponent.setAddToWatchlistButtonHandler((evt) => {
       evt.preventDefault();
@@ -127,7 +126,7 @@ export default class MovieController {
       }
     });
 
-    this._filmDetailsComponent.setDeleteButtonHandler((index) => {
+    this._filmDetailsComponent.setDeleteButtonHandler((index) => { // something is wrong
       const oldComments = comments;
       const newComments = cloneDeep(comments);
       newComments.comments.splice(index, index + 1);

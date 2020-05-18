@@ -1,4 +1,4 @@
-import {getRandomDate, getRandomArrayElements, getRandomArrayItem, getRandomIntegerNumber} from '../utils.js';
+import {getRandomDate, getRandomArrayElements, getRandomArrayItem, getRandomIntegerNumber} from '../utils/utils.js';
 
 const FILM_NAMES = [
   `Достучаться до небес`,
@@ -233,7 +233,7 @@ export const generateFilmCards = (count) => {
   return new Array(count).fill(``).map(generateFilmCard);
 };
 
-export const getComements = (films) => {
+export const getComments = (films) => {
   const array = [];
   films.forEach((film) => {
     array.push({

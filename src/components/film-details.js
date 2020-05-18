@@ -89,7 +89,7 @@ const createFilmDetailsTemplate = (film, filmComments) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${duration.hours}h ${duration.minutes}m</td>
+                  <td class="film-details__cell">${moment.utc(moment.duration(duration, `minutes`).asMilliseconds()).format(`h[h] mm[m]`)}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
