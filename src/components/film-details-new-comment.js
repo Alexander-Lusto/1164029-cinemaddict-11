@@ -60,7 +60,7 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
 
     this._emoji = null;
     this._emojiInp = null;
-    this._textarea = null;
+    this._comment = null;
 
     this._subscribeOnEvents();
   }
@@ -91,7 +91,6 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
   }
 
   _subscribeOnEvents() {
-
     const emojiArray = this.getElement().querySelectorAll(`input`);
 
     for (let i = 0; i < emojiArray.length; i++) {
@@ -115,8 +114,8 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
   setAddCommentHandler(callback) {
     document.addEventListener(`keydown`, (evt) => {
       const textarea = this.getElement().querySelector(`.film-details__comment-input`);
-     /*  textarea.classList.remove(`animation`);
- */
+      textarea.classList.remove(`animation`);
+
       const isCtrlAndEnterPressed = evt.ctrlKey && evt.key === `Enter`;
 
       const isEmojiChosen = this.getElement().querySelector(`.film-details__add-emoji-label img`) ? this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType : false;
@@ -132,9 +131,9 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
         };
         callback(comment);
         this.reset();
-      } /* else if (isCtrlAndEnterPressed && (!isEmojiChosen || !isTextWritten)) {
+      } else if (isCtrlAndEnterPressed && (!isEmojiChosen || !isTextWritten)) {
         textarea.classList.add(`animation`);
-      } */
+      }
 
     });
   }

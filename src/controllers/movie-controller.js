@@ -22,7 +22,7 @@ export default class MovieController {
 
     this._filmCardComponent = null;
     this._filmDetailsComponent = null;
-    this._filmDetailsNewCommentComponent = null;
+    this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent();
     this._newCommentContainer = null;
 
     this._сlosePopupOnEscPress = this._сlosePopupOnEscPress.bind(this);
@@ -64,7 +64,7 @@ export default class MovieController {
 
     this._filmCardComponent = new FilmCardComponent(film, comments);
     this._filmDetailsComponent = new FilmDetailsComponent(film, comments);
-    this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent(); // не могу понять, как его создание здесь влияет на комментарии
+   // this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent(); // не могу понять, как его создание здесь влияет на комментарии
 
     this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
 

@@ -198,7 +198,6 @@ export default class PageController {
   _onCommentsChange(movieController, oldData, newData, film) {
     const isSuccess = this._commentsModel.updateComments(oldData.id, newData);
     if (isSuccess) {
-      console.log(newData);
       movieController.render(film, newData);
     }
   }
