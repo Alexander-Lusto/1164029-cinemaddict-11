@@ -23,7 +23,6 @@ export default class Comments {
     this._comments = [].concat(this._comments.slice(0, index), comments, this._comments.slice(index + 1));
 
     this._callHandlers(this._dataChangeHandlers);
-    console.log(this._comments);
     return true;
   }
 

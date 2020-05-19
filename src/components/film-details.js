@@ -2,8 +2,6 @@ import AbstractSmartComponent from "./abstract-smart-component";
 import moment from 'moment';
 import he from 'he';
 
-// const he = require(`he`);
-
 const createCommentsMarkup = (comments) => {
   return comments.map((comment) => {
     return (

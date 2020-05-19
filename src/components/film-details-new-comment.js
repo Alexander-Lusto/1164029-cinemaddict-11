@@ -92,7 +92,6 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
 
   _subscribeOnEvents() {
     const emojiArray = this.getElement().querySelectorAll(`input`);
-
     for (let i = 0; i < emojiArray.length; i++) {
       emojiArray[i].addEventListener(`change`, () => {
         this._emoji = createEmojiImageTemplate(Object.values(EmojiAddressArray)[i]);
@@ -114,15 +113,16 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
   setAddCommentHandler(callback) {
     document.addEventListener(`keydown`, (evt) => {
       const textarea = this.getElement().querySelector(`.film-details__comment-input`);
-      textarea.classList.remove(`animation`);
-
       const isCtrlAndEnterPressed = evt.ctrlKey && evt.key === `Enter`;
 
       const isEmojiChosen = this.getElement().querySelector(`.film-details__add-emoji-label img`) ? this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType : false;
 
       const isTextWritten = textarea.value;
 
-      if (isCtrlAndEnterPressed && isEmojiChosen && isTextWritten) {
+      if (isCtrlAndEnterPressed && (!isEmojiChosen || !isTextWritten)) { // если чего-то нет, потрясём окно
+        textarea.classList.add(`shake`);
+        setTimeout(() => textarea.classList.remove(`shake`), 250); // удаляем анимацию через 0,25 сек
+      } else if (isCtrlAndEnterPressed && isEmojiChosen && isTextWritten) { // если всё правильно заполнено, добавляем коммент
         const comment = {
           emoji: this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType,
           text: textarea.value,
@@ -131,10 +131,7 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
         };
         callback(comment);
         this.reset();
-      } else if (isCtrlAndEnterPressed && (!isEmojiChosen || !isTextWritten)) {
-        textarea.classList.add(`animation`);
       }
-
     });
   }
 }

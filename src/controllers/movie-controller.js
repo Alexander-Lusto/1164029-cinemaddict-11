@@ -59,12 +59,12 @@ export default class MovieController {
   }
 
   render(film, comments) {
+    this._comments = comments;
     const oldFilmCardComponent = this._filmCardComponent;
     const oldFilmDetailsComponent = this._filmDetailsComponent;
 
-    this._filmCardComponent = new FilmCardComponent(film, comments);
-    this._filmDetailsComponent = new FilmDetailsComponent(film, comments);
-   // this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent(); // не могу понять, как его создание здесь влияет на комментарии
+    this._filmCardComponent = new FilmCardComponent(film, this._comments);
+    this._filmDetailsComponent = new FilmDetailsComponent(film, this._comments);
 
     this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
 
@@ -77,7 +77,7 @@ export default class MovieController {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInWatchlist: !film.isInWatchlist});
 
-      this._onDataChange(this, oldFilm, newFilm, comments);
+      this._onDataChange(this, oldFilm, newFilm, this._comments);
     });
 
     this._filmCardComponent.setAlreadyWatchedButtonHandler((evt) => {
@@ -86,7 +86,7 @@ export default class MovieController {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInHistory: !film.isInHistory});
 
-      this._onDataChange(this, oldFilm, newFilm, comments);
+      this._onDataChange(this, oldFilm, newFilm, this._comments);
     });
 
     this._filmCardComponent.setAddToFavoriteButtonHandler((evt) => {
@@ -95,41 +95,41 @@ export default class MovieController {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInFavorites: !film.isInFavorites});
 
-      this._onDataChange(this, oldFilm, newFilm, comments);
+      this._onDataChange(this, oldFilm, newFilm, this._comments);
     });
 
     this._filmDetailsComponent.setAddToWatchlistButtonHandler(() => {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInWatchlist: !film.isInWatchlist});
-      this._onDataChange(this, oldFilm, newFilm, comments);
+      this._onDataChange(this, oldFilm, newFilm, this._comments);
     });
 
     this._filmDetailsComponent.setAlreadyWatchedButtonHandler(() => {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInHistory: !film.isInHistory});
-      this._onDataChange(this, oldFilm, newFilm, comments);
+      this._onDataChange(this, oldFilm, newFilm, this._comments);
     });
 
     this._filmDetailsComponent.setAddToFavoriteButtonHandler(() => {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInFavorites: !film.isInFavorites});
 
-      this._onDataChange(this, oldFilm, newFilm, comments);
+      this._onDataChange(this, oldFilm, newFilm, this._comments);
     });
 
     this._filmDetailsNewCommentComponent.setAddCommentHandler((comment) => {
       if (this._mode === Mode.OPEN) {
-        const oldComments = comments;
-        const newComments = cloneDeep(comments);
+        const oldComments = this._comments;
+        const newComments = cloneDeep(this._comments);
         newComments.comments.push(comment);
         this._onCommentsChange(this, oldComments, newComments, film);
       }
     });
 
-    this._filmDetailsComponent.setDeleteButtonHandler((index) => { // something is wrong
-      const oldComments = comments;
-      const newComments = cloneDeep(comments);
-      newComments.comments.splice(index, index + 1);
+    this._filmDetailsComponent.setDeleteButtonHandler((index) => {
+      const oldComments = this._comments;
+      const newComments = cloneDeep(this._comments);
+      newComments.comments.splice(index, 1);
       this._onCommentsChange(this, oldComments, newComments, film);
     });
 
@@ -137,6 +137,7 @@ export default class MovieController {
       replace(this._filmCardComponent, oldFilmCardComponent);
       replace(this._filmDetailsComponent, oldFilmDetailsComponent);
 
+      this._filmDetailsNewCommentComponent.rerender();
       appendChild(this._newCommentContainer, this._filmDetailsNewCommentComponent);
     } else {
       render(this._container, this._filmCardComponent, RenderPosition.BEFOREEND);

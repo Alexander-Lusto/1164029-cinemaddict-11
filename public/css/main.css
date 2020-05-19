@@ -1098,7 +1098,7 @@ button {
   }
 }
 
-.animation{
+.shake{
   animation-name: shake;
   animation-duration: 0.25s;
 }
