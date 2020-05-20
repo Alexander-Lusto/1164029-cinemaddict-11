@@ -1,15 +1,15 @@
 import AbstractComponent from "./abstract-component";
-
+import {FilterType} from '../const.js';
 
 const createFilterMarkup = (filtersArray) => {
-
   return filtersArray.map((filter) => {
-    const {address, name, count} = filter;
+    const {address, name, count, checked} = filter;
     return (
       `<a href="#${address}"
-         class="main-navigation__item ${name === `All movies` ? `main-navigation__item--active` : ``}">
+         data-filter-type="${name}"
+         class="main-navigation__item ${checked ? `main-navigation__item--active` : ``}">
          ${name}
-         ${name === `All movies` ? `` : `<span class="main-navigation__item-count">${count}</span>`}
+         ${name === FilterType.ALL ? `` : `<span  class="main-navigation__item-count" data-filter-type="${name}">${count}</span>`}
       </a>`
     );
   }).join(`\n`);
@@ -31,11 +31,24 @@ export default class Filter extends AbstractComponent {
   constructor(filters) {
     super();
     this._filters = filters;
+    this._currenFilterType = FilterType.ALL;
   }
 
   getTemplate() {
     return createFilterTemplate(this._filters);
   }
 
+  setFilterChangeHandler(handler) {
+
+    this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+
+      if (evt.target.tagName !== `A` && evt.target.tagName !== `SPAN`) {
+        return;
+      }
+
+      handler(evt.target.dataset.filterType);
+    });
+  }
 }
 

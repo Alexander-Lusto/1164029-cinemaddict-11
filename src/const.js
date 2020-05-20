@@ -25,4 +25,12 @@ export const SortType = {
   RATING: `Sort by rating`,
 };
 
+export const FilterType = {
+  ALL: `All movies`,
+  WATCHLIST: `Watchlist`,
+  HISTORY: `History`,
+  FAVORITES: `Favorites`,
+};
+
 export const BODY = document.querySelector(`body`);
+export const MAIN = document.querySelector(`.main`);

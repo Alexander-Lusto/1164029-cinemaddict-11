@@ -1,4 +1,4 @@
-import {getUserTitle} from '../utils.js';
+import {getUserTitle} from '../utils/utils.js';
 import AbstractComponent from './abstract-component.js';
 
 const createUserTitleTemplate = (films) => {

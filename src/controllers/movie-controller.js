@@ -1,30 +1,41 @@
 import FilmCardComponent from '../components/film-card.js';
 import FilmDetailsComponent from '../components/film-details.js';
-import {RenderPosition, render, removeChild, appendChild, replace} from '../utils/render.js';
+import {RenderPosition, render, removeChild, appendChild, replace, remove} from '../utils/render.js';
 import FilmDetailsNewCommentComponent from '../components/film-details-new-comment.js';
-import {BODY} from "../const.js";
+import {BODY} from '../const.js';
 
+const cloneDeep = require(`lodash.clonedeep`);
 const Mode = {
   CLOSED: `closed`,
   OPEN: `open`,
 };
 
 export default class MovieController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, comments, onCommentsChange) {
     this._container = container;
+    this._comments = comments;
 
+    this._onCommentsChange = onCommentsChange;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
     this._mode = Mode.CLOSED;
 
     this._filmCardComponent = null;
     this._filmDetailsComponent = null;
-    this._filmDetailsNewCommentComponent = null;
+    this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent();
     this._newCommentContainer = null;
 
     this._сlosePopupOnEscPress = this._сlosePopupOnEscPress.bind(this);
     this._showPopupOnClick = this._showPopupOnClick.bind(this);
     this._closePopupOnClick = this._closePopupOnClick.bind(this);
+  }
+
+  destroy() {
+    remove(this._filmCardComponent);
+    remove(this._filmDetailsComponent);
+    remove(this._filmDetailsNewCommentComponent);
+
+    document.removeEventListener(`keydown`, this._сlosePopupOnEscPress);
   }
 
   _сlosePopupOnEscPress(evt) {
@@ -47,13 +58,13 @@ export default class MovieController {
     this._onViewChange();
   }
 
-  render(film) {
+  render(film, comments) {
+    this._comments = comments;
     const oldFilmCardComponent = this._filmCardComponent;
     const oldFilmDetailsComponent = this._filmDetailsComponent;
 
-    this._filmCardComponent = new FilmCardComponent(film);
-    this._filmDetailsComponent = new FilmDetailsComponent(film);
-    this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent(film);
+    this._filmCardComponent = new FilmCardComponent(film, this._comments);
+    this._filmDetailsComponent = new FilmDetailsComponent(film, this._comments);
 
     this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
 
@@ -65,7 +76,8 @@ export default class MovieController {
 
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInWatchlist: !film.isInWatchlist});
-      this._onDataChange(this, oldFilm, newFilm);
+
+      this._onDataChange(this, oldFilm, newFilm, this._comments);
     });
 
     this._filmCardComponent.setAlreadyWatchedButtonHandler((evt) => {
@@ -74,7 +86,7 @@ export default class MovieController {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInHistory: !film.isInHistory});
 
-      this._onDataChange(this, oldFilm, newFilm);
+      this._onDataChange(this, oldFilm, newFilm, this._comments);
     });
 
     this._filmCardComponent.setAddToFavoriteButtonHandler((evt) => {
@@ -83,33 +95,49 @@ export default class MovieController {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInFavorites: !film.isInFavorites});
 
-      this._onDataChange(this, oldFilm, newFilm);
+      this._onDataChange(this, oldFilm, newFilm, this._comments);
     });
 
     this._filmDetailsComponent.setAddToWatchlistButtonHandler(() => {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInWatchlist: !film.isInWatchlist});
-
-      this._onDataChange(this, oldFilm, newFilm);
+      this._onDataChange(this, oldFilm, newFilm, this._comments);
     });
 
     this._filmDetailsComponent.setAlreadyWatchedButtonHandler(() => {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInHistory: !film.isInHistory});
-
-      this._onDataChange(this, oldFilm, newFilm);
+      this._onDataChange(this, oldFilm, newFilm, this._comments);
     });
 
     this._filmDetailsComponent.setAddToFavoriteButtonHandler(() => {
       const oldFilm = film;
       const newFilm = Object.assign({}, film, {isInFavorites: !film.isInFavorites});
 
-      this._onDataChange(this, oldFilm, newFilm);
+      this._onDataChange(this, oldFilm, newFilm, this._comments);
+    });
+
+    this._filmDetailsNewCommentComponent.setAddCommentHandler((comment) => {
+      if (this._mode === Mode.OPEN) {
+        const oldComments = this._comments;
+        const newComments = cloneDeep(this._comments);
+        newComments.comments.push(comment);
+        this._onCommentsChange(this, oldComments, newComments, film);
+      }
+    });
+
+    this._filmDetailsComponent.setDeleteButtonHandler((index) => {
+      const oldComments = this._comments;
+      const newComments = cloneDeep(this._comments);
+      newComments.comments.splice(index, 1);
+      this._onCommentsChange(this, oldComments, newComments, film);
     });
 
     if (oldFilmCardComponent && oldFilmDetailsComponent) {
       replace(this._filmCardComponent, oldFilmCardComponent);
       replace(this._filmDetailsComponent, oldFilmDetailsComponent);
+
+      this._filmDetailsNewCommentComponent.rerender();
       appendChild(this._newCommentContainer, this._filmDetailsNewCommentComponent);
     } else {
       render(this._container, this._filmCardComponent, RenderPosition.BEFOREEND);

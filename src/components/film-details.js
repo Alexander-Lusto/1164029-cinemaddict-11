@@ -1,5 +1,6 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import moment from 'moment';
+import he from 'he';
 
 const createCommentsMarkup = (comments) => {
   return comments.map((comment) => {
@@ -11,7 +12,7 @@ const createCommentsMarkup = (comments) => {
                 <img src="./images/emoji/${comment.emoji}.png" width="55" height="55" alt="emoji-${comment.emoji}">
               </span>
               <div>
-                <p class="film-details__comment-text">${comment.text}</p>
+                <p class="film-details__comment-text">${he.encode(comment.text)}</p>
                 <p class="film-details__comment-info">
                   <span class="film-details__comment-author">${comment.author}</span>
                   <span class="film-details__comment-day">${moment(comment.date).format(`YYYY/MM/DD hh:mm`)}</span>
@@ -33,9 +34,10 @@ const createGenresMarkup = (genres) => {
   }).join(`\n`);
 };
 
-const createFilmDetailsTemplate = (film) => {
-  const {name, poster, description, comments, rating, releaseDate, duration, genres, isInWatchlist, isInHistory, isInFavorites} = film;
+const createFilmDetailsTemplate = (film, filmComments) => {
+  const {name, poster, description, rating, releaseDate, duration, genres, isInWatchlist, isInHistory, isInFavorites} = film;
   const {age, director, writers, actors, country} = film.additional;
+  const {comments} = filmComments;
 
   const commentsMarkup = createCommentsMarkup(comments);
   const genresMarkup = createGenresMarkup(genres);
@@ -85,7 +87,7 @@ const createFilmDetailsTemplate = (film) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${duration.hours}h ${duration.minutes}m</td>
+                  <td class="film-details__cell">${moment.utc(moment.duration(duration, `minutes`).asMilliseconds()).format(`h[h] mm[m]`)}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
@@ -131,14 +133,15 @@ const createFilmDetailsTemplate = (film) => {
 };
 
 export default class FilmDetails extends AbstractSmartComponent {
-  constructor(film) {
+  constructor(film, comments) {
     super();
 
     this._film = film;
+    this._comments = comments;
   }
 
   getTemplate() {
-    return createFilmDetailsTemplate(this._film, this._emoji, this._emojiInp);
+    return createFilmDetailsTemplate(this._film, this._comments);
   }
 
   setClickHandler(callback) {
@@ -161,6 +164,16 @@ export default class FilmDetails extends AbstractSmartComponent {
     const input = this.getElement().querySelector(`input[name="favorite"]`);
 
     input.addEventListener(`change`, callback);
+  }
+
+  setDeleteButtonHandler(callback) {
+    const deleteButtons = Array.from(this.getElement().querySelectorAll(`.film-details__comment-delete`));
+    deleteButtons.forEach((button, index) => {
+      button.addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        callback(index);
+      });
+    });
   }
 }
 

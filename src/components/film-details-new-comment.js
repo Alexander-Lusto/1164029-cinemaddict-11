@@ -1,22 +1,24 @@
 import AbstractSmartComponent from "./abstract-smart-component";
+import moment from 'moment';
 
-const EmojiAddressArray = [
-  {SMILE: `smile`},
-  {SLEEPING: `sleeping`},
-  {PUKE: `puke`},
-  {ANGRY: `angry`},
-];
+const EmojiAddressArray = {
+  SMILE: `smile`,
+  SLEEPING: `sleeping`,
+  PUKE: `puke`,
+  ANGRY: `angry`,
+};
 
 const createEmojiImageTemplate = (emoji) => {
-  return `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">`;
+  return `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}" data-emoji-type="${emoji ? emoji : `none`}">`;
 };
 
 const createFilmDetailsCommentSectionTemplate = (comment, emoji, emojiInp) => {
 
   const emojiSmileChecked = (emojiInp === EmojiAddressArray.SMILE) ? `checked` : ``;
-  const emojiAngryChecked = (emojiInp === EmojiAddressArray.ANGRY) ? `checked` : ``;
-  const emojiPukeChecked = (emojiInp === EmojiAddressArray.PUKE) ? `checked` : ``;
   const emojiSleepingChecked = (emojiInp === EmojiAddressArray.SLEEPING) ? `checked` : ``;
+  const emojiPukeChecked = (emojiInp === EmojiAddressArray.PUKE) ? `checked` : ``;
+  const emojiAngryChecked = (emojiInp === EmojiAddressArray.ANGRY) ? `checked` : ``;
+
 
   return (
     `<div class="film-details__new-comment">
@@ -58,7 +60,7 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
 
     this._emoji = null;
     this._emojiInp = null;
-    this._textarea = null;
+    this._comment = null;
 
     this._subscribeOnEvents();
   }
@@ -89,13 +91,11 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
   }
 
   _subscribeOnEvents() {
-
     const emojiArray = this.getElement().querySelectorAll(`input`);
-
     for (let i = 0; i < emojiArray.length; i++) {
       emojiArray[i].addEventListener(`change`, () => {
-        this._emoji = createEmojiImageTemplate(Object.values(EmojiAddressArray[i]));
-        this._emojiInp = Object.values(EmojiAddressArray[i]);
+        this._emoji = createEmojiImageTemplate(Object.values(EmojiAddressArray)[i]);
+        this._emojiInp = Object.values(EmojiAddressArray)[i];
         this.rerender();
       });
     }
@@ -108,6 +108,31 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
 
   getTemplate() {
     return createFilmDetailsCommentSectionTemplate(this._comment, this._emoji, this._emojiInp);
+  }
+
+  setAddCommentHandler(callback) {
+    document.addEventListener(`keydown`, (evt) => {
+      const textarea = this.getElement().querySelector(`.film-details__comment-input`);
+      const isCtrlAndEnterPressed = evt.ctrlKey && evt.key === `Enter`;
+
+      const isEmojiChosen = this.getElement().querySelector(`.film-details__add-emoji-label img`) ? this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType : false;
+
+      const isTextWritten = textarea.value;
+
+      if (isCtrlAndEnterPressed && (!isEmojiChosen || !isTextWritten)) { // если чего-то нет, потрясём окно
+        textarea.classList.add(`shake`);
+        setTimeout(() => textarea.classList.remove(`shake`), 250); // удаляем анимацию через 0,25 сек
+      } else if (isCtrlAndEnterPressed && isEmojiChosen && isTextWritten) { // если всё правильно заполнено, добавляем коммент
+        const comment = {
+          emoji: this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType,
+          text: textarea.value,
+          author: `User`,
+          date: moment().format(`YYYY/MM/DD hh:mm`),
+        };
+        callback(comment);
+        this.reset();
+      }
+    });
   }
 }
 

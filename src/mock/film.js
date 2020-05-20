@@ -1,4 +1,4 @@
-import {getRandomDate, getRandomArrayElements, getRandomArrayItem, getRandomIntegerNumber} from '../utils.js';
+import {getRandomDate, getRandomArrayElements, getRandomArrayItem, getRandomIntegerNumber} from '../utils/utils.js';
 
 const FILM_NAMES = [
   `Достучаться до небес`,
@@ -207,12 +207,13 @@ const FILM_AGES = [`0+`, `6+`, `12+`, `16+`, `18+`];
 
 const generateFilmCard = () => {
   return {
+    id: getRandomIntegerNumber(1000000000, 9999999999),
     name: getRandomArrayItem(FILM_NAMES),
     poster: getRandomArrayItem(FILM_POSTERS),
     description: getRandomArrayElements(FILM_DESCRIPTIONS, 1, 5).join(` `), // 1-5 строк
     comments: getRandomArrayElements(FILM_COMMENTS, 0, 5), // 0 - 5 комментариев
     rating: getRandomIntegerNumber(4, 10),
-    releaseDate: getRandomDate(1970, 2020), // getRandomIntegerNumber(1990, 2020),
+    releaseDate: getRandomDate(2015, 2020), // getRandomIntegerNumber(1990, 2020),
     duration: getRandomIntegerNumber(70, 180),
     genres: getRandomArrayElements(FILM_GENRES, 1, 3),
     isInFavorites: Math.random() > 0.5,
@@ -230,6 +231,17 @@ const generateFilmCard = () => {
 
 export const generateFilmCards = (count) => {
   return new Array(count).fill(``).map(generateFilmCard);
+};
+
+export const getComments = (films) => {
+  const array = [];
+  films.forEach((film) => {
+    array.push({
+      id: film.id,
+      comments: film.comments,
+    });
+  });
+  return array;
 };
 
 export {FILM_GENRES};

@@ -1,5 +1,5 @@
 import {FILM_GENRES} from '../mock/film.js';
-import {getUserTitle} from '../utils.js';
+import {getUserTitle} from '../utils/utils.js';
 import AbstractComponent from './abstract-component.js';
 
 const createStatisticTemplate = (films) => {
