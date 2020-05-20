@@ -219,6 +219,7 @@ const generateFilmCard = () => {
     isInFavorites: Math.random() > 0.5,
     isInWatchlist: Math.random() > 0.5,
     isInHistory: Math.random() > 0.5,
+    watchingDate: getRandomDate(2018, 2020),
     additional: {
       age: getRandomArrayItem(FILM_AGES),
       director: getRandomArrayItem(FILM_DIRECTORS),

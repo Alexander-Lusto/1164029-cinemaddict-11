@@ -211,4 +211,14 @@ export default class PageController {
     this._onSortTypeChange(SortType.DEFAULT);
     this._updateFilms(FILM_CARDS_SHOWING_ON_START);
   }
+
+  hide() {
+    this._sortComponent.hide();
+    this._filmsComponent.hide();
+  }
+
+  show() {
+    this._sortComponent.show();
+    this._filmsComponent.show();
+  }
 }

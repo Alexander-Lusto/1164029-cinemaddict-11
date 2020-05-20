@@ -7,7 +7,7 @@ const createFilterMarkup = (filtersArray) => {
     return (
       `<a href="#${address}"
          data-filter-type="${name}"
-         class="main-navigation__item ${checked ? `main-navigation__item--active` : ``}">
+         class="main-navigation__item${checked ? ` main-navigation__item--active` : ``}">
          ${name}
          ${name === FilterType.ALL ? `` : `<span  class="main-navigation__item-count" data-filter-type="${name}">${count}</span>`}
       </a>`
@@ -16,14 +16,10 @@ const createFilterMarkup = (filtersArray) => {
 };
 
 const createFilterTemplate = (filtersArray) => {
-
   return (
-    `<nav class="main-navigation">
-      <div class="main-navigation__items">
-        ${createFilterMarkup(filtersArray)}
-      </div>
-      <a href="#stats" class="main-navigation__additional">Stats</a>
-    </nav>`
+    `<div class="main-navigation__items">
+      ${createFilterMarkup(filtersArray)}
+    </div>`
   );
 };
 
@@ -38,7 +34,7 @@ export default class Filter extends AbstractComponent {
     return createFilterTemplate(this._filters);
   }
 
-  setFilterChangeHandler(handler) {
+  setFilterChangeHandler(callback) {
 
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
@@ -47,7 +43,7 @@ export default class Filter extends AbstractComponent {
         return;
       }
 
-      handler(evt.target.dataset.filterType);
+      callback(evt.target.dataset.filterType);
     });
   }
 }
