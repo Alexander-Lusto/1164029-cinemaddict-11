@@ -199,8 +199,6 @@ const FILM_COUNTRIES = [
   `Испания`,
   `Италия`,
   `Польша`,
-  `Беларусь`,
-  `Украина`,
 ];
 
 const FILM_AGES = [`0+`, `6+`, `12+`, `16+`, `18+`];
@@ -215,11 +213,11 @@ const generateFilmCard = () => {
     rating: getRandomIntegerNumber(4, 10),
     releaseDate: getRandomDate(2015, 2020), // getRandomIntegerNumber(1990, 2020),
     duration: getRandomIntegerNumber(70, 180),
-    genres: getRandomArrayElements(FILM_GENRES, 1, 3),
+    genres: getRandomArrayElements(FILM_GENRES, 1, 1),
     isInFavorites: Math.random() > 0.5,
     isInWatchlist: Math.random() > 0.5,
     isInHistory: Math.random() > 0.5,
-    watchingDate: getRandomDate(2018, 2020),
+    watchingDate: getRandomDate(2020, 2020),
     additional: {
       age: getRandomArrayItem(FILM_AGES),
       director: getRandomArrayItem(FILM_DIRECTORS),

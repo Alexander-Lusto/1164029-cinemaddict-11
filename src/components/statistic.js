@@ -1,76 +1,18 @@
 import {FILM_GENRES} from '../mock/film.js';
 import {getUserTitle} from '../utils/utils.js';
-import AbstractComponent from './abstract-component.js';
+import AbstractSmartComponent from './abstract-smart-component.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-/* const renderChart = (statisticCtx) => {
-  // const BAR_HEIGHT = 50;
-  // const statisticCtx = document.querySelector(`.statistic__chart`);
+const TimePeriod = {
+  ALL_TIME: `all-time`,
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`,
+};
 
-  // Обязательно рассчитайте высоту canvas, она зависит от количества элементов диаграммы
-  // statisticCtx.height = BAR_HEIGHT * 5;
-
-  const new Chart(statisticCtx, {
-    plugins: [ChartDataLabels],
-    type: `horizontalBar`,
-    data: {
-      labels: [`Sci-Fi`, `Animation`, `Fantasy`, `Comedy`, `TV Series`], // передать наши жанры сюда
-      datasets: [{
-        data: [11, 8, 7, 4, 3],
-        backgroundColor: `#ffe800`,
-        hoverBackgroundColor: `#ffe800`,
-        anchor: `start`
-      }]
-    },
-    options: {
-      plugins: {
-        datalabels: {
-          font: {
-            size: 20
-          },
-          color: `#ffffff`,
-          anchor: `start`,
-          align: `start`,
-          offset: 40,
-        }
-      },
-      scales: {
-        yAxes: [{
-          ticks: {
-            fontColor: `#ffffff`,
-            padding: 100,
-            fontSize: 20
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false
-          },
-          barThickness: 24
-        }],
-        xAxes: [{
-          ticks: {
-            display: false,
-            beginAtZero: true
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false
-          },
-        }],
-      },
-      legend: {
-        display: false
-      },
-      tooltips: {
-        enabled: false
-      }
-    }
-  });
-}; */
-
-
-const createStatisticTemplate = (films) => {
+const createStatisticTemplate = (films, activeItem) => {
   const statistic = getStatisticInfo(films);
   const {watched, duration, topGenre} = statistic;
   const title = getUserTitle(films);
@@ -86,19 +28,24 @@ const createStatisticTemplate = (films) => {
         <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
           <p class="statistic__filters-description">Show stats:</p>
 
-          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" checked>
+          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time"
+          ${activeItem === TimePeriod.ALL_TIME ? `checked` : ``}>
           <label for="statistic-all-time" class="statistic__filters-label">All time</label>
 
-          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today">
+          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today"
+          ${activeItem === TimePeriod.TODAY ? `checked` : ``}>
           <label for="statistic-today" class="statistic__filters-label">Today</label>
 
-          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week">
+          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week"
+          ${activeItem === TimePeriod.WEEK ? `checked` : ``}>
           <label for="statistic-week" class="statistic__filters-label">Week</label>
 
-          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month">
+          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month"
+          ${activeItem === TimePeriod.MONTH ? `checked` : ``}>
           <label for="statistic-month" class="statistic__filters-label">Month</label>
 
-          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year">
+          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year"
+          ${activeItem === TimePeriod.YEAR ? `checked` : ``}>
           <label for="statistic-year" class="statistic__filters-label">Year</label>
         </form>
 
@@ -208,21 +155,30 @@ const getGenresNumberSortedByWatches = ((films) => { // взять количе�
   return genreRateArray;
 });
 
-export default class Statistic extends AbstractComponent {
-  constructor(films) {
-    super();
-    this._films = films;
+const getFilmsByPeriod = (allFilms, dateFrom) => {
+  return allFilms.filter((film) => {
+    return film.watchingDate > dateFrom;
+  });
+};
 
-    // super.rerender();
-    this._sortedGenres = getGenresSortedByWatches(this._films);
-    this._sortedGenresNumber = getGenresNumberSortedByWatches(this._films);
+export default class Statistic extends AbstractSmartComponent {
+  constructor(moviesModel) {
+    super();
+    this._moviesModel = moviesModel;
+
+    this._films = this._moviesModel.moviesAll;
+    this._activeItem = TimePeriod.ALL_TIME;
+
+
+    this._sortedGenres = getGenresSortedByWatches(this._moviesModel.moviesAll);
+    this._sortedGenresNumber = getGenresNumberSortedByWatches(this._moviesModel.moviesAll);
 
     this._renderCharts();
+    this._onPeriodChange();
   }
 
   getTemplate() {
-    console.log(this._films);
-    return createStatisticTemplate(this._films);
+    return createStatisticTemplate(this._films, this._activeItem);
   }
 
   _renderStatistics() {
@@ -297,11 +253,65 @@ export default class Statistic extends AbstractComponent {
   _resetCharts() {
     if (this._statisticsChart) {
       this._statisticsChart.destroy();
-      this._statisticsChart = null;
+      this._sortedGenres = null;
+      this._sortedGenresNumber = null;
     }
   }
 
-  onPeriodChange() {
-    this.getElement().querySelector(`form`);
+  _onPeriodChange() {
+    this.getElement().querySelector(`form`).addEventListener(`change`, (evt) => {
+      console.log(evt.target.value);
+
+      switch (evt.target.value) {
+        case TimePeriod.ALL_TIME:
+          this._activeItem = TimePeriod.ALL_TIME;
+          this.rerender(this._moviesModel.moviesAll);
+          break;
+
+        case TimePeriod.TODAY:
+          this._activeItem = TimePeriod.TODAY;
+          const today = new Date(new Date() - new Date().getHours() * 60 * 60 * 1000 - new Date().getMinutes() * 60 * 1000 - new Date().getSeconds() * 1000); // c 00: 00 сегодняшнего дня
+          this.rerender(getFilmsByPeriod(this._moviesModel.moviesAll, today));
+          break;
+
+        case TimePeriod.WEEK:
+          this._activeItem = TimePeriod.WEEK;
+          const week = new Date(new Date() - 7 * 24 * 60 * 60 * 1000);
+          this.rerender(getFilmsByPeriod(this._moviesModel.moviesAll, week));
+          break;
+
+        case TimePeriod.MONTH:
+          this._activeItem = TimePeriod.MONTH;
+          const month = new Date(new Date() - 30 * 24 * 60 * 60 * 1000);
+          this.rerender(getFilmsByPeriod(this._moviesModel.moviesAll, month));
+          break;
+
+        case TimePeriod.YEAR:
+          this._activeItem = TimePeriod.YEAR;
+          const year = new Date(new Date() - 365 * 24 * 60 * 60 * 1000);
+          this.rerender(getFilmsByPeriod(this._moviesModel.moviesAll, year));
+          break;
+      }
+    });
+
   }
+
+  recoveryListeners() { // ?
+    this._onPeriodChange();
+  }
+
+  rerender(films) {
+    this._films = films;
+    this._sortedGenres = getGenresSortedByWatches(films);
+    this._sortedGenresNumber = getGenresNumberSortedByWatches(films);
+    super.rerender();
+    this._renderCharts();
+  }
+
+  show() {
+    super.show();
+
+    this.rerender(this._moviesModel.moviesAll);
+  }
+
 }

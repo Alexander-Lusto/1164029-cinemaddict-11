@@ -39,7 +39,7 @@ const mainNavigation = main.querySelector(`.main-navigation`);
 const filterController = new FilterController(mainNavigation, moviesModel);
 filterController.render();
 
-const statisticsComponent = new StatisticComponent(moviesModel.moviesAll);
+const statisticsComponent = new StatisticComponent(moviesModel);
 render(main, statisticsComponent, RenderPosition.BEFOREEND);
 
 const pageController = new PageController(moviesModel, commentsModel);
