@@ -12,12 +12,12 @@ const TimePeriod = {
   YEAR: `year`,
 };
 
-const createStatisticTemplate = (films, activeItem) => {
+const createStatisticTemplate = (films, activeItem, isStatisticsHidden) => {
   const statistic = getStatisticInfo(films);
   const {watched, duration, topGenre} = statistic;
   const title = getUserTitle(films);
   return (
-    `<section class="statistic">
+    `<section class="statistic ${isStatisticsHidden ? `visually-hidden` : ``}">
       ${title ? `
         <p class="statistic__rank">
           Your rank
@@ -168,6 +168,7 @@ export default class Statistic extends AbstractSmartComponent {
 
     this._films = this._moviesModel.moviesAll;
     this._activeItem = TimePeriod.ALL_TIME;
+    this._isStatisticsHidden = true;
 
 
     this._sortedGenres = getGenresSortedByWatches(this._moviesModel.moviesAll);
@@ -178,7 +179,7 @@ export default class Statistic extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createStatisticTemplate(this._films, this._activeItem);
+    return createStatisticTemplate(this._films, this._activeItem, this._isStatisticsHidden);
   }
 
   _renderStatistics() {
@@ -260,7 +261,6 @@ export default class Statistic extends AbstractSmartComponent {
 
   _onPeriodChange() {
     this.getElement().querySelector(`form`).addEventListener(`change`, (evt) => {
-      console.log(evt.target.value);
 
       switch (evt.target.value) {
         case TimePeriod.ALL_TIME:
@@ -296,7 +296,7 @@ export default class Statistic extends AbstractSmartComponent {
 
   }
 
-  recoveryListeners() { // ?
+  recoveryListeners() {
     this._onPeriodChange();
   }
 
@@ -309,8 +309,8 @@ export default class Statistic extends AbstractSmartComponent {
   }
 
   show() {
+    this._isStatisticsHidden = false;
     super.show();
-
     this.rerender(this._moviesModel.moviesAll);
   }
 

@@ -42,6 +42,8 @@ export default class Filter extends AbstractComponent {
       if (evt.target.tagName !== `A` && evt.target.tagName !== `SPAN`) {
         return;
       }
+      const menuItem = document.querySelector(`.main-navigation__additional`);
+      menuItem.classList.remove(`main-navigation__item--active`);
 
       callback(evt.target.dataset.filterType);
     });

@@ -29,9 +29,16 @@ export default class Menu extends AbstractComponent {
         return;
       }
 
-      const menuItem = evt.target.className;
-      // console.log(menuItem);
-      callback(menuItem);
+      if (evt.target.className === `main-navigation__additional`) { // сбросить активный класс с фильтра
+        const filterItems = document.querySelectorAll(`.main-navigation__item`);
+        for (let i = 0; i < filterItems.length; i++) {
+          filterItems[i].classList.remove(`main-navigation__item--active`);
+        }
+      }
+
+      const menuItem = evt.target;
+      callback(menuItem.className);
+      menuItem.classList.add(`main-navigation__item--active`); // повесить активный класс на статистику
     });
   }
 }
