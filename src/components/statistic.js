@@ -11,14 +11,6 @@ const TimePeriod = {
   MONTH: `month`,
   YEAR: `year`,
 };
-const createGenresMarkup = (genres) => {
-
-  return genres.map((genre) => {
-    return (
-      `<span class="film-details__genre">${genre}</span>`
-    );
-  }).join(`\n`);
-};
 
 const getFiltersMarkup = (timePeriod, isChecked) => {
   const filters = Object.values(timePeriod);
