@@ -10,10 +10,9 @@ import StatisticComponent from './components/statistic.js';
 import MenuComponent from './components/menu.js';
 
 export const MenuItem = {
-  FILTER_ITEM: `main-navigation__item`,
-  STATISTICS: `main-navigation__additional`,
+  FILMS: `films`,
+  STATS: `stats`,
 };
-
 
 const FILM_CARDS_COUNT = 25;
 
@@ -40,6 +39,7 @@ const filterController = new FilterController(mainNavigation, moviesModel);
 filterController.render();
 
 const statisticsComponent = new StatisticComponent(moviesModel);
+statisticsComponent.hide();
 render(main, statisticsComponent, RenderPosition.BEFOREEND);
 
 const pageController = new PageController(moviesModel, commentsModel);
@@ -50,12 +50,12 @@ render(footer, new FooterStatisticComponent(FILM_CARDS_COUNT), RenderPosition.BE
 menuComponent.setOnChange((menuItem) => {
 
   switch (menuItem) {
-    case MenuItem.FILTER_ITEM:
+    case MenuItem.FILMS:
       statisticsComponent.hide();
       pageController.show();
       break;
 
-    case MenuItem.STATISTICS:
+    case MenuItem.STATS:
       pageController.hide();
       statisticsComponent.show();
       break;

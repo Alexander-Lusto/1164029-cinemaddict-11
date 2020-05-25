@@ -11,13 +11,35 @@ const TimePeriod = {
   MONTH: `month`,
   YEAR: `year`,
 };
+const createGenresMarkup = (genres) => {
 
-const createStatisticTemplate = (films, activeItem, isStatisticsHidden) => {
+  return genres.map((genre) => {
+    return (
+      `<span class="film-details__genre">${genre}</span>`
+    );
+  }).join(`\n`);
+};
+
+const getFiltersMarkup = (timePeriod, isChecked) => {
+  const filters = Object.values(timePeriod);
+
+  return filters.map((filter) => {
+    const filterLabel = (filter.charAt(0).toUpperCase() + filter.slice(1)).replace(`-`, ` `);
+
+    return `<input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter"
+            id="statistic-${filter}" value="${filter}" ${filter === isChecked ? `checked` : ``}>
+            <label for="statistic-${filter}" class="statistic__filters-label">${filterLabel}</label>`;
+  }).join(`\n`);
+};
+
+const createStatisticTemplate = (films, activeItem) => {
   const statistic = getStatisticInfo(films);
   const {watched, duration, topGenre} = statistic;
   const title = getUserTitle(films);
+  const filtersMarkup = getFiltersMarkup(TimePeriod, activeItem);
+
   return (
-    `<section class="statistic ${isStatisticsHidden ? `visually-hidden` : ``}">
+    `<section class="statistic">
       ${title ? `
         <p class="statistic__rank">
           Your rank
@@ -27,26 +49,7 @@ const createStatisticTemplate = (films, activeItem, isStatisticsHidden) => {
 
         <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
           <p class="statistic__filters-description">Show stats:</p>
-
-          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time"
-          ${activeItem === TimePeriod.ALL_TIME ? `checked` : ``}>
-          <label for="statistic-all-time" class="statistic__filters-label">All time</label>
-
-          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today"
-          ${activeItem === TimePeriod.TODAY ? `checked` : ``}>
-          <label for="statistic-today" class="statistic__filters-label">Today</label>
-
-          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week"
-          ${activeItem === TimePeriod.WEEK ? `checked` : ``}>
-          <label for="statistic-week" class="statistic__filters-label">Week</label>
-
-          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month"
-          ${activeItem === TimePeriod.MONTH ? `checked` : ``}>
-          <label for="statistic-month" class="statistic__filters-label">Month</label>
-
-          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year"
-          ${activeItem === TimePeriod.YEAR ? `checked` : ``}>
-          <label for="statistic-year" class="statistic__filters-label">Year</label>
+          ${filtersMarkup}
         </form>
 
         <ul class="statistic__text-list">
@@ -168,8 +171,6 @@ export default class Statistic extends AbstractSmartComponent {
 
     this._films = this._moviesModel.moviesAll;
     this._activeItem = TimePeriod.ALL_TIME;
-    this._isStatisticsHidden = true;
-
 
     this._sortedGenres = getGenresSortedByWatches(this._moviesModel.moviesAll);
     this._sortedGenresNumber = getGenresNumberSortedByWatches(this._moviesModel.moviesAll);
@@ -179,7 +180,7 @@ export default class Statistic extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createStatisticTemplate(this._films, this._activeItem, this._isStatisticsHidden);
+    return createStatisticTemplate(this._films, this._activeItem);
   }
 
   _renderStatistics() {
@@ -309,8 +310,8 @@ export default class Statistic extends AbstractSmartComponent {
   }
 
   show() {
-    this._isStatisticsHidden = false;
     super.show();
+    this._activeItem = TimePeriod.ALL_TIME;
     this.rerender(this._moviesModel.moviesAll);
   }
 

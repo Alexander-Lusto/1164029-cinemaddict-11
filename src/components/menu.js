@@ -1,10 +1,13 @@
-import AbstractComponent from "./abstract-component";
+import AbstractComponent from './abstract-component.js';
+import {MenuItem} from '../main.js';
+
+export const NAVIGATION_ACTIVE = `main-navigation__item--active`;
 
 const createMenuTemplate = () => {
 
   return (
     `<nav class="main-navigation">
-      <a href="#stats" class="main-navigation__additional">Stats</a>
+      <a href="#stats" id="${MenuItem.STATS}" class="main-navigation__additional">Stats</a>
     </nav>`
   );
 };
@@ -25,20 +28,20 @@ export default class Menu extends AbstractComponent {
 
   setOnChange(callback) {
     this.getElement().addEventListener(`click`, (evt) => {
-      if (evt.target.tagName !== `A`) {
+      if (evt.target.tagName !== `A` && evt.target.tagName !== `SPAN`) {
         return;
       }
 
-      if (evt.target.className === `main-navigation__additional`) { // сбросить активный класс с фильтра
-        const filterItems = document.querySelectorAll(`.main-navigation__item`);
-        for (let i = 0; i < filterItems.length; i++) {
-          filterItems[i].classList.remove(`main-navigation__item--active`);
+      if (evt.target.id === MenuItem.STATS) { // сбросить активный класс с фильтра
+        const filmsNavigationItems = document.querySelectorAll(`#${MenuItem.FILMS}`);
+        for (let i = 0; i < filmsNavigationItems.length; i++) {
+          filmsNavigationItems[i].classList.remove(NAVIGATION_ACTIVE);
         }
       }
 
-      const menuItem = evt.target;
-      callback(menuItem.className);
-      menuItem.classList.add(`main-navigation__item--active`); // повесить активный класс на статистику
+      const statisticMenuItem = evt.target;
+      callback(statisticMenuItem.id);
+      statisticMenuItem.classList.add(NAVIGATION_ACTIVE); // повесить активный класс на статистику
     });
   }
 }
