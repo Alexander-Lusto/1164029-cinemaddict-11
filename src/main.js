@@ -6,7 +6,13 @@ import PageController from './controllers/page-controller.js';
 import MoviesModel from './models/movies.js';
 import CommentsModel from './models/comments.js';
 import FilterController from './controllers/filter-controller.js';
-/* import StatisticComponent from './components/statistic.js'; */
+import StatisticComponent from './components/statistic.js';
+import MenuComponent from './components/menu.js';
+
+export const MenuItem = {
+  FILMS: `films`,
+  STATS: `stats`,
+};
 
 const FILM_CARDS_COUNT = 25;
 
@@ -24,13 +30,35 @@ moviesModel.setMovies(filmsArray);
 commentsModel.setComments(commentsArray);
 
 render(header, new UserTitleComponent(filmsArray), RenderPosition.BEFOREEND);
+const menuComponent = new MenuComponent();
+render(main, menuComponent, RenderPosition.BEFOREEND);
 
-const filterController = new FilterController(main, moviesModel);
+const mainNavigation = main.querySelector(`.main-navigation`);
+
+const filterController = new FilterController(mainNavigation, moviesModel);
 filterController.render();
+
+const statisticsComponent = new StatisticComponent(moviesModel);
+statisticsComponent.hide();
+render(main, statisticsComponent, RenderPosition.BEFOREEND);
 
 const pageController = new PageController(moviesModel, commentsModel);
 pageController.render();
 
 render(footer, new FooterStatisticComponent(FILM_CARDS_COUNT), RenderPosition.BEFOREEND);
 
+menuComponent.setOnChange((menuItem) => {
+
+  switch (menuItem) {
+    case MenuItem.FILMS:
+      statisticsComponent.hide();
+      pageController.show();
+      break;
+
+    case MenuItem.STATS:
+      pageController.hide();
+      statisticsComponent.show();
+      break;
+  }
+});
 

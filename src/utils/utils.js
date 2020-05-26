@@ -16,12 +16,19 @@ export const getUserTitle = (films) => {
 
 export const getRandomDate = (yearMin, yearMax) => {
   const targetDate = new Date();
-  const year = getRandomIntegerNumber(yearMin, yearMax);
-  const month = getRandomIntegerNumber(1, 12);
-  const day = getRandomIntegerNumber(1, 30);
+
+  let year = getRandomIntegerNumber(yearMin, yearMax);
+  let month;
+  let day;
+  if (year === targetDate.getFullYear()) {
+    month = getRandomIntegerNumber(1, targetDate.getMonth());
+    day = getRandomIntegerNumber(1, targetDate.getDate());
+  } else {
+    month = getRandomIntegerNumber(1, 12);
+    day = getRandomIntegerNumber(1, 30);
+  }
 
   targetDate.setFullYear(year, month, day);
-
   return targetDate;
 };
 
