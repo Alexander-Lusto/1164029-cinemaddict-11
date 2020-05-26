@@ -35,8 +35,7 @@ const createGenresMarkup = (genres) => {
 };
 
 const createFilmDetailsTemplate = (film, filmComments) => {
-  const {name, poster, description, rating, releaseDate, duration, genres, isInWatchlist, isInHistory, isInFavorites} = film;
-  const {age, director, writers, actors, country} = film.additional;
+  const {name, poster, description, rating, releaseDate, duration, genres, age, director, writers, actors, country, isInWatchlist, isInHistory, isInFavorites} = film;
   const {comments} = filmComments;
 
   const commentsMarkup = createCommentsMarkup(comments);

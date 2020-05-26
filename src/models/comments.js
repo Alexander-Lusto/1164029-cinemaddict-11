@@ -13,6 +13,12 @@ export default class Comments {
     this._callHandlers(this._dataChangeHandlers);
   }
 
+  addComment(comment) {
+    console.log(this._comments);
+    this._comments = this._comments.concat(comment).sort((a, b) => Number(a.id) < Number(b.id));
+    this._callHandlers(this._dataChangeHandlers);
+  }
+
   updateComments(id, comments) {
     const index = this._comments.findIndex((it) => it.id === id);
 

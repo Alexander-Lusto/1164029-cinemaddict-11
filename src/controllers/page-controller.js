@@ -84,6 +84,8 @@ export default class PageController {
   render() {
     this._films = this._moviesModel.getMovies();
     this._comments = this._commentsModel.getComments();
+    console.log(`this._comments`);
+    console.log(this._comments);
 
     const currentFilmsArray = this._films.slice(0, this._showingCardsCount);
 
