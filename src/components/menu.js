@@ -28,6 +28,7 @@ export default class Menu extends AbstractComponent {
 
   setOnChange(callback) {
     this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
       if (evt.target.tagName !== `A` && evt.target.tagName !== `SPAN`) {
         return;
       }
