@@ -7,7 +7,6 @@ import MoviesModel from './models/movies.js';
 import PageController from './controllers/page-controller.js';
 import StatisticComponent from './components/statistic.js';
 import UserTitleComponent from './components/user-title.js';
-import {generateFilmCards, getComments} from './mock/film.js';
 import {RenderPosition, render} from './utils/render.js';
 
 export const AUTHORIZATION = `Basic $%a113678133a2#a%@^sa&@67878df&*sdf#d678fsf@^#d678fddfs&=`;
@@ -17,23 +16,16 @@ export const MenuItem = {
   STATS: `stats`,
 };
 
-const FILM_CARDS_COUNT = 0;
-
 const main = document.querySelector(`.main`);
 const header = document.querySelector(`.header`);
 const footer = document.querySelector(`.footer`);
 
 const api = new API(AUTHORIZATION);
-const filmsArray = generateFilmCards(FILM_CARDS_COUNT);
-const commentsArray = getComments(filmsArray);
 
 const moviesModel = new MoviesModel();
 const commentsModel = new CommentsModel();
 
-// moviesModel.setMovies(filmsArray);
-//commentsModel.setComments(commentsArray);
 
-render(header, new UserTitleComponent(filmsArray), RenderPosition.BEFOREEND);
 const menuComponent = new MenuComponent();
 render(main, menuComponent, RenderPosition.BEFOREEND);
 
@@ -69,11 +61,12 @@ api.getFilms()
   .then((films) => {
     moviesModel.setMovies(films);
     pageController.removePreloader();
+    render(header, new UserTitleComponent(films), RenderPosition.BEFOREEND);
     pageController.render();
     render(footer, new FooterStatisticComponent(moviesModel), RenderPosition.BEFOREEND);
   })
-  /* .catch(() => {
+  .catch(() => {
     pageController.removePreloader();
     pageController.render();
     render(footer, new FooterStatisticComponent(moviesModel), RenderPosition.BEFOREEND);
-  }); */
+  });

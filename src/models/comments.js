@@ -31,13 +31,6 @@ export default class Comments {
     return true;
   }
 
-  removeComment(id) {
-    /* const oldComments = this._comments;
-    const newComments = cloneDeep(this._comments);
-    newComment.comments.splice(index, 1);
-    this._onCommentsChange(this, oldComments, newComments, film); */
-  }
-
   setDataChangeHandlers(handler) {
     this._dataChangeHandler.push(handler);
   }

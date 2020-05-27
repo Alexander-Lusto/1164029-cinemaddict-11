@@ -3,9 +3,7 @@ import moment from 'moment';
 import he from 'he';
 
 const createCommentsMarkup = (comments) => {
-  console.log(comments);
   return comments.map((comment) => {
-    console.log(comment);
     return (
       `
             </li>

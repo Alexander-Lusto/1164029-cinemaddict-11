@@ -1,5 +1,13 @@
 import Movie from './models/movie.js';
 
+const checkStatus = (response) => {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  } else {
+    throw new Error(`${response.status}: ${response.statusText}`);
+  }
+};
+
 export default class API {
   constructor(authorization) {
     this._authorization = authorization;
@@ -9,14 +17,8 @@ export default class API {
     headers.append(`Authorization`, this._authorization);
 
     return fetch(`https://11.ecmascript.pages.academy/cinemaddict/movies`, {headers})
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else if (response.status === 404) {
-          return [];
-        }
-        throw new Error(`Неизвестный статус: ${response.status} ${response.statusText}`);
-      })
+      .then(checkStatus)
+      .then((response) => response.json())
       .then(Movie.parseMovies);
   }
 
@@ -25,6 +27,7 @@ export default class API {
     headers.append(`Authorization`, this._authorization);
 
     return fetch(`https://11.ecmascript.pages.academy/cinemaddict/comments/${filmId}`, {headers})
+      .then(checkStatus)
       .then((response) => response.json());
   }
 
@@ -38,8 +41,9 @@ export default class API {
       body: JSON.stringify(data.toRAW()),
       headers,
     })
+      .then(checkStatus)
       .then((response) => response.json())
-      .then(Movie.parseMovies);
+      .then(Movie.parseMovie);
   }
 }
 

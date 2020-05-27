@@ -47,6 +47,8 @@ export default class MovieController {
   _сlosePopupOnEscPress(evt) {
     if (evt.keyCode === 27) {
       this._onViewChange();
+
+      this._mode = Mode.CLOSED;
     }
   }
 
@@ -73,12 +75,13 @@ export default class MovieController {
     // отрисовать сам попап
     appendChild(BODY, this._filmDetailsComponent);
 
-    // удалить обработчик
+    // повесть обработчик
     document.addEventListener(`keydown`, this._сlosePopupOnEscPress);
   }
 
   _closePopupOnClick() {
     this._onViewChange();
+    this._mode = Mode.CLOSED;
   }
 
   render(film) {
@@ -92,6 +95,24 @@ export default class MovieController {
 
     this._filmCardComponent.setClickHandler(this._showPopupOnClick);
     this._filmDetailsComponent.setClickHandler(this._closePopupOnClick);
+
+    if (this._mode === Mode.OPEN) {
+      // получить комментарии с сервера
+      this._api.getComments(this._film.id)
+      .then((comments) => {
+        this._commentsModel = new CommentsModel();
+        this._commentsModel.setComments(comments);
+        this._filmDetailsCommentsComponent = new FilmDetailsСommentsComponent(this._commentsModel);
+
+        // отрисовать загруженные комментарии
+        const bottomContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
+        appendChild(bottomContainer, this._filmDetailsCommentsComponent);
+
+        // отрисовать добавление комментария
+        const newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-wrap`);
+        appendChild(newCommentContainer, this._filmDetailsNewCommentComponent);
+      });
+    }
 
     this._filmCardComponent.setAddToWatchlistButtonHandler((evt) => {
       evt.preventDefault();
@@ -113,7 +134,6 @@ export default class MovieController {
 
     this._filmCardComponent.setAddToFavoriteButtonHandler((evt) => {
       evt.preventDefault();
-      debugger;
       const newFilm = MovieModel.clone(film);
       newFilm.isInFavorites = !newFilm.isInFavorites;
 
@@ -146,13 +166,6 @@ export default class MovieController {
         this._onCommentsChange(this, oldComments, newComments, film);
       }
     });
-
-    /* this._filmDetailsComponent.setDeleteButtonHandler((index) => {
-      const oldComments = this._comments;
-      const newComments = cloneDeep(this._comments);
-      newComments.comments.splice(index, 1);
-      this._onCommentsChange(this, oldComments, newComments, film);
-    }); */
 
     if (oldFilmCardComponent && oldFilmDetailsComponent) {
       replace(this._filmCardComponent, oldFilmCardComponent);

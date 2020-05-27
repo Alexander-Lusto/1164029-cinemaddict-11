@@ -2,7 +2,8 @@ export default class Movie {
   constructor(data) {
     this.id = data[`id`];
     this.comments = data[`comments`];
-    this.name = data[`film_info`][`title`];
+    this.name = data[`film_info`][`title`]; // alternative_title: "Country Who Stole The Darkness"
+    this.originalName = data[`film_info`][`alternative_title`];
     this.poster = data[`film_info`][`poster`];
     this.description = data[`film_info`][`description`];
     this.rating = data[`film_info`][`total_rating`];
@@ -21,33 +22,32 @@ export default class Movie {
   }
 
   toRAW() {
-    console.log(this.releaseDate);
-
     return {
       'id': this.id,
-      'comments': this.comments,
       'film_info': {
         'title': this.name,
-        'poster': this.poster,
-        'description': this.description,
+        'alternative_title': this.originalName,
         'total_rating': this.rating,
+        'poster': this.poster,
+        'age_rating': this.age,
+        'director': this.director,
+        'writers': this.writers,
+        'actors': this.actors,
         'release': {
           'date': this.releaseDate.toISOString(),
           'release_country': this.country,
         },
         'runtime': this.duration,
+        'description': this.description,
         'genre': this.genres,
-        'age_rating': this.age,
-        'director': this.director,
-        'writers': this.writers,
-        'actors': this.actors,
       },
       'user_details': {
-        'favorite': this.isInFavorites,
         'already_watched': this.isInHistory,
+        'favorite': this.isInFavorites,
+        'watching_date': this.watchingDate.toISOString(),
         'watchlist': this.isInWatchlist,
-        'wathcing_date': this.releaseDate.toISOString(), // потом верну
-      }
+      },
+      'comments': this.comments,
     };
   }
 
@@ -56,7 +56,6 @@ export default class Movie {
   }
 
   static parseMovies(data) {
-    console.log(data);
     return data.map(Movie.parseMovie);
   }
 

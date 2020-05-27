@@ -2,16 +2,19 @@ import AbstractSmartComponent from "./abstract-smart-component";
 import moment from 'moment';
 
 const createGenresMarkup = (genres) => {
-
-  return genres.map((genre) => {
-    return (
-      `<span class="film-details__genre">${genre}</span>`
-    );
-  }).join(`\n`);
+  if (genres) {
+    return genres.map((genre) => {
+      return (
+        `<span class="film-details__genre">${genre}</span>`
+      );
+    }).join(`\n`);
+  } else {
+    return null;
+  }
 };
 
 const createFilmDetailsTemplate = (film) => {
-  const {name, poster, description, rating, releaseDate, duration, genres, age, director, writers, actors, country, isInWatchlist, isInHistory, isInFavorites} = film;
+  const {name, originalName, poster, description, rating, releaseDate, duration, genres, age, director, writers, actors, country, isInWatchlist, isInHistory, isInFavorites} = film;
 
   const genresMarkup = createGenresMarkup(genres);
 
@@ -33,7 +36,7 @@ const createFilmDetailsTemplate = (film) => {
               <div class="film-details__info-head">
                 <div class="film-details__title-wrap">
                   <h3 class="film-details__title">${name}</h3>
-                  <p class="film-details__title-original">Original: ${name}</p>
+                  <p class="film-details__title-original">Original: ${originalName}</p>
                 </div>
 
                 <div class="film-details__rating">
@@ -69,7 +72,7 @@ const createFilmDetailsTemplate = (film) => {
                 <tr class="film-details__row">
                   <td class="film-details__term">${genres.length > 1 ? `Genres` : `Genre`}</td>
                   <td class="film-details__cell">
-                    ${genresMarkup}
+                    ${genresMarkup ? genresMarkup : ``}
                   </td>
                 </tr>
               </table>
