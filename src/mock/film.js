@@ -139,16 +139,14 @@ const FILM_COMMENTS = [
 ];
 
 const FILM_GENRES = [
-  `Ужасы`,
-  `Боевик`,
-  `Приключение`,
-  `Мюзикл`,
-  `Комедия`,
-  `Триллер`,
-  `Детектив`,
-  `Аниме`,
-  `Драмма`,
-  `Мелодрамма`,
+  `Horror`,
+  `Comedy`,
+  `Thriller`,
+  `Animation`,
+  `Family`,
+  `Adventure`,
+  `Action`,
+  `Sci-Fi`,
 ];
 
 const FILM_DIRECTORS = [

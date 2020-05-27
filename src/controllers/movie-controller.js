@@ -1,7 +1,12 @@
+import API from '../api.js';
 import FilmCardComponent from '../components/film-card.js';
 import FilmDetailsComponent from '../components/film-details.js';
+import FilmDetailsСommentsComponent from '../components/film-details-comments.js';
+import CommentsModel from '../models/comments.js';
+import MovieModel from '../models/movie.js';
 import {RenderPosition, render, removeChild, appendChild, replace, remove} from '../utils/render.js';
 import FilmDetailsNewCommentComponent from '../components/film-details-new-comment.js';
+import {AUTHORIZATION} from '../main.js';
 import {BODY} from '../const.js';
 
 const cloneDeep = require(`lodash.clonedeep`);
@@ -11,17 +16,18 @@ const Mode = {
 };
 
 export default class MovieController {
-  constructor(container, onDataChange, onViewChange, comments, onCommentsChange) {
+  constructor(film, container, onDataChange, onViewChange, onCommentsChange) {
+    this._film = film;
     this._container = container;
-    this._comments = comments;
-
     this._onCommentsChange = onCommentsChange;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
     this._mode = Mode.CLOSED;
 
+    this._api = new API(AUTHORIZATION);
     this._filmCardComponent = null;
     this._filmDetailsComponent = null;
+    this._filmDetailsCommentsComponent = null;
     this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent();
     this._newCommentContainer = null;
 
@@ -41,6 +47,8 @@ export default class MovieController {
   _сlosePopupOnEscPress(evt) {
     if (evt.keyCode === 27) {
       this._onViewChange();
+
+      this._mode = Mode.CLOSED;
     }
   }
 
@@ -48,73 +56,106 @@ export default class MovieController {
     this._onViewChange();
     this._mode = Mode.OPEN;
 
-    const newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
-    appendChild(newCommentContainer, this._filmDetailsNewCommentComponent);
+    // получить комментарии с сервера
+    this._api.getComments(this._film.id)
+      .then((comments) => {
+        this._commentsModel = new CommentsModel();
+        this._commentsModel.setComments(comments);
+        this._filmDetailsCommentsComponent = new FilmDetailsСommentsComponent(this._commentsModel);
+
+        // отрисовать загруженные комментарии
+        const bottomContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
+        appendChild(bottomContainer, this._filmDetailsCommentsComponent);
+
+        // отрисовать добавление комментария
+        const newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-wrap`);
+        appendChild(newCommentContainer, this._filmDetailsNewCommentComponent);
+      });
+
+    // отрисовать сам попап
     appendChild(BODY, this._filmDetailsComponent);
+
+    // повесть обработчик
     document.addEventListener(`keydown`, this._сlosePopupOnEscPress);
   }
 
   _closePopupOnClick() {
     this._onViewChange();
+    this._mode = Mode.CLOSED;
   }
 
-  render(film, comments) {
-    this._comments = comments;
+  render(film) {
     const oldFilmCardComponent = this._filmCardComponent;
     const oldFilmDetailsComponent = this._filmDetailsComponent;
 
-    this._filmCardComponent = new FilmCardComponent(film, this._comments);
-    this._filmDetailsComponent = new FilmDetailsComponent(film, this._comments);
+    this._filmCardComponent = new FilmCardComponent(film);
+    this._filmDetailsComponent = new FilmDetailsComponent(film);
 
     this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
 
     this._filmCardComponent.setClickHandler(this._showPopupOnClick);
     this._filmDetailsComponent.setClickHandler(this._closePopupOnClick);
 
+    if (this._mode === Mode.OPEN) {
+      // получить комментарии с сервера
+      this._api.getComments(this._film.id)
+      .then((comments) => {
+        this._commentsModel = new CommentsModel();
+        this._commentsModel.setComments(comments);
+        this._filmDetailsCommentsComponent = new FilmDetailsСommentsComponent(this._commentsModel);
+
+        // отрисовать загруженные комментарии
+        const bottomContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
+        appendChild(bottomContainer, this._filmDetailsCommentsComponent);
+
+        // отрисовать добавление комментария
+        const newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-wrap`);
+        appendChild(newCommentContainer, this._filmDetailsNewCommentComponent);
+      });
+    }
+
     this._filmCardComponent.setAddToWatchlistButtonHandler((evt) => {
       evt.preventDefault();
 
-      const oldFilm = film;
-      const newFilm = Object.assign({}, film, {isInWatchlist: !film.isInWatchlist});
+      const newFilm = MovieModel.clone(film);
+      newFilm.isInWatchlist = !newFilm.isInWatchlist;
 
-      this._onDataChange(this, oldFilm, newFilm, this._comments);
+      this._onDataChange(this, film, newFilm);
     });
 
     this._filmCardComponent.setAlreadyWatchedButtonHandler((evt) => {
       evt.preventDefault();
 
-      const oldFilm = film;
-      const newFilm = Object.assign({}, film, {isInHistory: !film.isInHistory});
+      const newFilm = MovieModel.clone(film);
+      newFilm.isInHistory = !newFilm.isInHistory;
 
-      this._onDataChange(this, oldFilm, newFilm, this._comments);
+      this._onDataChange(this, film, newFilm);
     });
 
     this._filmCardComponent.setAddToFavoriteButtonHandler((evt) => {
       evt.preventDefault();
+      const newFilm = MovieModel.clone(film);
+      newFilm.isInFavorites = !newFilm.isInFavorites;
 
-      const oldFilm = film;
-      const newFilm = Object.assign({}, film, {isInFavorites: !film.isInFavorites});
-
-      this._onDataChange(this, oldFilm, newFilm, this._comments);
+      this._onDataChange(this, film, newFilm);
     });
 
     this._filmDetailsComponent.setAddToWatchlistButtonHandler(() => {
-      const oldFilm = film;
-      const newFilm = Object.assign({}, film, {isInWatchlist: !film.isInWatchlist});
-      this._onDataChange(this, oldFilm, newFilm, this._comments);
+      const newFilm = MovieModel.clone(film);
+      newFilm.isInWatchlist = !newFilm.isInWatchlist;
+      this._onDataChange(this, film, newFilm);
     });
 
     this._filmDetailsComponent.setAlreadyWatchedButtonHandler(() => {
-      const oldFilm = film;
-      const newFilm = Object.assign({}, film, {isInHistory: !film.isInHistory});
-      this._onDataChange(this, oldFilm, newFilm, this._comments);
+      const newFilm = MovieModel.clone(film);
+      newFilm.isInHistory = !newFilm.isInHistory;
+      this._onDataChange(this, film, newFilm);
     });
 
     this._filmDetailsComponent.setAddToFavoriteButtonHandler(() => {
-      const oldFilm = film;
-      const newFilm = Object.assign({}, film, {isInFavorites: !film.isInFavorites});
-
-      this._onDataChange(this, oldFilm, newFilm, this._comments);
+      const newFilm = MovieModel.clone(film);
+      newFilm.isInFavorites = !newFilm.isInFavorites;
+      this._onDataChange(this, film, newFilm);
     });
 
     this._filmDetailsNewCommentComponent.setAddCommentHandler((comment) => {
@@ -124,13 +165,6 @@ export default class MovieController {
         newComments.comments.push(comment);
         this._onCommentsChange(this, oldComments, newComments, film);
       }
-    });
-
-    this._filmDetailsComponent.setDeleteButtonHandler((index) => {
-      const oldComments = this._comments;
-      const newComments = cloneDeep(this._comments);
-      newComments.comments.splice(index, 1);
-      this._onCommentsChange(this, oldComments, newComments, film);
     });
 
     if (oldFilmCardComponent && oldFilmDetailsComponent) {

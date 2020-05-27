@@ -1,45 +1,21 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import moment from 'moment';
-import he from 'he';
-
-const createCommentsMarkup = (comments) => {
-  return comments.map((comment) => {
-    return (
-      `
-            </li>
-            <li class="film-details__comment">
-              <span class="film-details__comment-emoji">
-                <img src="./images/emoji/${comment.emoji}.png" width="55" height="55" alt="emoji-${comment.emoji}">
-              </span>
-              <div>
-                <p class="film-details__comment-text">${he.encode(comment.text)}</p>
-                <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">${comment.author}</span>
-                  <span class="film-details__comment-day">${moment(comment.date).format(`YYYY/MM/DD hh:mm`)}</span>
-                  <button class="film-details__comment-delete">Delete</button>
-                </p>
-              </div>
-            </li>
-      `
-    );
-  }).join(`\n`);
-};
 
 const createGenresMarkup = (genres) => {
-
-  return genres.map((genre) => {
-    return (
-      `<span class="film-details__genre">${genre}</span>`
-    );
-  }).join(`\n`);
+  if (genres) {
+    return genres.map((genre) => {
+      return (
+        `<span class="film-details__genre">${genre}</span>`
+      );
+    }).join(`\n`);
+  } else {
+    return null;
+  }
 };
 
-const createFilmDetailsTemplate = (film, filmComments) => {
-  const {name, poster, description, rating, releaseDate, duration, genres, isInWatchlist, isInHistory, isInFavorites} = film;
-  const {age, director, writers, actors, country} = film.additional;
-  const {comments} = filmComments;
+const createFilmDetailsTemplate = (film) => {
+  const {name, originalName, poster, description, rating, releaseDate, duration, genres, age, director, writers, actors, country, isInWatchlist, isInHistory, isInFavorites} = film;
 
-  const commentsMarkup = createCommentsMarkup(comments);
   const genresMarkup = createGenresMarkup(genres);
 
   return (
@@ -60,7 +36,7 @@ const createFilmDetailsTemplate = (film, filmComments) => {
               <div class="film-details__info-head">
                 <div class="film-details__title-wrap">
                   <h3 class="film-details__title">${name}</h3>
-                  <p class="film-details__title-original">Original: ${name}</p>
+                  <p class="film-details__title-original">Original: ${originalName}</p>
                 </div>
 
                 <div class="film-details__rating">
@@ -96,7 +72,7 @@ const createFilmDetailsTemplate = (film, filmComments) => {
                 <tr class="film-details__row">
                   <td class="film-details__term">${genres.length > 1 ? `Genres` : `Genre`}</td>
                   <td class="film-details__cell">
-                    ${genresMarkup}
+                    ${genresMarkup ? genresMarkup : ``}
                   </td>
                 </tr>
               </table>
@@ -119,13 +95,6 @@ const createFilmDetailsTemplate = (film, filmComments) => {
           </section>
         </div>
         <div class="form-details__bottom-container">
-          <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments ? comments.length : `0`} </span></h3>
-
-            <ul class="film-details__comments-list">
-              ${commentsMarkup}
-            </ul>
-          </section>
         </div>
       </form>
     </section>`
@@ -133,11 +102,10 @@ const createFilmDetailsTemplate = (film, filmComments) => {
 };
 
 export default class FilmDetails extends AbstractSmartComponent {
-  constructor(film, comments) {
+  constructor(film) {
     super();
 
     this._film = film;
-    this._comments = comments;
   }
 
   getTemplate() {

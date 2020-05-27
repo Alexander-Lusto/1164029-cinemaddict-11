@@ -1,9 +1,8 @@
 import AbstractComponent from './abstract-component.js';
 import moment from 'moment';
 
-const createFilmCardTemplate = (film, filmComments) => {
-  const {name, poster, description, rating, releaseDate, duration, genres, isInWatchlist, isInHistory, isInFavorites} = film;
-  const {comments} = filmComments;
+const createFilmCardTemplate = (film) => {
+  const {name, poster, description, rating, releaseDate, duration, genres, isInWatchlist, isInHistory, isInFavorites, comments} = film;
 
   return (
     `<article class="film-card">
@@ -12,7 +11,7 @@ const createFilmCardTemplate = (film, filmComments) => {
         <p class="film-card__info">
           <span class="film-card__year">${moment(releaseDate).format(`YYYY`)}</span>
           <span class="film-card__duration">${moment.utc(moment.duration(duration, `minutes`).asMilliseconds()).format(`h[h] mm[m]`)}</span>
-          <span class="film-card__genre">${genres[0]}</span>
+          <span class="film-card__genre">${genres[0] ? genres[0] : ``}</span>
         </p>
         <img src="${poster}" alt="${name}" class="film-card__poster">
         <p class="film-card__description">${description}</p>
