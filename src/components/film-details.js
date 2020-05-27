@@ -1,29 +1,5 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import moment from 'moment';
-import he from 'he';
-
-const createCommentsMarkup = (comments) => {
-  return comments.map((comment) => {
-    return (
-      `
-            </li>
-            <li class="film-details__comment">
-              <span class="film-details__comment-emoji">
-                <img src="./images/emoji/${comment.emoji}.png" width="55" height="55" alt="emoji-${comment.emoji}">
-              </span>
-              <div>
-                <p class="film-details__comment-text">${he.encode(comment.text)}</p>
-                <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">${comment.author}</span>
-                  <span class="film-details__comment-day">${moment(comment.date).format(`YYYY/MM/DD hh:mm`)}</span>
-                  <button class="film-details__comment-delete">Delete</button>
-                </p>
-              </div>
-            </li>
-      `
-    );
-  }).join(`\n`);
-};
 
 const createGenresMarkup = (genres) => {
 
@@ -34,11 +10,9 @@ const createGenresMarkup = (genres) => {
   }).join(`\n`);
 };
 
-const createFilmDetailsTemplate = (film, filmComments) => {
+const createFilmDetailsTemplate = (film) => {
   const {name, poster, description, rating, releaseDate, duration, genres, age, director, writers, actors, country, isInWatchlist, isInHistory, isInFavorites} = film;
-  const {comments} = filmComments;
 
-  const commentsMarkup = createCommentsMarkup(comments);
   const genresMarkup = createGenresMarkup(genres);
 
   return (
@@ -118,13 +92,6 @@ const createFilmDetailsTemplate = (film, filmComments) => {
           </section>
         </div>
         <div class="form-details__bottom-container">
-          <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments ? comments.length : `0`} </span></h3>
-
-            <ul class="film-details__comments-list">
-              ${commentsMarkup}
-            </ul>
-          </section>
         </div>
       </form>
     </section>`
@@ -132,11 +99,10 @@ const createFilmDetailsTemplate = (film, filmComments) => {
 };
 
 export default class FilmDetails extends AbstractSmartComponent {
-  constructor(film, comments) {
+  constructor(film) {
     super();
 
     this._film = film;
-    this._comments = comments;
   }
 
   getTemplate() {

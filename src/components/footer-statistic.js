@@ -9,9 +9,9 @@ const createFooterStatisticTemplate = (moviesNumber) => {
 };
 
 export default class FooterStatistic extends AbstractComponent {
-  constructor(moviesNumber) {
+  constructor(moviesModel) {
     super();
-    this._moviesNumber = moviesNumber;
+    this._moviesNumber = moviesModel.getMovies().length;
   }
 
   getTemplate() {

@@ -14,7 +14,6 @@ export default class Comments {
   }
 
   addComment(comment) {
-    console.log(this._comments);
     this._comments = this._comments.concat(comment).sort((a, b) => Number(a.id) < Number(b.id));
     this._callHandlers(this._dataChangeHandlers);
   }
@@ -30,6 +29,13 @@ export default class Comments {
 
     this._callHandlers(this._dataChangeHandlers);
     return true;
+  }
+
+  removeComment(id) {
+    /* const oldComments = this._comments;
+    const newComments = cloneDeep(this._comments);
+    newComment.comments.splice(index, 1);
+    this._onCommentsChange(this, oldComments, newComments, film); */
   }
 
   setDataChangeHandlers(handler) {
