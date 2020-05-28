@@ -9,7 +9,8 @@ import StatisticComponent from './components/statistic.js';
 import UserTitleComponent from './components/user-title.js';
 import {RenderPosition, render} from './utils/render.js';
 
-export const AUTHORIZATION = `Basic $%a113678133a2#a%@^sa&@67878df&*sdf#d678fsf@^#d678fddfs&=`;
+const AUTHORIZATION = `Basic $%a113678133a2#a%@^sa&@67878df&*sdf#d678fsf@^#d678fddfs&=`;
+const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 
 export const MenuItem = {
   FILMS: `films`,
@@ -20,7 +21,7 @@ const main = document.querySelector(`.main`);
 const header = document.querySelector(`.header`);
 const footer = document.querySelector(`.footer`);
 
-const api = new API(AUTHORIZATION);
+const api = new API(END_POINT, AUTHORIZATION);
 
 const moviesModel = new MoviesModel();
 const commentsModel = new CommentsModel();

@@ -11,11 +11,25 @@ export default class Comments {
   setComments(comments) {
     this._comments = Array.from(comments);
     this._callHandlers(this._dataChangeHandlers);
+    return true;
+  }
+
+  removeComment(commentId) {
+    const index = this._comments.findIndex((it) => it.id === commentId);
+    if (index > 0) {
+      this._comments = [].concat(this._comments.slice(0, index), this._comments.slice(index + 1));
+    } else if (index === 0) {
+      this._comments = [].concat(this._comments.slice(0), this._comments.slice(index + 1));
+    }
+
+    this._callHandlers(this._dataChangeHandlers);
+    return true;
   }
 
   addComment(comment) {
-    this._comments = this._comments.concat(comment).sort((a, b) => Number(a.id) < Number(b.id));
+    this._comments = this._comments.push(comment);
     this._callHandlers(this._dataChangeHandlers);
+    return true;
   }
 
   updateComments(id, comments) {

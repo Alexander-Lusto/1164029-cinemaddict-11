@@ -1,4 +1,3 @@
-import API from '../api.js';
 import FilmCardComponent from '../components/film-card.js';
 import FilmDetailsComponent from '../components/film-details.js';
 import FilmDetailsСommentsComponent from '../components/film-details-comments.js';
@@ -6,8 +5,8 @@ import CommentsModel from '../models/comments.js';
 import MovieModel from '../models/movie.js';
 import {RenderPosition, render, removeChild, appendChild, replace, remove} from '../utils/render.js';
 import FilmDetailsNewCommentComponent from '../components/film-details-new-comment.js';
-import {AUTHORIZATION} from '../main.js';
 import {BODY} from '../const.js';
+import FilmDetailsComments from '../components/film-details-comments.js';
 
 const cloneDeep = require(`lodash.clonedeep`);
 const Mode = {
@@ -16,19 +15,23 @@ const Mode = {
 };
 
 export default class MovieController {
-  constructor(film, container, onDataChange, onViewChange, onCommentsChange) {
+  constructor(film, container, onDataChange, onViewChange, onCommentsChange, api) {
     this._film = film;
     this._container = container;
     this._onCommentsChange = onCommentsChange;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
+    this._api = api;
+
+    this._comments = null;
     this._mode = Mode.CLOSED;
 
-    this._api = new API(AUTHORIZATION);
     this._filmCardComponent = null;
     this._filmDetailsComponent = null;
     this._filmDetailsCommentsComponent = null;
-    this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent();
+    this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent(); // было так, чтобы при переренде сохранялась инфа
+    // this._filmDetailsNewCommentComponent = null;
+
     this._newCommentContainer = null;
 
     this._сlosePopupOnEscPress = this._сlosePopupOnEscPress.bind(this);
@@ -49,16 +52,17 @@ export default class MovieController {
       this._onViewChange();
 
       this._mode = Mode.CLOSED;
+      console.log(this._mode);
     }
   }
 
   _showPopupOnClick() {
     this._onViewChange();
-    this._mode = Mode.OPEN;
 
     // получить комментарии с сервера
     this._api.getComments(this._film.id)
       .then((comments) => {
+        this._comments = comments;
         this._commentsModel = new CommentsModel();
         this._commentsModel.setComments(comments);
         this._filmDetailsCommentsComponent = new FilmDetailsСommentsComponent(this._commentsModel);
@@ -66,6 +70,12 @@ export default class MovieController {
         // отрисовать загруженные комментарии
         const bottomContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
         appendChild(bottomContainer, this._filmDetailsCommentsComponent);
+
+        // повесить обработчик удаления комментария
+        this._filmDetailsCommentsComponent.setDeleteButtonHandler((index) => {
+          const deletedComment = this._comments[index];
+          this._onCommentsChange(this, deletedComment, null, this._film);
+        });
 
         // отрисовать добавление комментария
         const newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-wrap`);
@@ -77,14 +87,19 @@ export default class MovieController {
 
     // повесть обработчик
     document.addEventListener(`keydown`, this._сlosePopupOnEscPress);
+    this._mode = Mode.OPEN;
+    console.log(this._mode);
   }
 
   _closePopupOnClick() {
     this._onViewChange();
     this._mode = Mode.CLOSED;
+    console.log(this._mode);
   }
 
   render(film) {
+    console.log(this._mode);
+    this._film = film;
     const oldFilmCardComponent = this._filmCardComponent;
     const oldFilmDetailsComponent = this._filmDetailsComponent;
 
@@ -107,6 +122,11 @@ export default class MovieController {
         // отрисовать загруженные комментарии
         const bottomContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
         appendChild(bottomContainer, this._filmDetailsCommentsComponent);
+
+        this._filmDetailsCommentsComponent.setDeleteButtonHandler((index) => {
+          const deletedComment = this._comments[index];
+          this._onCommentsChange(this, deletedComment, null, this._film);
+        });
 
         // отрисовать добавление комментария
         const newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-wrap`);
@@ -158,12 +178,9 @@ export default class MovieController {
       this._onDataChange(this, film, newFilm);
     });
 
-    this._filmDetailsNewCommentComponent.setAddCommentHandler((comment) => {
+    this._filmDetailsNewCommentComponent.setAddCommentHandler((comment) => { // получаем наш новый комментарий
       if (this._mode === Mode.OPEN) {
-        const oldComments = this._comments;
-        const newComments = cloneDeep(this._comments);
-        newComments.comments.push(comment);
-        this._onCommentsChange(this, oldComments, newComments, film);
+        this._onCommentsChange(this, null, comment, film);
       }
     });
 

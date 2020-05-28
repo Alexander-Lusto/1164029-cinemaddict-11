@@ -35,11 +35,11 @@ const getSortedFilms = (films, type, from, to) => {
   return sortedFilms.slice(from, to);
 };
 
-const renderFilms = (filmsListContainer, films, onDataChange, onViewChange, onCommentsChange) => {
+const renderFilms = (filmsListContainer, films, onDataChange, onViewChange, onCommentsChange, api) => {
 
   const movieControllers = [];
   for (let i = 0; i < films.length; i++) {
-    const movieController = new MovieController(films[i], filmsListContainer, onDataChange, onViewChange, onCommentsChange);
+    const movieController = new MovieController(films[i], filmsListContainer, onDataChange, onViewChange, onCommentsChange, api);
     movieController.render(films[i]);
     movieControllers.push(movieController);
   }
@@ -120,7 +120,7 @@ export default class PageController {
     render(container, this._topRatedFilmsListComponent, RenderPosition.BEFOREEND);
     const topRatedFilmsListContainer = document.querySelector(`.films-list--extra .films-list__container`);
 
-    const newFilms = renderFilms(topRatedFilmsListContainer, filmsSortedByRating.slice(0, EXTRA_FILM_CARDS_COUNT), this._onDataChange, this._onViewChange, this._onCommentsChange);
+    const newFilms = renderFilms(topRatedFilmsListContainer, filmsSortedByRating.slice(0, EXTRA_FILM_CARDS_COUNT), this._onDataChange, this._onViewChange, this._onCommentsChange, this._api);
     this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
   }
 
@@ -133,7 +133,7 @@ export default class PageController {
     render(container, this._mostCommentedFilmsListComponent, RenderPosition.BEFOREEND);
     const mostCommentedFilmsListContainer = document.querySelector(`.films-list--extra:last-child .films-list__container`);
 
-    const newFilms = renderFilms(mostCommentedFilmsListContainer, filmsSortedByComments.slice(0, EXTRA_FILM_CARDS_COUNT), this._onDataChange, this._onViewChange, this._onCommentsChange);
+    const newFilms = renderFilms(mostCommentedFilmsListContainer, filmsSortedByComments.slice(0, EXTRA_FILM_CARDS_COUNT), this._onDataChange, this._onViewChange, this._onCommentsChange, this._api);
     this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
   }
 
@@ -147,7 +147,7 @@ export default class PageController {
       document.querySelector(`.films-list__title`).remove();
     }
 
-    const newFilms = renderFilms(this._filmsListContainer, films, this._onDataChange, this._onViewChange, this._onCommentsChange);
+    const newFilms = renderFilms(this._filmsListContainer, films, this._onDataChange, this._onViewChange, this._onCommentsChange, this._api);
     this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
     this._showingCardsCount = this._showedFilmControllers.length;
   }
@@ -205,17 +205,67 @@ export default class PageController {
 
         if (isSuccess) {
           movieController.render(movieModel);
-          this._updateFilms(this._showingCardsCount);
+          // this._updateFilms(this._showingCardsCount); // перерисовыввает все карточки. Оно нам надо?
         }
       });
   }
 
+  /* _onCommentsChange(movieController, oldData, newData, film) {
+    this._api.createComment(film.id, newData)
+        .then((comments) => {
+          const isSuccess = this._commentsModel.updateComments(oldData.id, comments);
+          if (isSuccess) {
+            movieController.render(film, newData);
+          }
+        });
+  } */
+
   _onCommentsChange(movieController, oldData, newData, film) {
-    const isSuccess = this._commentsModel.updateComments(oldData.id, newData);
-    if (isSuccess) {
-      movieController.render(film, newData);
+    if (oldData === null) { // добавление
+      this._api.createComment(film.id, newData)
+        .then((response) => {
+          const isSuccess = this._commentsModel.setComments(response.comments);
+          if (isSuccess) {
+            movieController.render(film);
+          }
+        });
+    } else if (newData === null) { // удаление
+      this._api.deleteСomment(oldData.id)
+        .then(() => {
+          const isSuccess = this._commentsModel.removeComment(oldData.id);
+          if (isSuccess) {
+            movieController.render(film);
+          }
+        });
     }
   }
+
+  /* _onCommentsChange(movieController, oldData, newData, movie) {
+    let updatedComments = [];
+    // Добавление нового комментария в модель
+    if (oldData === null) {
+      this._api.createComment(movie.id, newData)
+        .then((comments) => {
+          this._commentsModel.addComment(newData);
+          updatedComments = [].concat(movie.comments, newData.id);
+        });
+
+    } else if (newData === null) {
+      // Удаление комментария из модели
+      this._commentsModel.removeComment(oldData.id);
+      const index = movie.comments.findIndex((id) => id === oldData.id);
+      updatedComments = [].concat(movie.comments.slice(0, index), movie.comments.slice(index + 1));
+    }
+
+    // Обновляем модель фильмов
+    const updatedMovie = Object.assign({}, movie, {comments: updatedComments});
+    const isSuccess = this._moviesModel.updateMovie(movie.id, updatedMovie);
+
+    // Перерисовываем контроллер фильма с изменеными данными
+    if (isSuccess) {
+      this._showedMovieControllers.concat(this._showedMovieControllers).forEach((controller) => controller.rerender(movie.id, updatedMovie));
+    }
+  } */
 
   _onViewChange() {
     this._showedFilmControllers.forEach((it) => it.setDefaultView());

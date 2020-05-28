@@ -55,8 +55,10 @@ const createFilmDetailsCommentSectionTemplate = (comment, emoji, emojiInp) => {
 };
 
 export default class FilmDetailsNewComment extends AbstractSmartComponent {
-  constructor() {
+  constructor(comments) {
     super();
+    /* this._comments = comments;
+    this._commentId = this._comments[this.comments.length - 1].id + 1; */
 
     this._emoji = null;
     this._emojiInp = null;
@@ -112,6 +114,7 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
 
   setAddCommentHandler(callback) {
     document.addEventListener(`keydown`, (evt) => {
+
       const textarea = this.getElement().querySelector(`.film-details__comment-input`);
       const isCtrlAndEnterPressed = evt.ctrlKey && evt.key === `Enter`;
 
@@ -120,14 +123,12 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
       const isTextWritten = textarea.value;
 
       if (isCtrlAndEnterPressed && (!isEmojiChosen || !isTextWritten)) { // если чего-то нет, потрясём окно
-        textarea.classList.add(`shake`);
         setTimeout(() => textarea.classList.remove(`shake`), 250); // удаляем анимацию через 0,25 сек
       } else if (isCtrlAndEnterPressed && isEmojiChosen && isTextWritten) { // если всё правильно заполнено, добавляем коммент
         const comment = {
-          emoji: this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType,
-          text: textarea.value,
-          author: `User`,
-          date: moment().format(`YYYY/MM/DD hh:mm`),
+          'emotion': this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType,
+          'comment': textarea.value,
+          'date': new Date().toISOString(),
         };
         callback(comment);
         this.reset();
@@ -135,4 +136,3 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
     });
   }
 }
-
