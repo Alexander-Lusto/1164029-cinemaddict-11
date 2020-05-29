@@ -15,13 +15,14 @@ const Mode = {
 };
 
 export default class MovieController {
-  constructor(film, container, onDataChange, onViewChange, onCommentsChange, api) {
+  constructor(film, container, onDataChange, onViewChange, onCommentsChange, api, commentsModel) {
     this._film = film;
     this._container = container;
     this._onCommentsChange = onCommentsChange;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
     this._api = api;
+    this._commentsModel = commentsModel;
 
     this._comments = null;
     this._mode = Mode.CLOSED;
@@ -154,17 +155,15 @@ export default class MovieController {
     // получить комментарии с сервера
     this._api.getComments(this._film.id)
     .then((comments) => {
-      this._commentsModel = new CommentsModel();
       this._commentsModel.setComments(comments);
-      //this._comments = this._commentsModel.getComments();
-      this._filmDetailsCommentsComponent = new FilmDetailsСommentsComponent(this._commentsModel);
+      this._comments = this._commentsModel.getComments();
+      this._filmDetailsCommentsComponent = new FilmDetailsСommentsComponent(this._comments);
 
       // отрисовать загруженные комментарии
       const bottomContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
       appendChild(bottomContainer, this._filmDetailsCommentsComponent);
 
       this._filmDetailsCommentsComponent.setDeleteButtonHandler((index) => {
-        console.log(this._comments);
         const deletedComment = this._comments[index];
         this._onCommentsChange(this, deletedComment, null, this._film);
       });
@@ -189,10 +188,6 @@ export default class MovieController {
     }
   }
 
-  setComments(newComments) {
-    this._comments = newComments;
-  }
-
   shakeTextarea() {
     const textarea = this._filmDetailsNewCommentComponent.getElement().querySelector(`.film-details__comment-input`);
     textarea.disabled = false;
@@ -206,7 +201,6 @@ export default class MovieController {
   }
 
   shakeComment(commentId) {
-    debugger;
     const index = this._comments.findIndex((it) => it.id === commentId);
     const commentsAll = this._filmDetailsCommentsComponent.getElement().querySelectorAll(`.film-details__comment`);
     const comment = commentsAll[index];

@@ -35,11 +35,11 @@ const getSortedFilms = (films, type, from, to) => {
   return sortedFilms.slice(from, to);
 };
 
-const renderFilms = (filmsListContainer, films, onDataChange, onViewChange, onCommentsChange, api) => {
+const renderFilms = (filmsListContainer, films, onDataChange, onViewChange, onCommentsChange, api, commentsModel) => {
 
   const movieControllers = [];
   for (let i = 0; i < films.length; i++) {
-    const movieController = new MovieController(films[i], filmsListContainer, onDataChange, onViewChange, onCommentsChange, api);
+    const movieController = new MovieController(films[i], filmsListContainer, onDataChange, onViewChange, onCommentsChange, api, commentsModel);
     movieController.render(films[i]);
     movieControllers.push(movieController);
   }
@@ -120,7 +120,7 @@ export default class PageController {
     render(container, this._topRatedFilmsListComponent, RenderPosition.BEFOREEND);
     const topRatedFilmsListContainer = document.querySelector(`.films-list--extra .films-list__container`);
 
-    const newFilms = renderFilms(topRatedFilmsListContainer, filmsSortedByRating.slice(0, EXTRA_FILM_CARDS_COUNT), this._onDataChange, this._onViewChange, this._onCommentsChange, this._api);
+    const newFilms = renderFilms(topRatedFilmsListContainer, filmsSortedByRating.slice(0, EXTRA_FILM_CARDS_COUNT), this._onDataChange, this._onViewChange, this._onCommentsChange, this._api, this._commentsModel);
     this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
   }
 
@@ -133,7 +133,7 @@ export default class PageController {
     render(container, this._mostCommentedFilmsListComponent, RenderPosition.BEFOREEND);
     const mostCommentedFilmsListContainer = document.querySelector(`.films-list--extra:last-child .films-list__container`);
 
-    const newFilms = renderFilms(mostCommentedFilmsListContainer, filmsSortedByComments.slice(0, EXTRA_FILM_CARDS_COUNT), this._onDataChange, this._onViewChange, this._onCommentsChange, this._api);
+    const newFilms = renderFilms(mostCommentedFilmsListContainer, filmsSortedByComments.slice(0, EXTRA_FILM_CARDS_COUNT), this._onDataChange, this._onViewChange, this._onCommentsChange, this._api, this._commentsModel);
     this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
   }
 
@@ -147,7 +147,7 @@ export default class PageController {
       document.querySelector(`.films-list__title`).remove();
     }
 
-    const newFilms = renderFilms(this._filmsListContainer, films, this._onDataChange, this._onViewChange, this._onCommentsChange, this._api);
+    const newFilms = renderFilms(this._filmsListContainer, films, this._onDataChange, this._onViewChange, this._onCommentsChange, this._api, this._commentsModel);
     this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
     this._showingCardsCount = this._showedFilmControllers.length;
   }
@@ -211,14 +211,16 @@ export default class PageController {
   }
 
   _onCommentsChange(movieController, oldData, newData, film) {
+    debugger;
     if (oldData === null) { // добавление
       this._api.createComment(film.id, newData)
         .then((response) => {
+          console.log(response.comments);
           const isSuccess = this._commentsModel.setComments(response.comments);
+          console.log(`this._commentsModel.getComments()`);
+          console.log(this._commentsModel.getComments());
           if (isSuccess) {
-            const newComments = this._commentsModel.getComments();
             movieController.resetTextarea();
-            movieController.setComments(newComments);
             movieController.render(film);
           }
         })
@@ -229,13 +231,12 @@ export default class PageController {
       this._api.deleteСomment(oldData.id)
         .then(() => {
           const isSuccess = this._commentsModel.removeComment(oldData.id);
-          console.log(`isSuccess`);
-          console.log(isSuccess);
           if (isSuccess) {
             const newComments = this._commentsModel.getComments();
             movieController.resetTextarea();
-            movieController.setComments(newComments);
             movieController.render(film);
+            console.log(`newComments from page controller`);
+            console.log(newComments);
           }
         })
         .catch(() => {

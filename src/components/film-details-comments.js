@@ -39,10 +39,10 @@ const createFilmDetailsCommentsTemplate = (comments) => {
 };
 
 export default class FilmDetailsComments extends AbstractSmartComponent {
-  constructor(commentsModel) {
+  constructor(comments) {
     super();
 
-    this._comments = commentsModel.getComments();
+    this._comments = comments;
   }
 
   getTemplate() {
