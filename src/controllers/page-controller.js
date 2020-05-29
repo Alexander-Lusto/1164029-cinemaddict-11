@@ -210,62 +210,39 @@ export default class PageController {
       });
   }
 
-  /* _onCommentsChange(movieController, oldData, newData, film) {
-    this._api.createComment(film.id, newData)
-        .then((comments) => {
-          const isSuccess = this._commentsModel.updateComments(oldData.id, comments);
-          if (isSuccess) {
-            movieController.render(film, newData);
-          }
-        });
-  } */
-
   _onCommentsChange(movieController, oldData, newData, film) {
     if (oldData === null) { // добавление
       this._api.createComment(film.id, newData)
         .then((response) => {
           const isSuccess = this._commentsModel.setComments(response.comments);
           if (isSuccess) {
+            const newComments = this._commentsModel.getComments();
+            movieController.resetTextarea();
+            movieController.setComments(newComments);
             movieController.render(film);
           }
+        })
+        .catch(() => {
+          movieController.shakeTextarea();
         });
     } else if (newData === null) { // удаление
       this._api.deleteСomment(oldData.id)
         .then(() => {
           const isSuccess = this._commentsModel.removeComment(oldData.id);
+          console.log(`isSuccess`);
+          console.log(isSuccess);
           if (isSuccess) {
+            const newComments = this._commentsModel.getComments();
+            movieController.resetTextarea();
+            movieController.setComments(newComments);
             movieController.render(film);
           }
+        })
+        .catch(() => {
+          movieController.shakeComment(oldData.id);
         });
     }
   }
-
-  /* _onCommentsChange(movieController, oldData, newData, movie) {
-    let updatedComments = [];
-    // Добавление нового комментария в модель
-    if (oldData === null) {
-      this._api.createComment(movie.id, newData)
-        .then((comments) => {
-          this._commentsModel.addComment(newData);
-          updatedComments = [].concat(movie.comments, newData.id);
-        });
-
-    } else if (newData === null) {
-      // Удаление комментария из модели
-      this._commentsModel.removeComment(oldData.id);
-      const index = movie.comments.findIndex((id) => id === oldData.id);
-      updatedComments = [].concat(movie.comments.slice(0, index), movie.comments.slice(index + 1));
-    }
-
-    // Обновляем модель фильмов
-    const updatedMovie = Object.assign({}, movie, {comments: updatedComments});
-    const isSuccess = this._moviesModel.updateMovie(movie.id, updatedMovie);
-
-    // Перерисовываем контроллер фильма с изменеными данными
-    if (isSuccess) {
-      this._showedMovieControllers.concat(this._showedMovieControllers).forEach((controller) => controller.rerender(movie.id, updatedMovie));
-    }
-  } */
 
   _onViewChange() {
     this._showedFilmControllers.forEach((it) => it.setDefaultView());

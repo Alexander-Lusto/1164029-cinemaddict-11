@@ -16,23 +16,17 @@ export default class Comments {
 
   removeComment(commentId) {
     const index = this._comments.findIndex((it) => it.id === commentId);
-    if (index > 0) {
-      this._comments = [].concat(this._comments.slice(0, index), this._comments.slice(index + 1));
-    } else if (index === 0) {
-      this._comments = [].concat(this._comments.slice(0), this._comments.slice(index + 1));
+
+    if (index === -1) {
+      return false;
     }
 
+    this._comments = [].concat(this._comments.slice(0, index), this._comments.slice(index + 1));
     this._callHandlers(this._dataChangeHandlers);
     return true;
   }
 
-  addComment(comment) {
-    this._comments = this._comments.push(comment);
-    this._callHandlers(this._dataChangeHandlers);
-    return true;
-  }
-
-  updateComments(id, comments) {
+  /* updateComments(id, comments) {
     const index = this._comments.findIndex((it) => it.id === id);
 
     if (index === -1) {
@@ -43,7 +37,7 @@ export default class Comments {
 
     this._callHandlers(this._dataChangeHandlers);
     return true;
-  }
+  } */
 
   setDataChangeHandlers(handler) {
     this._dataChangeHandler.push(handler);

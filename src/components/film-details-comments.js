@@ -54,6 +54,8 @@ export default class FilmDetailsComments extends AbstractSmartComponent {
     deleteButtons.forEach((button, index) => {
       button.addEventListener(`click`, (evt) => {
         evt.preventDefault();
+        evt.target.disabled = true;
+        evt.target.textContent = `Deleting...`;
         callback(index);
       });
     });

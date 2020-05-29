@@ -1,5 +1,5 @@
-import AbstractSmartComponent from "./abstract-smart-component";
-import moment from 'moment';
+import AbstractSmartComponent from './abstract-smart-component.js';
+import {SHAKE_ANIMATION_TIMEOUT} from '../controllers/movie-controller.js';
 
 const EmojiAddressArray = {
   SMILE: `smile`,
@@ -55,10 +55,8 @@ const createFilmDetailsCommentSectionTemplate = (comment, emoji, emojiInp) => {
 };
 
 export default class FilmDetailsNewComment extends AbstractSmartComponent {
-  constructor(comments) {
+  constructor() {
     super();
-    /* this._comments = comments;
-    this._commentId = this._comments[this.comments.length - 1].id + 1; */
 
     this._emoji = null;
     this._emojiInp = null;
@@ -122,16 +120,22 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
 
       const isTextWritten = textarea.value;
 
-      if (isCtrlAndEnterPressed && (!isEmojiChosen || !isTextWritten)) { // если чего-то нет, потрясём окно
-        setTimeout(() => textarea.classList.remove(`shake`), 250); // удаляем анимацию через 0,25 сек
+      if (isCtrlAndEnterPressed && (!isEmojiChosen || !isTextWritten)) { // если чего-то нет, потрясём окно (валидация)
+        textarea.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+        textarea.style.border = `1px solid red`;
+
+        setTimeout(() => {
+          textarea.style.animation = ``;
+        }, SHAKE_ANIMATION_TIMEOUT); // удаляем анимацию через 0.6 сек
       } else if (isCtrlAndEnterPressed && isEmojiChosen && isTextWritten) { // если всё правильно заполнено, добавляем коммент
+        textarea.style.border = ``;
+        textarea.disabled = true;
         const comment = {
           'emotion': this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType,
           'comment': textarea.value,
           'date': new Date().toISOString(),
         };
         callback(comment);
-        this.reset();
       }
     });
   }
