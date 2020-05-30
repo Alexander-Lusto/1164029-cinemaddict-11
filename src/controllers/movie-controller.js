@@ -73,6 +73,14 @@ export default class MovieController {
     this._mode = Mode.CLOSED;
   }
 
+  _closePopup() {
+    this._filmDetailsNewCommentComponent.reset();
+    removeChild(this._filmDetailsCommentsComponent);
+    removeChild(this._filmDetailsComponent);
+    document.removeEventListener(`keydown`, this._сlosePopupOnEscPress);
+    this._mode = Mode.CLOSED;
+  }
+
   render(film) {
     this._film = film;
     const oldFilmCardComponent = this._filmCardComponent;
@@ -86,9 +94,7 @@ export default class MovieController {
     this._filmCardComponent.setClickHandler(this._showPopupOnClick);
     this._filmDetailsComponent.setClickHandler(this._closePopupOnClick);
 
-    if (this._mode === Mode.OPEN) { // загрузить и отрисовать комментарии при перерисовке попапа (при изменении данных, при открытом окне)
-      this.renderCommentsSection();
-    }
+    // this.renderCommentsSection();
 
     this._filmCardComponent.setAddToWatchlistButtonHandler((evt) => {
       evt.preventDefault();
@@ -142,7 +148,7 @@ export default class MovieController {
 
     if (oldFilmCardComponent && oldFilmDetailsComponent) {
       replace(this._filmCardComponent, oldFilmCardComponent);
-      replace(this._filmDetailsComponent, oldFilmDetailsComponent);
+      replace(this._filmDetailsComponent, oldFilmDetailsComponent); // <= проблема здесь
 
       this._filmDetailsNewCommentComponent.rerender();
       appendChild(this._newCommentContainer, this._filmDetailsNewCommentComponent);
@@ -152,6 +158,11 @@ export default class MovieController {
   }
 
   renderCommentsSection() {
+    // удалить предыдущие комментарии, если они есть
+    if (this._filmDetailsCommentsComponent) {
+      remove(this._filmDetailsCommentsComponent);
+    }
+
     // получить комментарии с сервера
     this._api.getComments(this._film.id)
     .then((comments) => {
@@ -172,14 +183,6 @@ export default class MovieController {
       const newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-wrap`);
       appendChild(newCommentContainer, this._filmDetailsNewCommentComponent);
     });
-  }
-
-  _closePopup() {
-    this._filmDetailsNewCommentComponent.reset();
-    removeChild(this._filmDetailsCommentsComponent);
-    removeChild(this._filmDetailsComponent);
-    document.removeEventListener(`keydown`, this._сlosePopupOnEscPress);
-    this._mode = Mode.CLOSED;
   }
 
   setDefaultView() {

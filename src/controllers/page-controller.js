@@ -200,28 +200,28 @@ export default class PageController {
   _onDataChange(movieController, oldData, newData) {
 
     this._api.updateFilms(oldData.id, newData)
-      .then((movieModel) => {
-        const isSuccess = this._moviesModel.updateMovies(oldData.id, movieModel);
+      .then((movie) => {
+        console.log(movie);
+        const isSuccess = this._moviesModel.updateMovies(oldData.id, movie);
 
         if (isSuccess) {
-          movieController.render(movieModel);
+          movieController.render(movie);
+          // movieController.renderCommentsSection();
           // this._updateFilms(this._showingCardsCount); // перерисовыввает все карточки. Оно нам надо?
         }
       });
   }
 
   _onCommentsChange(movieController, oldData, newData, film) {
-    debugger;
+    // debugger;
     if (oldData === null) { // добавление
       this._api.createComment(film.id, newData)
         .then((response) => {
           console.log(response.comments);
           const isSuccess = this._commentsModel.setComments(response.comments);
-          console.log(`this._commentsModel.getComments()`);
-          console.log(this._commentsModel.getComments());
           if (isSuccess) {
             movieController.resetTextarea();
-            movieController.render(film);
+            movieController.renderCommentsSection();
           }
         })
         .catch(() => {
@@ -232,11 +232,8 @@ export default class PageController {
         .then(() => {
           const isSuccess = this._commentsModel.removeComment(oldData.id);
           if (isSuccess) {
-            const newComments = this._commentsModel.getComments();
             movieController.resetTextarea();
-            movieController.render(film);
-            console.log(`newComments from page controller`);
-            console.log(newComments);
+            movieController.renderCommentsSection();
           }
         })
         .catch(() => {
@@ -271,7 +268,6 @@ export default class PageController {
     preloader.style = `font-size: 45px; text-align: center;`;
     preloader.textContent = `Loading...`;
     main.append(preloader);
-    // window.setTimeout(() => this.removePreloader(), 10000);
   }
 
   removePreloader() {
