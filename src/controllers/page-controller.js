@@ -40,7 +40,8 @@ const renderFilms = (filmsListContainer, films, onDataChange, onViewChange, onCo
   const movieControllers = [];
   for (let i = 0; i < films.length; i++) {
     const movieController = new MovieController(films[i], filmsListContainer, onDataChange, onViewChange, onCommentsChange, api, commentsModel);
-    movieController.render(films[i]);
+    movieController.renderFilmCard(films[i]);
+    movieController.renderFilmDetails(films[i]);
     movieControllers.push(movieController);
   }
   return movieControllers;
@@ -205,9 +206,9 @@ export default class PageController {
         const isSuccess = this._moviesModel.updateMovies(oldData.id, movie);
 
         if (isSuccess) {
-          movieController.render(movie);
+          movieController.renderFilmCard(movie); // <= проблема здесь
+          movieController.renderFilmDetailsControls(movie);
           // movieController.renderCommentsSection();
-          // this._updateFilms(this._showingCardsCount); // перерисовыввает все карточки. Оно нам надо?
         }
       });
   }

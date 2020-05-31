@@ -1,11 +1,12 @@
 import FilmCardComponent from '../components/film-card.js';
 import FilmDetailsComponent from '../components/film-details.js';
 import FilmDetailsСommentsComponent from '../components/film-details-comments.js';
-import CommentsModel from '../models/comments.js';
+import FilmDetailsControlsComponent from '../components/film-details-controls.js';
 import MovieModel from '../models/movie.js';
 import {RenderPosition, render, removeChild, appendChild, replace, remove} from '../utils/render.js';
 import FilmDetailsNewCommentComponent from '../components/film-details-new-comment.js';
 import {BODY} from '../const.js';
+import FilmDetailsControls from '../components/film-details-controls.js';
 
 export const SHAKE_ANIMATION_TIMEOUT = 600;
 
@@ -29,9 +30,9 @@ export default class MovieController {
 
     this._filmCardComponent = null;
     this._filmDetailsComponent = null;
+    this._filmDetailsControlsComponent = null;
     this._filmDetailsCommentsComponent = null;
     this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent(); // было так, чтобы при переренде сохранялась инфа
-
     this._newCommentContainer = null;
 
     this._сlosePopupOnEscPress = this._сlosePopupOnEscPress.bind(this);
@@ -81,20 +82,12 @@ export default class MovieController {
     this._mode = Mode.CLOSED;
   }
 
-  render(film) {
+  renderFilmCard(film) {
     this._film = film;
+
     const oldFilmCardComponent = this._filmCardComponent;
-    const oldFilmDetailsComponent = this._filmDetailsComponent;
-
     this._filmCardComponent = new FilmCardComponent(film);
-    this._filmDetailsComponent = new FilmDetailsComponent(film);
-
-    this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
-
     this._filmCardComponent.setClickHandler(this._showPopupOnClick);
-    this._filmDetailsComponent.setClickHandler(this._closePopupOnClick);
-
-    // this.renderCommentsSection();
 
     this._filmCardComponent.setAddToWatchlistButtonHandler((evt) => {
       evt.preventDefault();
@@ -122,23 +115,22 @@ export default class MovieController {
       this._onDataChange(this, film, newFilm);
     });
 
-    this._filmDetailsComponent.setAddToWatchlistButtonHandler(() => {
-      const newFilm = MovieModel.clone(film);
-      newFilm.isInWatchlist = !newFilm.isInWatchlist;
-      this._onDataChange(this, film, newFilm);
-    });
 
-    this._filmDetailsComponent.setAlreadyWatchedButtonHandler(() => {
-      const newFilm = MovieModel.clone(film);
-      newFilm.isInHistory = !newFilm.isInHistory;
-      this._onDataChange(this, film, newFilm);
-    });
+    if (oldFilmCardComponent) {
+      replace(this._filmCardComponent, oldFilmCardComponent);
+    } else {
+      render(this._container, this._filmCardComponent, RenderPosition.BEFOREEND);
+    }
+  }
 
-    this._filmDetailsComponent.setAddToFavoriteButtonHandler(() => {
-      const newFilm = MovieModel.clone(film);
-      newFilm.isInFavorites = !newFilm.isInFavorites;
-      this._onDataChange(this, film, newFilm);
-    });
+  renderFilmDetails(film) {
+    this._film = film;
+    const oldFilmDetailsComponent = this._filmDetailsComponent;
+
+    this._filmDetailsComponent = new FilmDetailsComponent(film);
+    this.renderFilmDetailsControls(film);
+    this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
+    this._filmDetailsComponent.setClickHandler(this._closePopupOnClick);
 
     this._filmDetailsNewCommentComponent.setAddCommentHandler((comment) => { // получаем наш новый комментарий
       if (this._mode === Mode.OPEN) {
@@ -146,15 +138,41 @@ export default class MovieController {
       }
     });
 
-    if (oldFilmCardComponent && oldFilmDetailsComponent) {
-      replace(this._filmCardComponent, oldFilmCardComponent);
+    if (oldFilmDetailsComponent) {
       replace(this._filmDetailsComponent, oldFilmDetailsComponent); // <= проблема здесь
 
       this._filmDetailsNewCommentComponent.rerender();
       appendChild(this._newCommentContainer, this._filmDetailsNewCommentComponent);
-    } else {
-      render(this._container, this._filmCardComponent, RenderPosition.BEFOREEND);
     }
+  }
+
+  renderFilmDetailsControls(film) {
+    if (this._filmDetailsControlsComponent) {
+      remove(this._filmDetailsControlsComponent);
+    }
+
+    this._filmDetailsControlsComponent = new FilmDetailsControlsComponent(film);
+    const container = this._filmDetailsComponent.getElement().querySelector(`.form-details__top-container`);
+    appendChild(container, this._filmDetailsControlsComponent);
+
+    this._filmDetailsControlsComponent.setAddToWatchlistButtonHandler(() => {
+      const newFilm = MovieModel.clone(film);
+      newFilm.isInWatchlist = !newFilm.isInWatchlist;
+      this._onDataChange(this, film, newFilm);
+    });
+
+    this._filmDetailsControlsComponent.setAlreadyWatchedButtonHandler(() => {
+      const newFilm = MovieModel.clone(film);
+      newFilm.isInHistory = !newFilm.isInHistory;
+      this._onDataChange(this, film, newFilm);
+    });
+
+    this._filmDetailsControlsComponent.setAddToFavoriteButtonHandler(() => {
+      const newFilm = MovieModel.clone(film);
+      newFilm.isInFavorites = !newFilm.isInFavorites;
+      this._onDataChange(this, film, newFilm);
+    });
+
   }
 
   renderCommentsSection() {
