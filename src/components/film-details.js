@@ -14,7 +14,7 @@ const createGenresMarkup = (genres) => {
 };
 
 const createFilmDetailsTemplate = (film) => {
-  const {name, originalName, poster, description, rating, releaseDate, duration, genres, age, director, writers, actors, country, isInWatchlist, isInHistory, isInFavorites} = film;
+  const {name, originalName, poster, description, rating, releaseDate, duration, genres, age, director, writers, actors, country} = film;
 
   const genresMarkup = createGenresMarkup(genres);
 

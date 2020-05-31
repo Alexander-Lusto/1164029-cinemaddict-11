@@ -1,5 +1,4 @@
 import AbstractSmartComponent from "./abstract-smart-component";
-import moment from 'moment';
 
 const createFilmDetailsTemplate = (film) => {
   const {isInWatchlist, isInHistory, isInFavorites} = film;

@@ -202,7 +202,6 @@ export default class PageController {
 
     this._api.updateFilms(oldData.id, newData)
       .then((movie) => {
-        console.log(movie);
         const isSuccess = this._moviesModel.updateMovies(oldData.id, movie);
 
         if (isSuccess) {
@@ -218,7 +217,6 @@ export default class PageController {
     if (oldData === null) { // добавление
       this._api.createComment(film.id, newData)
         .then((response) => {
-          console.log(response.comments);
           const isSuccess = this._commentsModel.setComments(response.comments);
           if (isSuccess) {
             movieController.resetTextarea();

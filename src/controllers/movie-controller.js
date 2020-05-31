@@ -6,7 +6,6 @@ import MovieModel from '../models/movie.js';
 import {RenderPosition, render, removeChild, appendChild, replace, remove} from '../utils/render.js';
 import FilmDetailsNewCommentComponent from '../components/film-details-new-comment.js';
 import {BODY} from '../const.js';
-import FilmDetailsControls from '../components/film-details-controls.js';
 
 export const SHAKE_ANIMATION_TIMEOUT = 600;
 
