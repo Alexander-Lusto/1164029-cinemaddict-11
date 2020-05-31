@@ -81,7 +81,7 @@ export default class MovieController {
     this._mode = Mode.CLOSED;
   }
 
-  renderFilmCard(film) {
+  _renderFilmCard(film) {
     this._film = film;
 
     const oldFilmCardComponent = this._filmCardComponent;
@@ -122,12 +122,12 @@ export default class MovieController {
     }
   }
 
-  renderFilmDetails(film) {
+  _renderFilmDetails(film) {
     this._film = film;
     const oldFilmDetailsComponent = this._filmDetailsComponent;
 
     this._filmDetailsComponent = new FilmDetailsComponent(film);
-    this.renderFilmDetailsControls(film);
+    this._renderFilmDetailsControls(film);
     this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
     this._filmDetailsComponent.setClickHandler(this._closePopupOnClick);
 
@@ -138,14 +138,14 @@ export default class MovieController {
     });
 
     if (oldFilmDetailsComponent) {
-      replace(this._filmDetailsComponent, oldFilmDetailsComponent); // <= проблема здесь
+      replace(this._filmDetailsComponent, oldFilmDetailsComponent);
 
       this._filmDetailsNewCommentComponent.rerender();
       appendChild(this._newCommentContainer, this._filmDetailsNewCommentComponent);
     }
   }
 
-  renderFilmDetailsControls(film) {
+  _renderFilmDetailsControls(film) {
     if (this._filmDetailsControlsComponent) {
       remove(this._filmDetailsControlsComponent);
     }
@@ -178,6 +178,16 @@ export default class MovieController {
       this._onDataChange(this, film, newFilm);
     });
 
+  }
+
+  render(film) {
+    this._renderFilmCard(film);
+    this._renderFilmDetails(film);
+  }
+
+  rerender(film) {
+    this._renderFilmCard(film);
+    this._renderFilmDetailsControls(film);
   }
 
   renderCommentsSection() {

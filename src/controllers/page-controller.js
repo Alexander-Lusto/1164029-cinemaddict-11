@@ -43,8 +43,7 @@ const renderFilms = (filmsListContainer, films, onDataChange, onViewChange, onCo
   const movieControllers = [];
   for (let i = 0; i < films.length; i++) {
     const movieController = new MovieController(films[i], filmsListContainer, onDataChange, onViewChange, onCommentsChange, api, commentsModel);
-    movieController.renderFilmCard(films[i]);
-    movieController.renderFilmDetails(films[i]);
+    movieController.render(films[i]);
     movieControllers.push(movieController);
   }
   return movieControllers;
@@ -217,15 +216,13 @@ export default class PageController {
         const isSuccess = this._moviesModel.updateMovies(oldData.id, movie);
 
         if (isSuccess) {
-          movieController.renderFilmCard(movie); // <= проблема здесь
-          movieController.renderFilmDetailsControls(movie);
+          movieController.rerender(movie);
           this.renderUserTitle(this._moviesModel.getMoviesAll());
         }
       });
   }
 
   _onCommentsChange(movieController, oldData, newData, film) {
-    // debugger;
     if (oldData === null) { // добавление
       this._api.createComment(film.id, newData)
         .then((response) => {
@@ -276,7 +273,6 @@ export default class PageController {
   showPreloader() {
     const preloader = document.createElement(`h1`);
     preloader.classList.add(`page-preloader`);
-    preloader.style = `font-size: 45px; text-align: center;`;
     preloader.textContent = `Loading...`;
     main.append(preloader);
   }

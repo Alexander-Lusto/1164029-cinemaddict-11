@@ -1,4 +1,3 @@
-import {FILM_GENRES} from '../mock/film.js';
 import {getUserTitle} from '../utils/utils.js';
 import AbstractSmartComponent from './abstract-smart-component.js';
 import Chart from 'chart.js';
@@ -68,13 +67,20 @@ const createStatisticTemplate = (films, activeItem) => {
 
 const getStatisticInfo = (films) => {
   const filmsInHistory = films.filter((it) => it.isInHistory);
+
+  let filmGenres = [];
+  films.map((film) => film.genres.forEach((genre) => filmGenres.push(genre)));
+  filmGenres = filmGenres.filter((item, index) => {
+    return filmGenres.indexOf(item) === index;
+  });
+
   let filmDurationHours = 0;
   let filmDurationMinutes = 0;
   let genreRate = [];
 
   if (filmsInHistory.length > 0) {
-    for (let i = 0; i < FILM_GENRES.length; i++) {
-      const key = FILM_GENRES[i];
+    for (let i = 0; i < filmGenres.length; i++) {
+      const key = filmGenres[i];
       const object = {
         [key]: filmsInHistory.reduce((sum, film) => sum.concat(film.genres), []).filter((genre) => genre === key).length
       };
@@ -101,12 +107,17 @@ const getStatisticInfo = (films) => {
 };
 
 const getGenresSortedByWatches = ((films) => { // раскидать все просмотренные фильмы по жанрам и вернуть отсортированный массив (от самого популярного к менее популярному)
-  const filmsInHistory = films.filter((it) => it.isInHistory);
+  const filmsInHistory = films.filter((film) => film.isInHistory);
+  let filmGenres = [];
+  films.map((film) => film.genres.forEach((genre) => filmGenres.push(genre)));
+  filmGenres = filmGenres.filter((item, index) => {
+    return filmGenres.indexOf(item) === index;
+  });
   let genreRate = [];
 
   if (filmsInHistory.length > 0) {
-    for (let i = 0; i < FILM_GENRES.length; i++) {
-      const key = FILM_GENRES[i];
+    for (let i = 0; i < filmGenres.length; i++) {
+      const key = filmGenres[i];
       const object = {
         [key]: filmsInHistory.reduce((sum, film) => sum.concat(film.genres), []).filter((genre) => genre === key).length
       };
@@ -127,11 +138,18 @@ const getGenresSortedByWatches = ((films) => { // раскидать все пр
 
 const getGenresNumberSortedByWatches = ((films) => { // взять количество посмотренных фильмов для каждого жанра и вернуть массив с ними
   const filmsInHistory = films.filter((it) => it.isInHistory);
+
+  let filmGenres = [];
+  films.map((film) => film.genres.forEach((genre) => filmGenres.push(genre)));
+  filmGenres = filmGenres.filter((item, index) => {
+    return filmGenres.indexOf(item) === index;
+  });
+
   let genreRate = [];
 
   if (filmsInHistory.length > 0) {
-    for (let i = 0; i < FILM_GENRES.length; i++) {
-      const key = FILM_GENRES[i];
+    for (let i = 0; i < filmGenres.length; i++) {
+      const key = filmGenres[i];
       const object = {
         [key]: filmsInHistory.reduce((sum, film) => sum.concat(film.genres), []).filter((genre) => genre === key).length
       };
