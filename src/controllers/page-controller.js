@@ -6,6 +6,7 @@ import FilmsListContainerComponent from '../components/films-list-container.js';
 import NoFilmsComponent from '../components/no-films.js';
 import MostCommentedFilmsListComponent from '../components/most-commented-films-list.js';
 import TopRatedFilmsListComponent from '../components/top-rated-films-list.js';
+import UserTitleComponent from '../components/user-title.js';
 import {RenderPosition, render, remove} from '../utils/render.js';
 import {SortType} from "../const.js";
 import MovieController from './movie-controller.js';
@@ -14,7 +15,9 @@ const FILM_CARDS_SHOWING_ON_START = 5;
 const FILM_CARDS_SHOWING_BY_BUTTON = 5;
 
 const EXTRA_FILM_CARDS_COUNT = 2;
+
 const main = document.querySelector(`.main`);
+const header = document.querySelector(`.header`);
 
 const getSortedFilms = (films, type, from, to) => {
   let sortedFilms = [];
@@ -62,6 +65,7 @@ export default class PageController {
     this._films = [];
     this._comments = [];
 
+    this._userTitleComponent = null;
     this._sortComponent = new SortComponent(SortType.DEFAULT);
     this._filmsComponent = new FilmsComponent();
     this._filmsListComponent = new FilmsListComponent();
@@ -153,6 +157,14 @@ export default class PageController {
     this._showingCardsCount = this._showedFilmControllers.length;
   }
 
+  renderUserTitle(films) {
+    if (this._userTitleComponent) {
+      remove(this._userTitleComponent);
+    }
+    this._userTitleComponent = new UserTitleComponent(films);
+    render(header, this._userTitleComponent, RenderPosition.BEFOREEND);
+  }
+
   _removeFilms() {
     this._showedFilmControllers.forEach((filmController) => filmController.destroy());
     this._showedFilmControllers = [];
@@ -207,7 +219,7 @@ export default class PageController {
         if (isSuccess) {
           movieController.renderFilmCard(movie); // <= проблема здесь
           movieController.renderFilmDetailsControls(movie);
-          // movieController.renderCommentsSection();
+          this.renderUserTitle(this._moviesModel.getMoviesAll());
         }
       });
   }

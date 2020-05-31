@@ -154,19 +154,25 @@ export default class MovieController {
     const container = this._filmDetailsComponent.getElement().querySelector(`.form-details__top-container`);
     appendChild(container, this._filmDetailsControlsComponent);
 
-    this._filmDetailsControlsComponent.setAddToWatchlistButtonHandler(() => {
+    this._filmDetailsControlsComponent.setAddToWatchlistButtonHandler((evt) => {
+      evt.target.checked = evt.target.value;
+
       const newFilm = MovieModel.clone(film);
       newFilm.isInWatchlist = !newFilm.isInWatchlist;
       this._onDataChange(this, film, newFilm);
     });
 
-    this._filmDetailsControlsComponent.setAlreadyWatchedButtonHandler(() => {
+    this._filmDetailsControlsComponent.setAlreadyWatchedButtonHandler((evt) => {
+      evt.target.checked = evt.target.value;
+
       const newFilm = MovieModel.clone(film);
       newFilm.isInHistory = !newFilm.isInHistory;
       this._onDataChange(this, film, newFilm);
     });
 
-    this._filmDetailsControlsComponent.setAddToFavoriteButtonHandler(() => {
+    this._filmDetailsControlsComponent.setAddToFavoriteButtonHandler((evt) => {
+      evt.target.checked = evt.target.value;
+
       const newFilm = MovieModel.clone(film);
       newFilm.isInFavorites = !newFilm.isInFavorites;
       this._onDataChange(this, film, newFilm);

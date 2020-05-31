@@ -1,5 +1,6 @@
 import {getUserTitle} from '../utils/utils.js';
 import AbstractComponent from './abstract-component.js';
+import { remove } from '../utils/render.js';
 
 const createUserTitleTemplate = (films) => {
   const title = getUserTitle(films);

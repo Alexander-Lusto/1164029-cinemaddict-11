@@ -161,11 +161,11 @@ export default class Statistic extends AbstractSmartComponent {
     super();
     this._moviesModel = moviesModel;
 
-    this._films = this._moviesModel.moviesAll;
+    this._films = this._moviesModel.getMoviesAll();
     this._activeItem = TimePeriod.ALL_TIME;
 
-    this._sortedGenres = getGenresSortedByWatches(this._moviesModel.moviesAll);
-    this._sortedGenresNumber = getGenresNumberSortedByWatches(this._moviesModel.moviesAll);
+    this._sortedGenres = getGenresSortedByWatches(this._moviesModel.getMoviesAll());
+    this._sortedGenresNumber = getGenresNumberSortedByWatches(this._moviesModel.getMoviesAll());
 
     this._renderCharts();
     this._onPeriodChange();
@@ -258,31 +258,31 @@ export default class Statistic extends AbstractSmartComponent {
       switch (evt.target.value) {
         case TimePeriod.ALL_TIME:
           this._activeItem = TimePeriod.ALL_TIME;
-          this.rerender(this._moviesModel.moviesAll);
+          this.rerender(this._moviesModel.getMoviesAll());
           break;
 
         case TimePeriod.TODAY:
           this._activeItem = TimePeriod.TODAY;
           const today = new Date(new Date() - new Date().getHours() * 60 * 60 * 1000 - new Date().getMinutes() * 60 * 1000 - new Date().getSeconds() * 1000); // c 00: 00 сегодняшнего дня
-          this.rerender(getFilmsByPeriod(this._moviesModel.moviesAll, today));
+          this.rerender(getFilmsByPeriod(this._moviesModel.getMoviesAll(), today));
           break;
 
         case TimePeriod.WEEK:
           this._activeItem = TimePeriod.WEEK;
           const week = new Date(new Date() - 7 * 24 * 60 * 60 * 1000);
-          this.rerender(getFilmsByPeriod(this._moviesModel.moviesAll, week));
+          this.rerender(getFilmsByPeriod(this._moviesModel.getMoviesAll(), week));
           break;
 
         case TimePeriod.MONTH:
           this._activeItem = TimePeriod.MONTH;
           const month = new Date(new Date() - 30 * 24 * 60 * 60 * 1000);
-          this.rerender(getFilmsByPeriod(this._moviesModel.moviesAll, month));
+          this.rerender(getFilmsByPeriod(this._moviesModel.getMoviesAll(), month));
           break;
 
         case TimePeriod.YEAR:
           this._activeItem = TimePeriod.YEAR;
           const year = new Date(new Date() - 365 * 24 * 60 * 60 * 1000);
-          this.rerender(getFilmsByPeriod(this._moviesModel.moviesAll, year));
+          this.rerender(getFilmsByPeriod(this._moviesModel.getMoviesAll(), year));
           break;
       }
     });
@@ -304,7 +304,7 @@ export default class Statistic extends AbstractSmartComponent {
   show() {
     super.show();
     this._activeItem = TimePeriod.ALL_TIME;
-    this.rerender(this._moviesModel.moviesAll);
+    this.rerender(this._moviesModel.getMoviesAll());
   }
 
 }

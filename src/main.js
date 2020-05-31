@@ -62,7 +62,7 @@ api.getFilms()
   .then((films) => {
     moviesModel.setMovies(films);
     pageController.removePreloader();
-    render(header, new UserTitleComponent(films), RenderPosition.BEFOREEND);
+    pageController.renderUserTitle(films);
     pageController.render();
     render(footer, new FooterStatisticComponent(moviesModel), RenderPosition.BEFOREEND);
   })
