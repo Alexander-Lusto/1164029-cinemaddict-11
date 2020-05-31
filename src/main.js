@@ -6,7 +6,6 @@ import MenuComponent from './components/menu.js';
 import MoviesModel from './models/movies.js';
 import PageController from './controllers/page-controller.js';
 import StatisticComponent from './components/statistic.js';
-import UserTitleComponent from './components/user-title.js';
 import {RenderPosition, render} from './utils/render.js';
 
 const AUTHORIZATION = `Basic $%a113678133a2#a%@^sa&@67878df&*sdf#d678fsf@^#d678fddfs&=`;
@@ -18,7 +17,6 @@ export const MenuItem = {
 };
 
 const main = document.querySelector(`.main`);
-const header = document.querySelector(`.header`);
 const footer = document.querySelector(`.footer`);
 
 const api = new API(END_POINT, AUTHORIZATION);
