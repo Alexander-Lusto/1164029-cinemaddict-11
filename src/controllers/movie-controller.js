@@ -58,18 +58,14 @@ export default class MovieController {
   _сlosePopupOnEscPress(evt) {
     if (evt.keyCode === 27) {
       this._onViewChange();
-      document.removeEventListener(`keydown`, this._filmDetailsNewCommentComponent._newCommentSubmitHandler);
+
       this._mode = Mode.CLOSED;
     }
   }
 
   _showPopupOnClick() {
     this._onViewChange();
-    this._filmDetailsNewCommentComponent.reset();
     this.renderCommentsSection();
-
-    // отрисовать сам попап
-    appendChild(BODY, this._filmDetailsComponent);
 
     // повесть обработчик
     document.addEventListener(`keydown`, this._сlosePopupOnEscPress);
@@ -80,12 +76,14 @@ export default class MovieController {
       }
     });
 
+    // отрисовать сам попап
+    appendChild(BODY, this._filmDetailsComponent);
+
     this._mode = Mode.OPEN;
   }
 
   _closePopupOnClick() {
     this._onViewChange();
-    document.removeEventListener(`keydown`, this._filmDetailsNewCommentComponent._newCommentSubmitHandler);
     this._mode = Mode.CLOSED;
   }
 
@@ -94,8 +92,7 @@ export default class MovieController {
     removeChild(this._filmDetailsCommentsComponent);
     removeChild(this._filmDetailsComponent);
     document.removeEventListener(`keydown`, this._сlosePopupOnEscPress);
-    console.log(this._filmDetailsNewCommentComponent.newCommentSubmitHandler);
-    document.removeEventListener(`keydown`, this._filmDetailsNewCommentComponent._newCommentSubmitHandler);
+    this._filmDetailsNewCommentComponent.removeCommentHandler();
     this._mode = Mode.CLOSED;
   }
 

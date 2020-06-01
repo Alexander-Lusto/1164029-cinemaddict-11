@@ -8,7 +8,7 @@ import PageController from './controllers/page-controller.js';
 import StatisticComponent from './components/statistic.js';
 import {RenderPosition, render} from './utils/render.js';
 
-const AUTHORIZATION = `Basic $%a113678133a2#a%@^sa&@67878df&*sdf#d678fsf@^#d678fddfs&=`;
+const AUTHORIZATION = `Basic adlhfdal;fhdljfh1283712098ihzsuhiusadsa=`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 
 export const MenuItem = {
@@ -58,7 +58,6 @@ menuComponent.setOnChange((menuItem) => {
 
 api.getFilms()
   .then((films) => {
-    console.log(films.sort((film) => film.watchinDate));
     moviesModel.setMovies(films);
     pageController.removePreloader();
     pageController.renderUserTitle(films);

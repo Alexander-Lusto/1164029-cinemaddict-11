@@ -58,11 +58,14 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
   constructor() {
     super();
 
+    this._callback = null;
+
     this._emoji = null;
     this._emojiInp = null;
     this._comment = null;
 
     this._subscribeOnEvents();
+    this.newCommentSubmitHandler = this.newCommentSubmitHandler.bind(this);
   }
 
   reset() {
@@ -111,10 +114,15 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
   }
 
   setAddCommentHandler(callback) {
-    document.addEventListener(`keydown`, (evt) => this.newCommentSubmitHandler(evt, callback));
+    this._callback = callback;
+    document.addEventListener(`keydown`, this.newCommentSubmitHandler);
   }
 
-  newCommentSubmitHandler(evt, callback) {
+  removeCommentHandler() {
+    document.removeEventListener(`keydown`, this.newCommentSubmitHandler);
+  }
+
+  newCommentSubmitHandler(evt) {
     const textarea = this.getElement().querySelector(`.film-details__comment-input`);
     const isCtrlAndEnterPressed = evt.ctrlKey && evt.key === `Enter`;
 
@@ -132,14 +140,13 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
     } else if (isCtrlAndEnterPressed && isEmojiChosen && isTextWritten) { // если всё правильно заполнено, добавляем коммент
       textarea.style.border = ``;
       textarea.disabled = true;
+
       const comment = {
         'emotion': this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType,
         'comment': textarea.value,
         'date': new Date().toISOString(),
       };
-      callback(comment);
+      this._callback(comment);
     }
   }
 }
-
-

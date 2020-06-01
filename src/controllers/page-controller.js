@@ -46,7 +46,7 @@ const renderFilms = (filmsListContainer, films, onDataChange, onViewChange, onCo
 };
 
 export default class PageController {
-  constructor(moviesModel, commentsModel, api) { // нет контейнера
+  constructor(moviesModel, commentsModel, api) {
     this._moviesModel = moviesModel;
     this._commentsModel = commentsModel;
     this._api = api;
@@ -107,7 +107,7 @@ export default class PageController {
 
   _renderFilms(films) {
     this._films = films;
-    if (this._films.length === 0) { // поставить заглушку если при выьранном фильтре нет фильмов
+    if (this._films.length === 0) { // поставить заглушку если при выбранном фильтре нет фильмов
       render(this._filmsListContainer, this._noFilmsComponent, RenderPosition.BEFOREEND);
       return;
     }
