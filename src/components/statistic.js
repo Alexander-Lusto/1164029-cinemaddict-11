@@ -1,15 +1,8 @@
 import {getUserTitle} from '../utils/utils.js';
+import {TimePeriod} from '../const.js';
 import AbstractSmartComponent from './abstract-smart-component.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-
-const TimePeriod = {
-  ALL_TIME: `all-time`,
-  TODAY: `today`,
-  WEEK: `week`,
-  MONTH: `month`,
-  YEAR: `year`,
-};
 
 const getFiltersMarkup = (timePeriod, isChecked) => {
   const filters = Object.values(timePeriod);
@@ -66,7 +59,7 @@ const createStatisticTemplate = (films, activeItem) => {
 };
 
 const getStatisticInfo = (films) => {
-  const filmsInHistory = films.filter((it) => it.isInHistory);
+  const filmsInHistory = films.filter((film) => film.isInHistory);
 
   let filmGenres = [];
   films.map((film) => film.genres.forEach((genre) => filmGenres.push(genre)));
@@ -89,8 +82,8 @@ const getStatisticInfo = (films) => {
     genreRate = genreRate.sort((a, b) => Object.values(b) - Object.values(a));
   }
 
-  filmsInHistory.forEach((it) => {
-    filmDurationMinutes += it.duration;
+  filmsInHistory.forEach((film) => {
+    filmDurationMinutes += film.duration;
   });
 
   filmDurationHours = filmDurationMinutes / 60;
@@ -127,9 +120,9 @@ const getGenresSortedByWatches = ((films) => { // раскидать все пр
   }
   const genreRateArray = [];
 
-  genreRate.forEach((it) => {
-    if (Object.values(it) > 0) { // отсеять непросмотренные жанры
-      genreRateArray.push(Object.keys(it).join()); // взять ключи из массива объектов
+  genreRate.forEach((rate) => {
+    if (Object.values(rate) > 0) { // отсеять непросмотренные жанры
+      genreRateArray.push(Object.keys(rate).join()); // взять ключи из массива объектов
     }
   });
 
@@ -137,7 +130,7 @@ const getGenresSortedByWatches = ((films) => { // раскидать все пр
 });
 
 const getGenresNumberSortedByWatches = ((films) => { // взять количество посмотренных фильмов для каждого жанра и вернуть массив с ними
-  const filmsInHistory = films.filter((it) => it.isInHistory);
+  const filmsInHistory = films.filter((film) => film.isInHistory);
 
   let filmGenres = [];
   films.map((film) => film.genres.forEach((genre) => filmGenres.push(genre)));
@@ -159,9 +152,9 @@ const getGenresNumberSortedByWatches = ((films) => { // взять количе�
   }
   const genreRateArray = [];
 
-  genreRate.forEach((it) => {
-    if (Object.values(it) > 0) { // отсеять непросмотренные жанры
-      genreRateArray.push((Object.values(it)).join()); // взять значения из массива объектов и отправить в обычный массив
+  genreRate.forEach((rate) => {
+    if (Object.values(rate) > 0) { // отсеять непросмотренные жанры
+      genreRateArray.push((Object.values(rate)).join()); // взять значения из массива объектов и отправить в обычный массив
     }
   });
 

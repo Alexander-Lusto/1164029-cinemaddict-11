@@ -4,6 +4,8 @@ import moment from 'moment';
 const createFilmCardTemplate = (film) => {
   const {name, poster, description, rating, releaseDate, duration, genres, isInWatchlist, isInHistory, isInFavorites, comments} = film;
 
+  const shortDesc = description.length > 140 ? description.substr(0, 139) + `...` : description;
+
   return (
     `<article class="film-card">
         <h3 class="film-card__title">${name}</h3>
@@ -14,7 +16,7 @@ const createFilmCardTemplate = (film) => {
           <span class="film-card__genre">${genres[0] ? genres[0] : ``}</span>
         </p>
         <img src="${poster}" alt="${name}" class="film-card__poster">
-        <p class="film-card__description">${description}</p>
+        <p class="film-card__description">${description.length > 140 ? shortDesc : description}</p>
         <a class="film-card__comments">${comments ? comments.length : `0`} comments</a>
         <form class="film-card__controls">
           <button

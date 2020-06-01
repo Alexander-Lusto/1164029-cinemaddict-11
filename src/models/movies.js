@@ -4,7 +4,7 @@ import {getFilmsByFilter} from '../utils/filter.js';
 
 export default class Movies {
   constructor() {
-    this._movies = []; // база данных со всеми фильмами, когда изменяем что-то, изменяем эту базу
+    this._movies = [];
     this._activeFilterType = FilterType.ALL;
 
     this._dataChangeHandlers = [];
@@ -25,7 +25,7 @@ export default class Movies {
   }
 
   updateMovies(id, film) {
-    const index = this._movies.findIndex((it) => it.id === id);
+    const index = this._movies.findIndex((movie) => movie.id === id);
 
     if (index === -1) {
       return false;

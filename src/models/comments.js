@@ -1,6 +1,6 @@
 export default class Comments {
   constructor() {
-    this._comments = []; // база данных со всеми комментариями, когда изменяем что-то, изменяем эту базу
+    this._comments = [];
     this._dataChangeHandlers = [];
   }
 
@@ -14,8 +14,8 @@ export default class Comments {
     return true;
   }
 
-  removeComment(commentId) {
-    const index = this._comments.findIndex((it) => it.id === commentId);
+  removeComment(targetId) {
+    const index = this._comments.findIndex((comment) => comment.id === targetId);
 
     if (index === -1) {
       return false;

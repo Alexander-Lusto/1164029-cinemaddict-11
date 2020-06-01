@@ -14,6 +14,14 @@ const Mode = {
   OPEN: `open`,
 };
 
+const undoChanges = (evt) => {
+  if (!evt.target.checked) {
+    evt.target.checked = evt.target.value;
+  } else {
+    evt.target.checked = false;
+  }
+};
+
 export default class MovieController {
   constructor(film, container, onDataChange, onViewChange, onCommentsChange, api, commentsModel) {
     this._film = film;
@@ -50,14 +58,14 @@ export default class MovieController {
   _сlosePopupOnEscPress(evt) {
     if (evt.keyCode === 27) {
       this._onViewChange();
-
+      document.removeEventListener(`keydown`, this._filmDetailsNewCommentComponent._newCommentSubmitHandler);
       this._mode = Mode.CLOSED;
     }
   }
 
   _showPopupOnClick() {
     this._onViewChange();
-
+    this._filmDetailsNewCommentComponent.reset();
     this.renderCommentsSection();
 
     // отрисовать сам попап
@@ -65,11 +73,19 @@ export default class MovieController {
 
     // повесть обработчик
     document.addEventListener(`keydown`, this._сlosePopupOnEscPress);
+
+    this._filmDetailsNewCommentComponent.setAddCommentHandler((comment) => { // получаем наш новый комментарий
+      if (this._mode === Mode.OPEN) {
+        this._onCommentsChange(this, null, comment, this._film);
+      }
+    });
+
     this._mode = Mode.OPEN;
   }
 
   _closePopupOnClick() {
     this._onViewChange();
+    document.removeEventListener(`keydown`, this._filmDetailsNewCommentComponent._newCommentSubmitHandler);
     this._mode = Mode.CLOSED;
   }
 
@@ -78,6 +94,8 @@ export default class MovieController {
     removeChild(this._filmDetailsCommentsComponent);
     removeChild(this._filmDetailsComponent);
     document.removeEventListener(`keydown`, this._сlosePopupOnEscPress);
+    console.log(this._filmDetailsNewCommentComponent.newCommentSubmitHandler);
+    document.removeEventListener(`keydown`, this._filmDetailsNewCommentComponent._newCommentSubmitHandler);
     this._mode = Mode.CLOSED;
   }
 
@@ -131,12 +149,6 @@ export default class MovieController {
     this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
     this._filmDetailsComponent.setClickHandler(this._closePopupOnClick);
 
-    this._filmDetailsNewCommentComponent.setAddCommentHandler((comment) => { // получаем наш новый комментарий
-      if (this._mode === Mode.OPEN) {
-        this._onCommentsChange(this, null, comment, film);
-      }
-    });
-
     if (oldFilmDetailsComponent) {
       replace(this._filmDetailsComponent, oldFilmDetailsComponent);
 
@@ -155,7 +167,7 @@ export default class MovieController {
     appendChild(container, this._filmDetailsControlsComponent);
 
     this._filmDetailsControlsComponent.setAddToWatchlistButtonHandler((evt) => {
-      evt.target.checked = evt.target.value;
+      undoChanges(evt);
 
       const newFilm = MovieModel.clone(film);
       newFilm.isInWatchlist = !newFilm.isInWatchlist;
@@ -163,7 +175,7 @@ export default class MovieController {
     });
 
     this._filmDetailsControlsComponent.setAlreadyWatchedButtonHandler((evt) => {
-      evt.target.checked = evt.target.value;
+      undoChanges(evt);
 
       const newFilm = MovieModel.clone(film);
       newFilm.isInHistory = !newFilm.isInHistory;
@@ -171,7 +183,7 @@ export default class MovieController {
     });
 
     this._filmDetailsControlsComponent.setAddToFavoriteButtonHandler((evt) => {
-      evt.target.checked = evt.target.value;
+      undoChanges(evt);
 
       const newFilm = MovieModel.clone(film);
       newFilm.isInFavorites = !newFilm.isInFavorites;
@@ -236,8 +248,8 @@ export default class MovieController {
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 
-  shakeComment(commentId) {
-    const index = this._comments.findIndex((it) => it.id === commentId);
+  shakeComment(targetId) {
+    const index = this._comments.findIndex((comment) => comment.id === targetId);
     const commentsAll = this._filmDetailsCommentsComponent.getElement().querySelectorAll(`.film-details__comment`);
     const comment = commentsAll[index];
     comment.disabled = false;

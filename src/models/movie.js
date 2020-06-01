@@ -2,7 +2,7 @@ export default class Movie {
   constructor(data) {
     this.id = data[`id`];
     this.comments = data[`comments`];
-    this.name = data[`film_info`][`title`]; // alternative_title: "Country Who Stole The Darkness"
+    this.name = data[`film_info`][`title`];
     this.originalName = data[`film_info`][`alternative_title`];
     this.poster = data[`film_info`][`poster`];
     this.description = data[`film_info`][`description`];

@@ -58,6 +58,7 @@ menuComponent.setOnChange((menuItem) => {
 
 api.getFilms()
   .then((films) => {
+    console.log(films.sort((film) => film.watchinDate));
     moviesModel.setMovies(films);
     pageController.removePreloader();
     pageController.renderUserTitle(films);

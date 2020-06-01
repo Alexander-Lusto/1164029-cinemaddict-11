@@ -111,32 +111,35 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
   }
 
   setAddCommentHandler(callback) {
-    document.addEventListener(`keydown`, (evt) => {
+    document.addEventListener(`keydown`, (evt) => this.newCommentSubmitHandler(evt, callback));
+  }
 
-      const textarea = this.getElement().querySelector(`.film-details__comment-input`);
-      const isCtrlAndEnterPressed = evt.ctrlKey && evt.key === `Enter`;
+  newCommentSubmitHandler(evt, callback) {
+    const textarea = this.getElement().querySelector(`.film-details__comment-input`);
+    const isCtrlAndEnterPressed = evt.ctrlKey && evt.key === `Enter`;
 
-      const isEmojiChosen = this.getElement().querySelector(`.film-details__add-emoji-label img`) ? this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType : false;
+    const isEmojiChosen = this.getElement().querySelector(`.film-details__add-emoji-label img`) ? this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType : false;
 
-      const isTextWritten = textarea.value;
+    const isTextWritten = textarea.value;
 
-      if (isCtrlAndEnterPressed && (!isEmojiChosen || !isTextWritten)) { // если чего-то нет, потрясём окно (валидация)
-        textarea.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
-        textarea.style.border = `1px solid red`;
+    if (isCtrlAndEnterPressed && (!isEmojiChosen || !isTextWritten)) { // если чего-то нет, потрясём окно (валидация)
+      textarea.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+      textarea.style.border = `1px solid red`;
 
-        setTimeout(() => {
-          textarea.style.animation = ``;
-        }, SHAKE_ANIMATION_TIMEOUT); // удаляем анимацию через 0.6 сек
-      } else if (isCtrlAndEnterPressed && isEmojiChosen && isTextWritten) { // если всё правильно заполнено, добавляем коммент
-        textarea.style.border = ``;
-        textarea.disabled = true;
-        const comment = {
-          'emotion': this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType,
-          'comment': textarea.value,
-          'date': new Date().toISOString(),
-        };
-        callback(comment);
-      }
-    });
+      setTimeout(() => {
+        textarea.style.animation = ``;
+      }, SHAKE_ANIMATION_TIMEOUT); // удаляем анимацию через 0.6 сек
+    } else if (isCtrlAndEnterPressed && isEmojiChosen && isTextWritten) { // если всё правильно заполнено, добавляем коммент
+      textarea.style.border = ``;
+      textarea.disabled = true;
+      const comment = {
+        'emotion': this.getElement().querySelector(`.film-details__add-emoji-label img`).dataset.emojiType,
+        'comment': textarea.value,
+        'date': new Date().toISOString(),
+      };
+      callback(comment);
+    }
   }
 }
+
+
