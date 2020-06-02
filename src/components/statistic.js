@@ -63,8 +63,8 @@ const getGenreRates = (films) => {
 
   let filmGenres = [];
   films.map((film) => film.genres.forEach((genre) => filmGenres.push(genre)));
-  filmGenres = filmGenres.filter((item, index) => {
-    return filmGenres.indexOf(item) === index;
+  filmGenres = filmGenres.filter((genre, index) => {
+    return filmGenres.indexOf(genre) === index;
   });
 
   let genreRates = [];
@@ -72,10 +72,10 @@ const getGenreRates = (films) => {
   if (filmsInHistory.length > 0) {
     filmGenres.map((filmGenre) => {
       const key = filmGenre;
-      const object = {
+      const genreRate = {
         [key]: filmsInHistory.reduce((sum, film) => sum.concat(film.genres), []).filter((genre) => genre === key).length
       };
-      genreRates.push(object);
+      genreRates.push(genreRate);
     });
     genreRates = genreRates.sort((a, b) => Object.values(b) - Object.values(a));
   }

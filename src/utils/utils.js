@@ -1,17 +1,23 @@
 import {UserTitles} from '../const.js';
 
-const FILMS_NUMBER_FOR_NOVICE_TITLE = 1;
-const FILMS_NUMBER_FOR_FAN_TITLE = 10;
-const FILMS_NUMBER_FOR_MOVIE_BUFF_TITLE = 20;
+const FilmsNumber = {
+  NOVICE: 1,
+  FAN: 10,
+  MOVIE_BUFF: 20,
+};
 
 export const getUserTitle = (films) => {
   const filmsInHistory = films.filter((film) => film.isInHistory).length;
 
-  if (filmsInHistory >= FILMS_NUMBER_FOR_NOVICE_TITLE && filmsInHistory <= FILMS_NUMBER_FOR_FAN_TITLE) {
+  if (filmsInHistory >= FilmsNumber.NOVICE && filmsInHistory <= FilmsNumber.FAN) {
     return UserTitles.NOVICE;
-  } else if (filmsInHistory > FILMS_NUMBER_FOR_FAN_TITLE && filmsInHistory <= FILMS_NUMBER_FOR_MOVIE_BUFF_TITLE) {
+  }
+
+  if (filmsInHistory > FilmsNumber.FAN && filmsInHistory <= FilmsNumber.MOVIE_BUFF) {
     return UserTitles.FAN;
-  } else if (filmsInHistory > FILMS_NUMBER_FOR_MOVIE_BUFF_TITLE) {
+  }
+
+  if (filmsInHistory > FilmsNumber.MOVIE_BUFF) {
     return UserTitles.MOVIE_BUFF;
   }
 

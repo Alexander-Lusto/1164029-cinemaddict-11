@@ -4,14 +4,16 @@ const Method = {
   GET: `GET`,
   POST: `POST`,
   PUT: `PUT`,
-  DELETE: `DELETE`
+  DELETE: `DELETE`,
 };
 
-const STATUS_OK = 200;
-const STATUS_ERROR = 300;
+const Status = {
+  OK: 200,
+  ERROR: 300,
+};
 
 const checkStatus = (response) => {
-  if (response.status >= STATUS_OK && response.status < STATUS_ERROR) {
+  if (response.status >= Status.OK && response.status < Status.ERROR) {
     return response;
   }
 
