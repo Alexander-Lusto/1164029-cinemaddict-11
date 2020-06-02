@@ -1,24 +1,24 @@
 export default class Movie {
-  constructor(data) {
-    this.id = data[`id`];
-    this.comments = data[`comments`];
-    this.name = data[`film_info`][`title`];
-    this.originalName = data[`film_info`][`alternative_title`];
-    this.poster = data[`film_info`][`poster`];
-    this.description = data[`film_info`][`description`];
-    this.rating = data[`film_info`][`total_rating`];
-    this.releaseDate = new Date(data[`film_info`][`release`][`date`]);
-    this.country = data[`film_info`][`release`][`release_country`];
-    this.duration = data[`film_info`][`runtime`];
-    this.genres = data[`film_info`][`genre`];
-    this.age = data[`film_info`][`age_rating`];
-    this.director = data[`film_info`][`director`];
-    this.writers = data[`film_info`][`writers`];
-    this.actors = data[`film_info`][`actors`];
-    this.isInFavorites = data[`user_details`][`favorite`];
-    this.isInWatchlist = data[`user_details`][`watchlist`];
-    this.isInHistory = data[`user_details`][`already_watched`];
-    this.watchingDate = new Date(data[`user_details`][`watching_date`]);
+  constructor(movie) {
+    this.id = movie[`id`];
+    this.comments = movie[`comments`];
+    this.name = movie[`film_info`][`title`];
+    this.originalName = movie[`film_info`][`alternative_title`];
+    this.poster = movie[`film_info`][`poster`];
+    this.description = movie[`film_info`][`description`];
+    this.rating = movie[`film_info`][`total_rating`];
+    this.releaseDate = new Date(movie[`film_info`][`release`][`date`]);
+    this.country = movie[`film_info`][`release`][`release_country`];
+    this.duration = movie[`film_info`][`runtime`];
+    this.genres = movie[`film_info`][`genre`];
+    this.age = movie[`film_info`][`age_rating`];
+    this.director = movie[`film_info`][`director`];
+    this.writers = movie[`film_info`][`writers`];
+    this.actors = movie[`film_info`][`actors`];
+    this.isInFavorites = movie[`user_details`][`favorite`];
+    this.isInWatchlist = movie[`user_details`][`watchlist`];
+    this.isInHistory = movie[`user_details`][`already_watched`];
+    this.watchingDate = new Date(movie[`user_details`][`watching_date`]);
   }
 
   toRAW() {
@@ -51,15 +51,15 @@ export default class Movie {
     };
   }
 
-  static parseMovie(data) {
-    return new Movie(data);
+  static parseMovie(movie) {
+    return new Movie(movie);
   }
 
-  static parseMovies(data) {
-    return data.map(Movie.parseMovie);
+  static parseMovies(movie) {
+    return movie.map(Movie.parseMovie);
   }
 
-  static clone(data) {
-    return new Movie(data.toRAW());
+  static clone(movie) {
+    return new Movie(movie.toRAW());
   }
 }

@@ -1,7 +1,7 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
 import {SHAKE_ANIMATION_TIMEOUT} from '../controllers/movie-controller.js';
 
-const EmojiAddressArray = {
+const EmojiName = {
   SMILE: `smile`,
   SLEEPING: `sleeping`,
   PUKE: `puke`,
@@ -12,17 +12,24 @@ const createEmojiImageTemplate = (emoji) => {
   return `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}" data-emoji-type="${emoji ? emoji : `none`}">`;
 };
 
-const createFilmDetailsCommentSectionTemplate = (comment, emoji, emojiInp) => {
+const getEmojiTemplate = (targetName) => {
+  const emojiNames = Object.values(EmojiName);
+  return emojiNames.map((name) => {
+    return `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${name}" value="${name}"
+              ${(targetName === name) ? `checked` : ``}>
+            <label class="film-details__emoji-label" for="emoji-${name}">
+              <img src="./images/emoji/${name}.png" width="30" height="30" alt="emoji">
+            </label>`;
+  }).join(`\n`);
+};
 
-  const emojiSmileChecked = (emojiInp === EmojiAddressArray.SMILE) ? `checked` : ``;
-  const emojiSleepingChecked = (emojiInp === EmojiAddressArray.SLEEPING) ? `checked` : ``;
-  const emojiPukeChecked = (emojiInp === EmojiAddressArray.PUKE) ? `checked` : ``;
-  const emojiAngryChecked = (emojiInp === EmojiAddressArray.ANGRY) ? `checked` : ``;
+const createFilmDetailsCommentSectionTemplate = (comment, emojiImage, emojiName) => {
 
+  const emojiTemplate = getEmojiTemplate(emojiName);
 
   return (
     `<div class="film-details__new-comment">
-        <div for="add-emoji" class="film-details__add-emoji-label">${emoji ? emoji : ``}</div>
+        <div for="add-emoji" class="film-details__add-emoji-label">${emojiImage ? emojiImage : ``}</div>
 
         <label class="film-details__comment-label">
           <textarea class="film-details__comment-input"
@@ -30,25 +37,7 @@ const createFilmDetailsCommentSectionTemplate = (comment, emoji, emojiInp) => {
         </label>
 
         <div class="film-details__emoji-list">
-          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" ${emojiSmileChecked}>
-          <label class="film-details__emoji-label" for="emoji-smile">
-            <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-          </label>
-
-          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping" ${emojiSleepingChecked}>
-          <label class="film-details__emoji-label" for="emoji-sleeping">
-            <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-          </label>
-
-          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke" ${emojiPukeChecked}>
-          <label class="film-details__emoji-label" for="emoji-puke">
-            <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-          </label>
-
-          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry" ${emojiAngryChecked}>
-          <label class="film-details__emoji-label" for="emoji-angry">
-            <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-          </label>
+          ${emojiTemplate}
         </div>
       </div>`
   );
@@ -60,8 +49,8 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
 
     this._callback = null;
 
-    this._emoji = null;
-    this._emojiInp = null;
+    this._emojiImage = null;
+    this._emojiName = null;
     this._comment = null;
 
     this._subscribeOnEvents();
@@ -69,8 +58,8 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
   }
 
   reset() {
-    this._emoji = null;
-    this._emojiInp = null;
+    this._emojiImage = null;
+    this._emojiName = null;
     this._comment = null;
 
     this.rerender();
@@ -94,11 +83,11 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
   }
 
   _subscribeOnEvents() {
-    const emojiArray = this.getElement().querySelectorAll(`input`);
-    for (let i = 0; i < emojiArray.length; i++) {
-      emojiArray[i].addEventListener(`change`, () => {
-        this._emoji = createEmojiImageTemplate(Object.values(EmojiAddressArray)[i]);
-        this._emojiInp = Object.values(EmojiAddressArray)[i];
+    const emojiInputs = this.getElement().querySelectorAll(`input`);
+    for (let i = 0; i < emojiInputs.length; i++) {
+      emojiInputs[i].addEventListener(`change`, () => {
+        this._emojiImage = createEmojiImageTemplate(Object.values(EmojiName)[i]);
+        this._emojiName = Object.values(EmojiName)[i];
         this.rerender();
       });
     }
@@ -110,7 +99,7 @@ export default class FilmDetailsNewComment extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createFilmDetailsCommentSectionTemplate(this._comment, this._emoji, this._emojiInp);
+    return createFilmDetailsCommentSectionTemplate(this._comment, this._emojiImage, this._emojiName);
   }
 
   setAddCommentHandler(callback) {

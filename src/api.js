@@ -7,12 +7,15 @@ const Method = {
   DELETE: `DELETE`
 };
 
+const STATUS_OK = 200;
+const STATUS_ERROR = 300;
+
 const checkStatus = (response) => {
-  if (response.status >= 200 && response.status < 300) {
+  if (response.status >= STATUS_OK && response.status < STATUS_ERROR) {
     return response;
-  } else {
-    throw new Error(`${response.status}: ${response.statusText}`);
   }
+
+  throw new Error(`${response.status}: ${response.statusText}`);
 };
 
 export default class API {

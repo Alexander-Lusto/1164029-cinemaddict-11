@@ -1,10 +1,12 @@
 import AbstractComponent from './abstract-component.js';
 import moment from 'moment';
 
+const MAX_DESCRIPTION_LENGTH = 140;
+
 const createFilmCardTemplate = (film) => {
   const {name, poster, description, rating, releaseDate, duration, genres, isInWatchlist, isInHistory, isInFavorites, comments} = film;
 
-  const shortDesc = description.length > 140 ? description.substr(0, 139) + `...` : description;
+  const shortDesc = `${description.substr(0, MAX_DESCRIPTION_LENGTH - 1)}...`;
 
   return (
     `<article class="film-card">
@@ -16,7 +18,7 @@ const createFilmCardTemplate = (film) => {
           <span class="film-card__genre">${genres[0] ? genres[0] : ``}</span>
         </p>
         <img src="${poster}" alt="${name}" class="film-card__poster">
-        <p class="film-card__description">${description.length > 140 ? shortDesc : description}</p>
+        <p class="film-card__description">${description.length > MAX_DESCRIPTION_LENGTH ? shortDesc : description}</p>
         <a class="film-card__comments">${comments ? comments.length : `0`} comments</a>
         <form class="film-card__controls">
           <button
@@ -48,11 +50,11 @@ export default class FilmCard extends AbstractComponent {
   constructor(film, comments) {
     super();
     this._film = film;
-    this._comemnts = comments;
+    this._comments = comments;
   }
 
   getTemplate() {
-    return createFilmCardTemplate(this._film, this._comemnts);
+    return createFilmCardTemplate(this._film, this._comments);
   }
 
   setClickHandler(callback) {

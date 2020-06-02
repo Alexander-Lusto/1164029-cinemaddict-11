@@ -8,9 +8,9 @@ const createGenresMarkup = (genres) => {
         `<span class="film-details__genre">${genre}</span>`
       );
     }).join(`\n`);
-  } else {
-    return null;
   }
+
+  return null;
 };
 
 const createFilmDetailsTemplate = (film) => {

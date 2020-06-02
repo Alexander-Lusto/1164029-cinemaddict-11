@@ -58,7 +58,7 @@ const createStatisticTemplate = (films, activeItem) => {
   );
 };
 
-const getStatisticInfo = (films) => {
+const getGenreRates = (films) => {
   const filmsInHistory = films.filter((film) => film.isInHistory);
 
   let filmGenres = [];
@@ -67,20 +67,28 @@ const getStatisticInfo = (films) => {
     return filmGenres.indexOf(item) === index;
   });
 
-  let filmDurationHours = 0;
-  let filmDurationMinutes = 0;
-  let genreRate = [];
+  let genreRates = [];
 
   if (filmsInHistory.length > 0) {
-    for (let i = 0; i < filmGenres.length; i++) {
-      const key = filmGenres[i];
+    filmGenres.map((filmGenre) => {
+      const key = filmGenre;
       const object = {
         [key]: filmsInHistory.reduce((sum, film) => sum.concat(film.genres), []).filter((genre) => genre === key).length
       };
-      genreRate.push(object);
-    }
-    genreRate = genreRate.sort((a, b) => Object.values(b) - Object.values(a));
+      genreRates.push(object);
+    });
+    genreRates = genreRates.sort((a, b) => Object.values(b) - Object.values(a));
   }
+
+  return genreRates;
+};
+
+const getStatisticInfo = (films) => {
+  const filmsInHistory = films.filter((film) => film.isInHistory);
+  const genreRates = getGenreRates(films);
+
+  let filmDurationHours = 0;
+  let filmDurationMinutes = 0;
 
   filmsInHistory.forEach((film) => {
     filmDurationMinutes += film.duration;
@@ -95,70 +103,34 @@ const getStatisticInfo = (films) => {
       hours: Math.floor(filmDurationHours),
       minutes: filmDurationMinutes
     },
-    topGenre: filmsInHistory.length > 0 ? Object.keys(genreRate[0]) : ``,
+    topGenre: filmsInHistory.length > 0 ? Object.keys(genreRates[0]) : ``,
   };
 };
 
 const getGenresSortedByWatches = ((films) => { // раскидать все просмотренные фильмы по жанрам и вернуть отсортированный массив (от самого популярного к менее популярному)
-  const filmsInHistory = films.filter((film) => film.isInHistory);
-  let filmGenres = [];
-  films.map((film) => film.genres.forEach((genre) => filmGenres.push(genre)));
-  filmGenres = filmGenres.filter((item, index) => {
-    return filmGenres.indexOf(item) === index;
-  });
-  let genreRate = [];
+  const genreRates = getGenreRates(films);
+  const sortedGenreRates = [];
 
-  if (filmsInHistory.length > 0) {
-    for (let i = 0; i < filmGenres.length; i++) {
-      const key = filmGenres[i];
-      const object = {
-        [key]: filmsInHistory.reduce((sum, film) => sum.concat(film.genres), []).filter((genre) => genre === key).length
-      };
-      genreRate.push(object);
-    }
-    genreRate = genreRate.sort((a, b) => Object.values(b) - Object.values(a));
-  }
-  const genreRateArray = [];
-
-  genreRate.forEach((rate) => {
+  genreRates.forEach((rate) => {
     if (Object.values(rate) > 0) { // отсеять непросмотренные жанры
-      genreRateArray.push(Object.keys(rate).join()); // взять ключи из массива объектов
+      sortedGenreRates.push(Object.keys(rate).join()); // взять ключи из массива объектов
     }
   });
 
-  return genreRateArray;
+  return sortedGenreRates;
 });
 
 const getGenresNumberSortedByWatches = ((films) => { // взять количество посмотренных фильмов для каждого жанра и вернуть массив с ними
-  const filmsInHistory = films.filter((film) => film.isInHistory);
+  const genreRates = getGenreRates(films);
+  const sortedGenreRates = [];
 
-  let filmGenres = [];
-  films.map((film) => film.genres.forEach((genre) => filmGenres.push(genre)));
-  filmGenres = filmGenres.filter((item, index) => {
-    return filmGenres.indexOf(item) === index;
-  });
-
-  let genreRate = [];
-
-  if (filmsInHistory.length > 0) {
-    for (let i = 0; i < filmGenres.length; i++) {
-      const key = filmGenres[i];
-      const object = {
-        [key]: filmsInHistory.reduce((sum, film) => sum.concat(film.genres), []).filter((genre) => genre === key).length
-      };
-      genreRate.push(object);
-    }
-    genreRate = genreRate.sort((a, b) => Object.values(b) - Object.values(a));
-  }
-  const genreRateArray = [];
-
-  genreRate.forEach((rate) => {
+  genreRates.forEach((rate) => {
     if (Object.values(rate) > 0) { // отсеять непросмотренные жанры
-      genreRateArray.push((Object.values(rate)).join()); // взять значения из массива объектов и отправить в обычный массив
+      sortedGenreRates.push((Object.values(rate)).join()); // взять значения из массива объектов и отправить в обычный массив
     }
   });
 
-  return genreRateArray;
+  return sortedGenreRates;
 });
 
 const getFilmsByPeriod = (allFilms, dateFrom) => {
@@ -274,25 +246,25 @@ export default class Statistic extends AbstractSmartComponent {
 
         case TimePeriod.TODAY:
           this._activeItem = TimePeriod.TODAY;
-          const today = new Date(new Date() - new Date().getHours() * 60 * 60 * 1000 - new Date().getMinutes() * 60 * 1000 - new Date().getSeconds() * 1000); // c 00: 00 сегодняшнего дня
+          const today = new Date(Number(new Date()) - Number(new Date().getHours()) * 60 * 60 * 1000 - Number(new Date().getMinutes()) * 60 * 1000 - Number(new Date().getSeconds()) * 1000); // c 00: 00 сегодняшнего дня
           this.rerender(getFilmsByPeriod(this._moviesModel.getMoviesAll(), today));
           break;
 
         case TimePeriod.WEEK:
           this._activeItem = TimePeriod.WEEK;
-          const week = new Date(new Date() - 7 * 24 * 60 * 60 * 1000);
+          const week = new Date(Number(new Date()) - 7 * 24 * 60 * 60 * 1000);
           this.rerender(getFilmsByPeriod(this._moviesModel.getMoviesAll(), week));
           break;
 
         case TimePeriod.MONTH:
           this._activeItem = TimePeriod.MONTH;
-          const month = new Date(new Date() - 30 * 24 * 60 * 60 * 1000);
+          const month = new Date(Number(new Date()) - 30 * 24 * 60 * 60 * 1000);
           this.rerender(getFilmsByPeriod(this._moviesModel.getMoviesAll(), month));
           break;
 
         case TimePeriod.YEAR:
           this._activeItem = TimePeriod.YEAR;
-          const year = new Date(new Date() - 365 * 24 * 60 * 60 * 1000);
+          const year = new Date(Number(new Date()) - 365 * 24 * 60 * 60 * 1000);
           this.rerender(getFilmsByPeriod(this._moviesModel.getMoviesAll(), year));
           break;
       }

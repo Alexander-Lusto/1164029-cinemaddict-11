@@ -9,17 +9,11 @@ import {BODY} from '../const.js';
 
 export const SHAKE_ANIMATION_TIMEOUT = 600;
 
+const ESC_KEYCODE = 27;
+
 const Mode = {
   CLOSED: `closed`,
   OPEN: `open`,
-};
-
-const undoChanges = (evt) => {
-  if (!evt.target.checked) {
-    evt.target.checked = evt.target.value;
-  } else {
-    evt.target.checked = false;
-  }
 };
 
 export default class MovieController {
@@ -39,10 +33,10 @@ export default class MovieController {
     this._filmDetailsComponent = null;
     this._filmDetailsControlsComponent = null;
     this._filmDetailsCommentsComponent = null;
-    this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent(); // было так, чтобы при переренде сохранялась инфа
+    this._filmDetailsNewCommentComponent = new FilmDetailsNewCommentComponent();
     this._newCommentContainer = null;
 
-    this._сlosePopupOnEscPress = this._сlosePopupOnEscPress.bind(this);
+    this._сlosePopupOnEscPressHandler = this._сlosePopupOnEscPressHandler.bind(this);
     this._showPopupOnClick = this._showPopupOnClick.bind(this);
     this._closePopupOnClick = this._closePopupOnClick.bind(this);
   }
@@ -52,11 +46,11 @@ export default class MovieController {
     remove(this._filmDetailsComponent);
     remove(this._filmDetailsNewCommentComponent);
 
-    document.removeEventListener(`keydown`, this._сlosePopupOnEscPress);
+    document.removeEventListener(`keydown`, this._сlosePopupOnEscPressHandler);
   }
 
-  _сlosePopupOnEscPress(evt) {
-    if (evt.keyCode === 27) {
+  _сlosePopupOnEscPressHandler(evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
       this._onViewChange();
 
       this._mode = Mode.CLOSED;
@@ -68,7 +62,7 @@ export default class MovieController {
     this.renderCommentsSection();
 
     // повесть обработчик
-    document.addEventListener(`keydown`, this._сlosePopupOnEscPress);
+    document.addEventListener(`keydown`, this._сlosePopupOnEscPressHandler);
 
     this._filmDetailsNewCommentComponent.setAddCommentHandler((comment) => { // получаем наш новый комментарий
       if (this._mode === Mode.OPEN) {
@@ -91,7 +85,7 @@ export default class MovieController {
     this._filmDetailsNewCommentComponent.reset();
     removeChild(this._filmDetailsCommentsComponent);
     removeChild(this._filmDetailsComponent);
-    document.removeEventListener(`keydown`, this._сlosePopupOnEscPress);
+    document.removeEventListener(`keydown`, this._сlosePopupOnEscPressHandler);
     this._filmDetailsNewCommentComponent.removeCommentHandler();
     this._mode = Mode.CLOSED;
   }
@@ -164,7 +158,7 @@ export default class MovieController {
     appendChild(container, this._filmDetailsControlsComponent);
 
     this._filmDetailsControlsComponent.setAddToWatchlistButtonHandler((evt) => {
-      undoChanges(evt);
+      evt.target.checked = !evt.target.checked ? evt.target.value : false;
 
       const newFilm = MovieModel.clone(film);
       newFilm.isInWatchlist = !newFilm.isInWatchlist;
@@ -172,7 +166,7 @@ export default class MovieController {
     });
 
     this._filmDetailsControlsComponent.setAlreadyWatchedButtonHandler((evt) => {
-      undoChanges(evt);
+      evt.target.checked = !evt.target.checked ? evt.target.value : false;
 
       const newFilm = MovieModel.clone(film);
       newFilm.isInHistory = !newFilm.isInHistory;
@@ -180,7 +174,7 @@ export default class MovieController {
     });
 
     this._filmDetailsControlsComponent.setAddToFavoriteButtonHandler((evt) => {
-      undoChanges(evt);
+      evt.target.checked = !evt.target.checked ? evt.target.value : false;
 
       const newFilm = MovieModel.clone(film);
       newFilm.isInFavorites = !newFilm.isInFavorites;

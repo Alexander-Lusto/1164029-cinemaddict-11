@@ -34,10 +34,8 @@ export default class Menu extends AbstractComponent {
       }
 
       if (evt.target.id === MenuItem.STATS) { // сбросить активный класс с фильтра
-        const filmsNavigationItems = document.querySelectorAll(`#${MenuItem.FILMS}`);
-        for (let i = 0; i < filmsNavigationItems.length; i++) {
-          filmsNavigationItems[i].classList.remove(NAVIGATION_ACTIVE);
-        }
+        const activeNavigationItem = document.querySelector(`.${NAVIGATION_ACTIVE}`);
+        activeNavigationItem.classList.remove(NAVIGATION_ACTIVE);
       }
 
       const statisticMenuItem = evt.target;

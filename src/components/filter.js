@@ -3,8 +3,8 @@ import {FilterType} from '../const.js';
 import {MenuItem} from '../main.js';
 import {NAVIGATION_ACTIVE} from './menu.js';
 
-const createFilterMarkup = (filtersArray) => {
-  return filtersArray.map((filter) => {
+const createFilterMarkup = (filters) => {
+  return filters.map((filter) => {
     const {address, name, count, checked} = filter;
     return (
       `<a href="#${address}"
@@ -18,10 +18,10 @@ const createFilterMarkup = (filtersArray) => {
   }).join(`\n`);
 };
 
-const createFilterTemplate = (filtersArray) => {
+const createFilterTemplate = (filters) => {
   return (
     `<div class="main-navigation__items">
-      ${createFilterMarkup(filtersArray)}
+      ${createFilterMarkup(filters)}
     </div>`
   );
 };

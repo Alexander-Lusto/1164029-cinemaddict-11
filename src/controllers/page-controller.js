@@ -37,9 +37,9 @@ const getSortedFilms = (films, type, from, to) => {
 const renderFilms = (filmsListContainer, films, onDataChange, onViewChange, onCommentsChange, api, commentsModel) => {
 
   const movieControllers = [];
-  for (let i = 0; i < films.length; i++) {
-    const movieController = new MovieController(films[i], filmsListContainer, onDataChange, onViewChange, onCommentsChange, api, commentsModel);
-    movieController.render(films[i]);
+  for (const film of films) {
+    const movieController = new MovieController(film, filmsListContainer, onDataChange, onViewChange, onCommentsChange, api, commentsModel);
+    movieController.render(film);
     movieControllers.push(movieController);
   }
   return movieControllers;
@@ -83,7 +83,7 @@ export default class PageController {
   render() {
     this._films = this._moviesModel.getMovies();
 
-    const currentFilmsArray = this._films.slice(0, this._showingCardsCount);
+    const currentFilms = this._films.slice(0, this._showingCardsCount);
 
     render(main, this._sortComponent, RenderPosition.BEFOREEND);
     render(main, this._filmsComponent, RenderPosition.BEFOREEND);
@@ -101,7 +101,7 @@ export default class PageController {
       return;
     }
 
-    this._renderFilms(currentFilmsArray);
+    this._renderFilms(currentFilms);
     this._renderShowMoreButton();
   }
 

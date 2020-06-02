@@ -19,6 +19,12 @@ export const MenuItem = {
 const main = document.querySelector(`.main`);
 const footer = document.querySelector(`.footer`);
 
+const renderPage = () => {
+  pageController.removePreloader();
+  pageController.render();
+  render(footer, new FooterStatisticComponent(moviesModel), RenderPosition.BEFOREEND);
+};
+
 const api = new API(END_POINT, AUTHORIZATION);
 
 const moviesModel = new MoviesModel();
@@ -59,13 +65,9 @@ menuComponent.setOnChange((menuItem) => {
 api.getFilms()
   .then((films) => {
     moviesModel.setMovies(films);
-    pageController.removePreloader();
     pageController.renderUserTitle(films);
-    pageController.render();
-    render(footer, new FooterStatisticComponent(moviesModel), RenderPosition.BEFOREEND);
+    renderPage();
   })
   .catch(() => {
-    pageController.removePreloader();
-    pageController.render();
-    render(footer, new FooterStatisticComponent(moviesModel), RenderPosition.BEFOREEND);
+    renderPage();
   });
